@@ -1,0 +1,74 @@
+{
+  "synthetic": true,
+  "checks": [
+    {
+      "id": "synthetic-marker",
+      "passed": true,
+      "evidence": "Conjunto explicitamente sintético"
+    },
+    {
+      "id": "expected-not-limit",
+      "passed": true,
+      "evidence": "Duas famílias esperadas sem limite rígido"
+    },
+    {
+      "id": "longitudinal-encounters",
+      "passed": true,
+      "evidence": "Cada família possui dois encontros"
+    },
+    {
+      "id": "unknown-medication",
+      "passed": true,
+      "evidence": "Medicamento parcialmente identificado preservado"
+    },
+    {
+      "id": "no-dose",
+      "passed": true,
+      "evidence": "Nenhuma posologia publicada"
+    },
+    {
+      "id": "exam-unit-guard",
+      "passed": true,
+      "evidence": "Exame sem unidade não interpretado"
+    },
+    {
+      "id": "multiple-households",
+      "passed": true,
+      "evidence": "Adolescente em dois domicílios"
+    },
+    {
+      "id": "perspectives",
+      "passed": true,
+      "evidence": "Perspectivas divergentes preservadas"
+    },
+    {
+      "id": "third-party-blocked",
+      "passed": true,
+      "evidence": "Informação de terceiro bloqueada"
+    },
+    {
+      "id": "screening-process",
+      "passed": true,
+      "evidence": "Rastreamento representado como processo"
+    },
+    {
+      "id": "pending-destinations",
+      "passed": true,
+      "evidence": "Todas as pendências possuem destino explícito"
+    },
+    {
+      "id": "snapshot-immutable",
+      "passed": true,
+      "evidence": "Adendo não altera snapshot"
+    },
+    {
+      "id": "incident-drills",
+      "passed": true,
+      "evidence": "Incidentes possuem resultado seguro esperado"
+    }
+  ],
+  "passed": 13,
+  "failed": 0,
+  "semesterChecksum": "560ab500d09470bc6a497bbeecc197a4f616dec43350c847e3e61cb508baeca8",
+  "report": "PILOTO SINTÉTICO INTEGRAL\nSemestre: SEM-2026-2\nFamílias: Horizonte, Travessia\nChecks: 13/13\nChecksum: 560ab500d09470bc6a497bbeecc197a4f616dec43350c847e3e61cb508baeca8\n\nPASS | synthetic-marker | Conjunto explicitamente sintético\nPASS | expected-not-limit | Duas famílias esperadas sem limite rígido\nPASS | longitudinal-encounters | Cada família possui dois encontros\nPASS | unknown-medication | Medicamento parcialmente identificado preservado\nPASS | no-dose | Nenhuma posologia publicada\nPASS | exam-unit-guard | Exame sem unidade não interpretado\nPASS | multiple-households | Adolescente em dois domicílios\nPASS | perspectives | Perspectivas divergentes preservadas\nPASS | third-party-blocked | Informação de terceiro bloqueada\nPASS | screening-process | Rastreamento representado como processo\nPASS | pending-destinations | Todas as pendências possuem destino explícito\nPASS | snapshot-immutable | Adendo não altera snapshot\nPASS | incident-drills | Incidentes possuem resultado seguro esperado"
+}

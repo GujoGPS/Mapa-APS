@@ -1,0 +1,41 @@
+{
+  "release": "1.0.0-production-candidate",
+  "buildType": "static-production",
+  "modulesBundled": 53,
+  "assets": {
+    "index.html": {
+      "sha256": "e5e94871336fceab67d492ee2888b78ed61aa0cd77e260380ebfd3f09e6c56ce",
+      "bytes": 813
+    },
+    "app.js": {
+      "sha256": "8ec4aaa0124cea1f663d2acec99b69e3e72abb65e4360434f1206ac580d5a518",
+      "bytes": 314144
+    },
+    "styles.css": {
+      "sha256": "97bc788de6ba957430ffef4b221d18ab324382a1306daacace9ae94e2602f5d1",
+      "bytes": 25557
+    },
+    "sw.js": {
+      "sha256": "740bfc2e411075aa26f5d26a83c7c788c245e524f87386e78f359612aa4b5d46",
+      "bytes": 1397
+    },
+    "manifest.webmanifest": {
+      "sha256": "86719b8c4ec266ad691a9066b300bde88a5f1721e581676f49060fd070434068",
+      "bytes": 302
+    },
+    "offline": {
+      "sha256": "ea875cfa1c8dedad295cdd01ce4cd33d3abed519424cbf76a7e2511adebf3022",
+      "bytes": 300
+    }
+  },
+  "httpSmokeTest": {
+    "index": 813,
+    "appJs": 314144,
+    "serviceWorker": 1397,
+    "passed": true
+  },
+  "sourceIncluded": true,
+  "vscodeReady": true,
+  "nextOfficialBuild": "requires npm install in networked environment",
+  "realDataAllowed": false
+}

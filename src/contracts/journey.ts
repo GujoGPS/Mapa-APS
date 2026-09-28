@@ -1,0 +1,8 @@
+import type {AuditFields,EntityId,ISODateTime,ProvenancedRecord} from "./core";
+export interface Reflection extends AuditFields,ProvenancedRecord {semesterId:EntityId;familyId?:EntityId;encounterId?:EntityId;title:string;text:string;learning:string[];nextQuestions:string[];}
+export interface CompetencyEvidence extends AuditFields,ProvenancedRecord {semesterId:EntityId;familyId?:EntityId;personId?:EntityId;encounterId?:EntityId;competency:string;description:string;evidenceDate:ISODateTime;state:"draft"|"reviewed"|"validated";}
+export interface SupervisorFeedback extends AuditFields,ProvenancedRecord {semesterId:EntityId;familyId?:EntityId;personId?:EntityId;encounterId?:EntityId;topic?:string;text:string;receivedAt:ISODateTime;action?:string;state:"received"|"reviewed"|"incorporated"|"closed";}
+export type PendingClosure="completed"|"not-completed"|"continuity-recommended"|"continuity-confirmed"|"not-recoverable"|"no-longer-relevant"|"merged";
+export interface SemesterSnapshotData {semester:unknown;families:unknown[];familyLinks:unknown[];people:unknown[];memberships:unknown[];encounters:unknown[];pending:unknown[];conditions:unknown[];medications:unknown[];examResults:unknown[];screenings:unknown[];carePlans:unknown[];relationships:unknown[];resources:unknown[];externalLinks:unknown[];reflections:unknown[];competencies:unknown[];feedbacks:unknown[];}
+export interface SemesterSnapshot extends AuditFields {semesterId:EntityId;closedAt:ISODateTime;schemaVersion:number;contentChecksum:string;data:SemesterSnapshotData;reportText:string;}
+export interface Addendum extends AuditFields,ProvenancedRecord {snapshotId:EntityId;semesterId:EntityId;title:string;text:string;reason:string;authoredAt:ISODateTime;}

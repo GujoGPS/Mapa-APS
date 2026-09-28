@@ -1,0 +1,31 @@
+{
+  "synthetic": true,
+  "semester": {
+    "id": "sem_demo_2026_2",
+    "code": "SEM-2026-2",
+    "label": "UBS, segundo semestre de 2026",
+    "state": "active",
+    "expectedFamilyCount": 2
+  },
+  "families": [
+    {
+      "id": "family_demo_horizonte",
+      "code": "F-001",
+      "nickname": "Horizonte",
+      "state": "active",
+      "focus": "complexidade clínica e farmacológica"
+    },
+    {
+      "id": "family_demo_travessia",
+      "code": "F-002",
+      "nickname": "Travessia",
+      "state": "active",
+      "focus": "complexidade relacional e preventiva"
+    }
+  ],
+  "notes": [
+    "Todos os dados deste arquivo são sintéticos.",
+    "A quantidade esperada de duas famílias não é limite técnico.",
+    "Nenhum nome, documento, endereço ou dado clínico real é permitido."
+  ]
+}

@@ -1,0 +1,28 @@
+export const ENTITY_TYPES = {
+  family: "family",
+  person: "person",
+  membership: "family-membership",
+  household: "household",
+  residence: "residence-period",
+  semester: "semester",
+  semesterFamily: "semester-family-link",
+  encounter: "encounter",
+  pending: "pending-item",
+  condition: "condition-record",
+  medication: "person-medication",
+  examResult: "exam-result",
+  screening: "screening-episode",
+  carePlan: "care-plan",
+  patientSuggestion: "patient-suggestion",
+  interpersonalRelationship: "interpersonal-relationship",
+  externalResource: "external-resource",
+  externalLink: "external-link",
+  diagramLayout: "diagram-layout",
+  reflection: "reflection",
+  competencyEvidence: "competency-evidence",
+  supervisorFeedback: "supervisor-feedback",
+  semesterSnapshot: "semester-snapshot",
+  addendum: "addendum",
+} as const;
+
+export type EntityType = (typeof ENTITY_TYPES)[keyof typeof ENTITY_TYPES];

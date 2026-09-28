@@ -1,0 +1,249 @@
+{
+  "synthetic": true,
+  "scenarioVersion": 1,
+  "semester": {
+    "id": "sem_demo_2026_2",
+    "code": "SEM-2026-2",
+    "label": "Piloto sintético integral",
+    "expectedFamilyCount": 2,
+    "state": "active"
+  },
+  "families": [
+    {
+      "id": "family_demo_horizonte",
+      "code": "F-001",
+      "nickname": "Horizonte",
+      "focus": "complexidade clínica e farmacológica",
+      "people": [
+        {
+          "id": "p_h_1",
+          "code": "P-H1",
+          "ageBand": "older-adult",
+          "role": "pessoa acompanhada"
+        },
+        {
+          "id": "p_h_2",
+          "code": "P-H2",
+          "ageBand": "adult",
+          "role": "cuidadora familiar"
+        }
+      ],
+      "encounters": [
+        {
+          "id": "e_h_1",
+          "at": "2026-08-12T14:00:00-03:00",
+          "title": "Primeiro encontro",
+          "nextStep": "Conferir embalagens e unidades dos exames"
+        },
+        {
+          "id": "e_h_2",
+          "at": "2026-09-09T14:00:00-03:00",
+          "title": "Revisão longitudinal",
+          "nextStep": "Discutir divergência de uso na preceptoria"
+        }
+      ],
+      "conditions": [
+        {
+          "label": "pressão alta",
+          "confirmation": "reported"
+        },
+        {
+          "label": "diabetes",
+          "confirmation": "reported"
+        },
+        {
+          "label": "possível alteração renal",
+          "confirmation": "uncertain"
+        }
+      ],
+      "medications": [
+        {
+          "label": "comprimido branco para pressão",
+          "identification": "partial",
+          "dosePublished": false
+        },
+        {
+          "label": "metformina relatada",
+          "identification": "generic-name",
+          "dosePublished": false
+        }
+      ],
+      "exams": [
+        {
+          "name": "creatinina",
+          "value": "1,4",
+          "unit": "",
+          "interpretationState": "insufficient-data"
+        },
+        {
+          "name": "HbA1c",
+          "value": "8,1",
+          "unit": "%",
+          "interpretationState": "recorded-not-diagnosed"
+        }
+      ],
+      "pending": [
+        {
+          "id": "pend_h_1",
+          "title": "Confirmar medicamento anti-hipertensivo",
+          "destination": "continuity-recommended"
+        },
+        {
+          "id": "pend_h_2",
+          "title": "Recuperar unidade da creatinina",
+          "destination": "not-recoverable"
+        }
+      ],
+      "reflections": [
+        {
+          "title": "Incerteza não é ausência",
+          "learning": [
+            "Preservar termo relatado",
+            "Não inferir unidade",
+            "Separar prescrição de uso"
+          ]
+        }
+      ],
+      "feedbacks": [
+        {
+          "topic": "preceptoria",
+          "text": "Levar embalagens e cronologia, sem reconstruir dose por memória",
+          "action": "Criar lista de conferência"
+        }
+      ]
+    },
+    {
+      "id": "family_demo_travessia",
+      "code": "F-002",
+      "nickname": "Travessia",
+      "focus": "complexidade relacional e preventiva",
+      "people": [
+        {
+          "id": "p_t_1",
+          "code": "P-T1",
+          "ageBand": "adolescent",
+          "role": "pessoa acompanhada"
+        },
+        {
+          "id": "p_t_2",
+          "code": "P-T2",
+          "ageBand": "adult",
+          "role": "responsável A"
+        },
+        {
+          "id": "p_t_3",
+          "code": "P-T3",
+          "ageBand": "adult",
+          "role": "responsável B"
+        }
+      ],
+      "households": [
+        {
+          "id": "h_t_1",
+          "label": "domicílio A"
+        },
+        {
+          "id": "h_t_2",
+          "label": "domicílio B"
+        }
+      ],
+      "encounters": [
+        {
+          "id": "e_t_1",
+          "at": "2026-08-19T14:00:00-03:00",
+          "title": "Mapeamento de domicílios",
+          "nextStep": "Revisar perspectivas separadamente"
+        },
+        {
+          "id": "e_t_2",
+          "at": "2026-09-16T14:00:00-03:00",
+          "title": "Rastreamento retomado",
+          "nextStep": "Registrar decisão e recurso comunitário"
+        }
+      ],
+      "relationships": [
+        {
+          "source": "p_t_1",
+          "target": "p_t_2",
+          "perspective": "adolescente",
+          "quality": "variable"
+        },
+        {
+          "source": "p_t_1",
+          "target": "p_t_3",
+          "perspective": "responsável A",
+          "quality": "uncertain"
+        }
+      ],
+      "screenings": [
+        {
+          "topic": "bem-estar",
+          "state": "postponed",
+          "laterState": "accepted"
+        }
+      ],
+      "thirdPartyNotes": [
+        {
+          "text": "Relato sintético sobre terceiro",
+          "sharingState": "blocked"
+        }
+      ],
+      "resources": [
+        {
+          "label": "grupo comunitário sintético",
+          "state": "potential"
+        }
+      ],
+      "pending": [
+        {
+          "id": "pend_t_1",
+          "title": "Confirmar participação no recurso",
+          "destination": "continuity-recommended"
+        }
+      ],
+      "reflections": [
+        {
+          "title": "Perspectivas não são erro",
+          "learning": [
+            "Registrar autoria",
+            "Não fundir versões",
+            "Proteger terceiro"
+          ]
+        }
+      ],
+      "feedbacks": [
+        {
+          "topic": "preceptoria",
+          "text": "Manter o adolescente como sujeito e não como vínculo entre adultos",
+          "action": "Revisar resumo compartilhável"
+        }
+      ]
+    }
+  ],
+  "incidentDrills": [
+    {
+      "id": "inc_1",
+      "kind": "tampered-backup",
+      "expected": "reject"
+    },
+    {
+      "id": "inc_2",
+      "kind": "wrong-passphrase",
+      "expected": "reject"
+    },
+    {
+      "id": "inc_3",
+      "kind": "open-pending-before-close",
+      "expected": "block"
+    }
+  ],
+  "closure": {
+    "pendingPolicy": "explicit-destination",
+    "snapshotImmutable": true,
+    "addendum": {
+      "title": "Correção sintética de data",
+      "reason": "Teste de adendo",
+      "changesOriginal": false
+    }
+  }
+}

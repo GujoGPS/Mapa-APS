@@ -1,0 +1,72 @@
+{
+  "generatedAt": "2026-09-27T21:52:00-03:00",
+  "candidate": "0.7.0-rc.0",
+  "realDataAllowed": false,
+  "decision": "NO-GO",
+  "passed": 2,
+  "blocked": 2,
+  "failed": 2,
+  "manual": 6,
+  "gates": [
+    {
+      "id": "build-pipeline",
+      "status": "blocked",
+      "blocking": true
+    },
+    {
+      "id": "device-matrix",
+      "status": "manual",
+      "blocking": true
+    },
+    {
+      "id": "backup-restore",
+      "status": "manual",
+      "blocking": true
+    },
+    {
+      "id": "storage-eviction",
+      "status": "passed",
+      "blocking": false
+    },
+    {
+      "id": "pin-boundary",
+      "status": "passed",
+      "blocking": false
+    },
+    {
+      "id": "full-db-encryption",
+      "status": "failed",
+      "blocking": true
+    },
+    {
+      "id": "security-review",
+      "status": "manual",
+      "blocking": true
+    },
+    {
+      "id": "privacy-workflow",
+      "status": "manual",
+      "blocking": true
+    },
+    {
+      "id": "accessibility",
+      "status": "manual",
+      "blocking": true
+    },
+    {
+      "id": "clinical-review",
+      "status": "manual",
+      "blocking": true
+    },
+    {
+      "id": "pharmacology",
+      "status": "failed",
+      "blocking": true
+    },
+    {
+      "id": "institutional",
+      "status": "blocked",
+      "blocking": true
+    }
+  ]
+}

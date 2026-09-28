@@ -1,0 +1,57 @@
+{
+  "name": "mapa-clinica-familia-territorio",
+  "version": "0.7.0-rc.0",
+  "private": true,
+  "description": "Mapa: clínica, família e território",
+  "engines": {
+    "node": ">=22.0.0",
+    "npm": ">=11.0.0"
+  },
+  "packageManager": "npm@11.19.1",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "verify:docs": "node scripts/verify-docs.mjs",
+    "verify:synthetic": "node scripts/verify-synthetic-data.mjs",
+    "verify": "npm run verify:docs && npm run verify:synthetic && npm run verify:marco1 && npm run verify:marco2 && npm run verify:marco3 && npm run verify:marco4 && npm run verify:marco5 && npm run verify:marco6 && npm run verify:marco7 && npm run audit:static && npm run typecheck && npm run lint && npm run test",
+    "verify:marco1": "node scripts/verify-marco1.mjs",
+    "verify:marco2": "node scripts/verify-marco2.mjs",
+    "verify:marco3": "node scripts/verify-marco3.mjs",
+    "verify:marco4": "node scripts/verify-marco4.mjs",
+    "verify:marco5": "node scripts/verify-marco5.mjs",
+    "verify:marco6": "node scripts/verify-marco6.mjs",
+    "verify:marco7": "node scripts/verify-marco7.mjs",
+    "audit:static": "node scripts/audit-static.mjs",
+    "audit:release": "node scripts/release-gate.mjs",
+    "audit:internal": "bash scripts/internal-validate.sh",
+    "audit:wave-b": "bun scripts/wave-b-adversarial.ts && node scripts/accessibility-static.mjs && bash scripts/internal-validate.sh",
+    "audit:wave-c": "bun scripts/generate-clinical-review.ts && bun scripts/wave-c-audit.ts && bash scripts/internal-validate.sh",
+    "audit:wave-d": "bun scripts/wave-d-pilot.ts && bun scripts/wave-d-release-council.ts && bun scripts/wave-c-audit.ts && bun scripts/wave-b-adversarial.ts && node scripts/accessibility-static.mjs && bash scripts/internal-validate.sh"
+  },
+  "dependencies": {
+    "next": "^16.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.0.0",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^16.0.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "^16.0.0",
+    "jsdom": "^27.0.0",
+    "typescript": "^5.8.0",
+    "vite-tsconfig-paths": "^5.0.0",
+    "vitest": "^3.0.0"
+  }
+}

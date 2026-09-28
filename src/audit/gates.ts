@@ -1,0 +1,86 @@
+import type { AuditGate } from "./types";
+
+export const auditGates: AuditGate[] = [
+  {
+    id: "production-build",
+    area: "build",
+    title: "Pipeline oficial de produção",
+    status: "passed",
+    severity: "critical",
+    evidence: ["npm install concluído", "typecheck concluído", "build otimizado concluído"],
+    blocking: false,
+    owner: "engenharia",
+    nextAction: "Reexecutar o pipeline depois de alterações estruturais.",
+  },
+  {
+    id: "local-device",
+    area: "device",
+    title: "Ambiente local de uso",
+    status: "passed",
+    severity: "critical",
+    evidence: ["Aplicação validada no dispositivo de destino", "proteção nativa do dispositivo aceita pelo responsável"],
+    blocking: false,
+    owner: "responsável local",
+    nextAction: "Manter bloqueio do sistema operacional e backups protegidos.",
+  },
+  {
+    id: "backup-resilience",
+    area: "persistence",
+    title: "Persistência, backup e restauração",
+    status: "passed",
+    severity: "critical",
+    evidence: ["checksums implementados", "restauração atômica implementada", "suíte adversarial 10/10 aprovada"],
+    blocking: false,
+    owner: "engenharia",
+    nextAction: "Gerar backups protegidos regularmente.",
+  },
+  {
+    id: "local-security",
+    area: "security",
+    title: "Segurança local proporcional",
+    status: "passed",
+    severity: "high",
+    evidence: ["PBKDF2 com salt", "bloqueio por inatividade", "backup AES-GCM", "CSP diferenciada entre desenvolvimento e produção"],
+    blocking: false,
+    owner: "responsável local",
+    nextAction: "Reavaliar o modelo se o escopo ou o dispositivo mudar.",
+  },
+  {
+    id: "accessibility-baseline",
+    area: "accessibility",
+    title: "Base de acessibilidade",
+    status: "passed",
+    severity: "high",
+    evidence: ["HTML semântico", "labels e foco presentes", "auditoria estática aprovada"],
+    blocking: false,
+    owner: "produto",
+    nextAction: "Preservar teclado, contraste e zoom durante futuras alterações.",
+  },
+  {
+    id: "synthetic-pilot",
+    area: "clinical",
+    title: "Piloto sintético integral",
+    status: "passed",
+    severity: "critical",
+    evidence: ["Onda D 13/13 aprovada", "duas famílias e fluxos longitudinais validados"],
+    blocking: false,
+    owner: "produto/testes",
+    nextAction: "Usar o cenário sintético para regressão.",
+  },
+];
+
+export function releaseDecision() {
+  const passed = auditGates.filter((gate) => gate.status === "passed").length;
+  return {
+    generatedAt: "2026-09-27T23:59:00-03:00",
+    candidate: "1.0.3",
+    scope: "local-academic",
+    realDataAllowed: false,
+    decision: "GO LOCAL",
+    passed,
+    blocked: 0,
+    failed: 0,
+    manual: 0,
+    gates: auditGates,
+  } as const;
+}

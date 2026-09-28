@@ -1,0 +1,19 @@
+PILOTO SINTÉTICO INTEGRAL
+Semestre: SEM-2026-2
+Famílias: Horizonte, Travessia
+Checks: 13/13
+Checksum: 560ab500d09470bc6a497bbeecc197a4f616dec43350c847e3e61cb508baeca8
+
+PASS | synthetic-marker | Conjunto explicitamente sintético
+PASS | expected-not-limit | Duas famílias esperadas sem limite rígido
+PASS | longitudinal-encounters | Cada família possui dois encontros
+PASS | unknown-medication | Medicamento parcialmente identificado preservado
+PASS | no-dose | Nenhuma posologia publicada
+PASS | exam-unit-guard | Exame sem unidade não interpretado
+PASS | multiple-households | Adolescente em dois domicílios
+PASS | perspectives | Perspectivas divergentes preservadas
+PASS | third-party-blocked | Informação de terceiro bloqueada
+PASS | screening-process | Rastreamento representado como processo
+PASS | pending-destinations | Todas as pendências possuem destino explícito
+PASS | snapshot-immutable | Adendo não altera snapshot
+PASS | incident-drills | Incidentes possuem resultado seguro esperado

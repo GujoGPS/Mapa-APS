@@ -1,0 +1,2 @@
+import{writeFileSync}from"node:fs";import{runWaveDSimulation}from"../src/domain/wave-d-simulation";
+const result=await runWaveDSimulation();writeFileSync("docs/release/WAVE_D_RESULT.json",JSON.stringify(result,null,2)+"\n");writeFileSync("docs/release/WAVE_D_PILOT_REPORT.txt",result.report+"\n");for(const c of result.checks)console.log(`[${c.passed?"pass":"fail"}] ${c.id}: ${c.evidence}`);if(result.failed)process.exit(1);console.log(`[ok] Wave D: ${result.passed}/${result.checks.length}; ${result.semesterChecksum}`);

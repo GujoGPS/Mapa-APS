@@ -1,0 +1,32 @@
+{
+  "generatedAt": "2026-09-28T02:38:01.001Z",
+  "decision": "NO-GO",
+  "realDataAllowed": false,
+  "syntheticDemoAllowed": true,
+  "gates": [
+    {
+      "id": "synthetic-pilot",
+      "passed": true
+    },
+    {
+      "id": "clinical-signoff",
+      "passed": false
+    },
+    {
+      "id": "institutional-authorization",
+      "passed": false
+    },
+    {
+      "id": "official-build",
+      "passed": false
+    },
+    {
+      "id": "physical-devices",
+      "passed": false
+    },
+    {
+      "id": "live-db-protection",
+      "passed": false
+    }
+  ]
+}

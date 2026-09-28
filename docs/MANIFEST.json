@@ -1,0 +1,113 @@
+{
+  "project": "Mapa",
+  "spec_version": "1.0.0",
+  "created_at": "2026-09-27T21:52:00-03:00",
+  "status": "planning-complete-production-not-started",
+  "files": [
+    {
+      "path": "ACCEPTANCE_CRITERIA.md",
+      "sha256": "6c50edf2fde46885e4fa7e9eeb5aaa290351752624b757273bb1f2d2754e109c",
+      "bytes": 2416
+    },
+    {
+      "path": "AI_EXPORTS.md",
+      "sha256": "378584013576c052aa582c2c757b0b58d50eea3f6e65a31318e3263487f21496",
+      "bytes": 1376
+    },
+    {
+      "path": "ARCHITECTURE.md",
+      "sha256": "e5d007e734d71bff4f66b24c1bb3b8911a40c7ce708bc11b7a99a09b8196661b",
+      "bytes": 1928
+    },
+    {
+      "path": "BACKUP_AND_RECOVERY.md",
+      "sha256": "26bb589101e804c72869e18233f5ee883b1573de985e9f3ea601ffe319d4344a",
+      "bytes": 1618
+    },
+    {
+      "path": "CHANGELOG.md",
+      "sha256": "fc1b39227180dbedac06be6cef58fee5c7ef0dfdd1c0f3569af72682d1fd0aa2",
+      "bytes": 702
+    },
+    {
+      "path": "CLINICAL_CONTENT_MODEL.md",
+      "sha256": "6f25c34837eefc33dfde9e4aa3e31911e2a05183d647c1fcf51340b97daf2b2a",
+      "bytes": 1699
+    },
+    {
+      "path": "DATA_MODEL.md",
+      "sha256": "fa9dc0fdc3dceb5611f7546cf8c64c825e9dee281df5520da6b87aa8feeab7b7",
+      "bytes": 3597
+    },
+    {
+      "path": "DECISIONS.md",
+      "sha256": "8de045985d77b199103eae7310d032c5be689be1e9cae92a54777a0517c44919",
+      "bytes": 2589
+    },
+    {
+      "path": "END_TO_END_SIMULATION.md",
+      "sha256": "6376ebd946303d20e2b8ae4d3998f819c4c0cbb665112dc77767739a9532dbe5",
+      "bytes": 2088
+    },
+    {
+      "path": "OPEN_QUESTIONS.md",
+      "sha256": "238208dcbc2097919a655ccd5456d75c532f770538541c745d7b9d82a52171ba",
+      "bytes": 1450
+    },
+    {
+      "path": "PHARMACOLOGY_GOVERNANCE.md",
+      "sha256": "92300f64689f7230b6cf2768e73095e03dc5dfe847b4742880361976349f0818",
+      "bytes": 2194
+    },
+    {
+      "path": "PRIVACY_MODEL.md",
+      "sha256": "30b0395a6f061602969310afd06c792278bbf849e265df6ef361e74bda9bee33",
+      "bytes": 2378
+    },
+    {
+      "path": "PROJECT_STATE.md",
+      "sha256": "8925fd056cb959c1f583b96f6d5b463fa931128f111786c83f1944c44f5412d3",
+      "bytes": 3116
+    },
+    {
+      "path": "README.md",
+      "sha256": "cbeee9702c3a591e50c2b20ae30bef1c967da1e3b773e3bdb6ee43b4a8c70ea7",
+      "bytes": 1704
+    },
+    {
+      "path": "RISKS.md",
+      "sha256": "05c78980846d538518bf4abbe7b53b59b64529a2ef11e31d2baee068a302ff2e",
+      "bytes": 1827
+    },
+    {
+      "path": "ROADMAP.md",
+      "sha256": "565e0f0f4f34365568c887aa0f3f901c6d294037ad0a4c12720af9b747fde1c1",
+      "bytes": 1501
+    },
+    {
+      "path": "SCOPE.md",
+      "sha256": "cfe82381aa0f3b5b366e25c34f41937971100c9bc621e1763f8e609f57ea5824",
+      "bytes": 2453
+    },
+    {
+      "path": "STATE_MACHINES.md",
+      "sha256": "313c502b85b5d9ea5576c25af42cd7419674cff343d9df118822dcf76b667147",
+      "bytes": 2224
+    },
+    {
+      "path": "TEST_PLAN.md",
+      "sha256": "23e12cf26bf6e408c5f2f5ed0fabc83a3dac07d5724cd3013d8602f82656b8c2",
+      "bytes": 1621
+    },
+    {
+      "path": "UX_FLOWS.md",
+      "sha256": "51d280d703a1595b363a56992c3aa0d2e87ffb4ec87e9de8e88c2d57b9871815",
+      "bytes": 1775
+    },
+    {
+      "path": "VISION.md",
+      "sha256": "afee9a08925cbbf8bde23c70f3ffb217deadebb725c48514ca97389f955091e4",
+      "bytes": 1945
+    }
+  ]
+}

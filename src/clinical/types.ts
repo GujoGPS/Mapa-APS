@@ -1,0 +1,7 @@
+export type PublicationLevel = "essential" | "expanded" | "audited" | "review-needed";
+export type ClinicalSourceKind = "pcdt" | "guideline" | "line-of-care" | "regulatory" | "rename" | "official-reference";
+export interface ClinicalSource { id:string; title:string; organization:string; kind:ClinicalSourceKind; publishedAt:string; updatedAt?:string; url:string; status:"current"|"preliminary"|"superseded"|"historical"; notes?:string; }
+export interface ClinicalClaim { id:string; text:string; sharedText?:string; sourceIds:string[]; population:string; level:PublicationLevel; reviewedAt:string; reviewDueAt:string; tags:string[]; }
+export interface ClinicalCondition { id:string; name:string; shortName:string; synonyms:string[]; summary:string; sharedSummary:string; publicationLevel:PublicationLevel; scope:string; sections:{ quick:ClinicalClaim[]; diagnosis:ClinicalClaim[]; assessment:ClinicalClaim[]; monitoring:ClinicalClaim[]; nonDrug:ClinicalClaim[]; medication:ClinicalClaim[]; referral:ClinicalClaim[]; }; sourceIds:string[]; }
+export interface MedicationKnowledge { id:string; genericName:string; therapeuticClass:string; coveredContexts:string[]; mechanismSummary:string; sharedPurpose:string; sourceIds:string[]; publicationLevel:PublicationLevel; doseStatus:"not-published"|"source-verified"; safetyNotice:string; monitor:string[]; availabilityNote?:string; }
+export interface ExamKnowledge { id:string; name:string; purpose:string; interpretationGuardrails:string[]; sourceIds:string[]; publicationLevel:PublicationLevel; }

@@ -1,0 +1,1 @@
+import{readFile}from"node:fs/promises";const report=JSON.parse(await readFile("docs/audit/RELEASE_DECISION.json","utf8"));console.log(`${report.decision}: ${report.passed} passed, ${report.failed} failed, ${report.blocked} blocked, ${report.manual} manual`);if(report.realDataAllowed!==true)process.exitCode=2;

@@ -1,0 +1,4 @@
+export type PharmacologyReviewStatus = "draft" | "checked-source" | "checked-preceptor" | "reviewed" | "archived";
+export interface PharmacologySource { title:string; organization:string; year?:number; url?:string; accessedAt?:string; }
+export interface DoseProfile { population:string; indication:string; route:string; presentation:string; initial?:string; titration?:string; usual?:string; interval?:string; target?:string; maximum?:string; duration?:string; renalAdjustment?:string; hepaticAdjustment?:string; notes?:string; }
+export interface PharmacologyEntry { id:string; genericName:string; brandNames?:string[]; therapeuticClass:string; mechanism?:string; presentations:string[]; doseProfiles:DoseProfile[]; contraindications:string[]; warnings:string[]; interactions:string[]; monitoring:string[]; sources:PharmacologySource[]; reviewStatus:PharmacologyReviewStatus; reviewedAt?:string; reviewedBy?:string; notes?:string; }
