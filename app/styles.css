@@ -146,6 +146,51 @@ footer { padding: 1.5rem .25rem; color: var(--muted); font-size: .84rem; text-al
 .check-row { display: flex !important; align-items: center; gap: .6rem !important; }
 .check-row input { width: 1.2rem; min-height: 1.2rem; }
 .error-banner { padding: .8rem; border-radius: 1rem; background: rgba(179,107,23,.12); color: var(--warning); }
+.assessments-panel { margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+.assessment-member-list { display: grid; gap: .55rem; margin-top: .8rem; }
+.assessment-member { display: grid; grid-template-columns: 1fr auto; gap: .2rem .7rem; padding: .8rem; border: 1px solid var(--line); border-radius: 1rem; color: var(--text); background: transparent; text-align: left; }
+.assessment-member span, .assessment-member small, .assessment-history-card span, .assessment-history-card small { color: var(--muted); font-size: .78rem; }
+.assessment-member span, .assessment-member small { grid-column: 1 / -1; }
+.assessment-member.selected { border-color: var(--brand); background: rgba(15,95,82,.1); }
+.assessment-person-area { margin-top: 1rem; padding: 1rem; border: 1px solid var(--line); border-radius: 1.2rem; background: rgba(15,95,82,.035); }
+.assessment-person-header, .assessment-editor-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.assessment-person-header h3, .assessment-editor-header h3 { margin: 0; }
+.assessment-history { display: grid; gap: .55rem; margin-top: 1rem; }
+.assessment-history-card { display: flex; align-items: center; justify-content: space-between; gap: .8rem; padding: .75rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); }
+.assessment-history-card > div:first-child { display: grid; gap: .2rem; }
+.assessment-editor { margin-top: 1rem; padding: 1rem; border: 2px solid var(--brand); border-radius: 1.2rem; background: var(--bg); }
+.assessment-progress { display: grid; gap: .2rem; margin: 1rem 0; padding: .8rem; border-radius: 1rem; background: rgba(15,95,82,.08); }
+.assessment-progress span { color: var(--muted); font-size: .82rem; }
+.assessment-section-tabs { display: flex; gap: .4rem; overflow-x: auto; padding-bottom: .75rem; }
+.assessment-section-tabs button { flex: 0 0 auto; max-width: 16rem; padding: .55rem .7rem; border: 0; border-radius: .8rem; color: var(--muted); background: rgba(15,95,82,.06); font-size: .78rem; font-weight: 750; }
+.assessment-section-tabs button.active { color: var(--brand); background: rgba(15,95,82,.15); }
+.assessment-question-list, .assessment-missing-source, .assessment-review { margin-top: .8rem; padding: .9rem; border: 1px solid var(--line); border-radius: 1rem; }
+.assessment-question-list h4, .assessment-missing-source h4, .assessment-review h4 { margin: 0 0 .8rem; }
+.assessment-field { display: grid; gap: .35rem; margin-top: .75rem; color: var(--muted); font-size: .84rem; font-weight: 700; }
+.assessment-field input, .assessment-field textarea { width: 100%; min-height: 2.8rem; padding: .65rem .75rem; border: 1px solid var(--line); border-radius: .8rem; color: var(--text); background: var(--surface); }
+.assessment-field textarea { min-height: 5rem; resize: vertical; }
+.assessment-field legend { padding: 0; color: var(--muted); }
+.assessment-field { border: 0; }
+.assessment-field .check-row, .assessment-field .radio-row { display: flex; align-items: center; gap: .5rem; padding: .25rem 0; font-weight: 500; }
+.assessment-field input[type="checkbox"], .assessment-field input[type="radio"] { width: 1.1rem; min-height: 1.1rem; }
+.assessment-calculated, .assessment-not-applicable { display: grid; gap: .25rem; margin-top: .7rem; padding: .75rem; border-radius: .8rem; background: rgba(15,95,82,.07); }
+.assessment-calculated span, .assessment-not-applicable span { color: var(--muted); font-size: .82rem; }
+.assessment-review ul, .assessment-missing-source ul { margin-bottom: 0; padding-left: 1.2rem; color: var(--muted); font-size: .82rem; line-height: 1.5; }
+.assessment-section-statuses { display: grid; gap: .25rem; margin-top: .45rem; }
+.assessment-section-statuses span { padding: .2rem .4rem; border-radius: .45rem; background: var(--surface); }
+.assessment-save-status { margin: .6rem 0; padding: .55rem .7rem; border-radius: .7rem; color: var(--muted); background: rgba(15,95,82,.06); }
+.assessment-confirm { position: relative; z-index: 1; margin-top: .8rem; padding: .9rem; border: 2px solid var(--warning); border-radius: 1rem; background: var(--surface); }
+.assessment-field input[aria-invalid="true"] { border-color: var(--warning); outline: 2px solid rgba(179,107,23,.2); }
+.assessment-question-list select { width: 100%; min-height: 2.8rem; padding: .65rem .75rem; border: 1px solid var(--line); border-radius: .8rem; color: var(--text); background: var(--surface); }
+.assessment-review details { margin-top: .45rem; padding: .45rem; border-top: 1px solid var(--line); }
+.assessment-review summary { cursor: pointer; font-weight: 750; }
+.assessment-review li { overflow-wrap: anywhere; }
+.assessment-applicability { margin-top: .6rem; padding: .65rem; border: 1px dashed var(--line); border-radius: .7rem; }
+.assessment-applicability select, .assessment-applicability input { width: 100%; min-height: 2.5rem; margin-top: .35rem; padding: .5rem; border: 1px solid var(--line); border-radius: .6rem; background: var(--surface); color: var(--text); }
+.assessment-applicability small { display: block; margin-top: .35rem; color: var(--muted); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+@media (min-width: 44rem) { .assessment-member-list { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 34rem) { .assessment-person-header, .assessment-editor-header, .assessment-history-card { align-items: stretch; flex-direction: column; } }
 @media (min-width: 44rem) { .family-list { grid-template-columns: repeat(2,1fr); } .journey-family { display: grid; grid-template-columns: 1fr auto; } .journey-family > * { grid-column: 1; } .journey-family > button { grid-column: 2; grid-row: 1 / span 4; align-self: center; padding: 0 1rem; } }
 
 

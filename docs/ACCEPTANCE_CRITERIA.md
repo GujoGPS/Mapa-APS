@@ -35,6 +35,13 @@
 - [ ] Idade, IMC, média de PA e circunferência local têm cálculos puros testados.
 - [ ] Controle da PA, risco cardiovascular, HbA1c e CIAP-2 permanecem manuais.
 - [ ] Propostas de atualização familiar/ecomapa exigem revisão e não atualizam o domínio automaticamente.
+- [ ] Avaliações aparecem dentro da família, com seleção explícita de pessoa e histórico isolado por `personId`.
+- [ ] A visão familiar de avaliações mostra somente status, datas e quantidade, nunca respostas clínicas.
+- [ ] A interface de avaliações mostra progresso por bloco, revisão estrutural sem narrativa clínica e confirma alterações não salvas antes de sair.
+- [ ] Pressão arterial mantém sistólica, diastólica e data por visita; circunferência exige critério local explícito e só então mostra classificação calculada.
+- [ ] Blocos sem fonte não entram no denominador dos campos disponíveis e o bloco 8 não cria campos clínicos.
+- [ ] Rascunhos, revisão, conclusão, arquivamento e retificação preservam o original.
+- [ ] Blocos sem fonte aparecem como indisponíveis, sem perguntas inventadas.
 
 ## Farmacologia
 

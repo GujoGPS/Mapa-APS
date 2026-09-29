@@ -191,6 +191,7 @@ export interface InstrumentApplication {
   rectifiedAt?: string;
   rectifiesApplicationId?: string;
   privateNotes?: string;
+  waistCriterion?: "male-local-rule" | "female-local-rule" | "not-selected" | undefined;
 }
 
 export interface ApplicabilityOverride {
@@ -217,7 +218,7 @@ export type InstrumentAnswer =
   | (InstrumentAnswerBase & { answerType: "number" | "measurement" | "laboratory-result"; value: number; unit?: string })
   | (InstrumentAnswerBase & { answerType: "single-choice" | "yes-no" | "yes-no-never-did-does-not-remember" | "manual-classification" | "laterality-group"; value: string })
   | (InstrumentAnswerBase & { answerType: "multiple-choice"; value: string[] })
-  | (InstrumentAnswerBase & { answerType: "blood-pressure"; value: { systolic: number; diastolic: number }; unit: "mmHg" })
+  | (InstrumentAnswerBase & { answerType: "blood-pressure"; value: { systolic?: number; diastolic?: number }; unit: "mmHg" })
   | (InstrumentAnswerBase & { answerType: "calculated-information"; value: never })
   | (InstrumentAnswerBase & { answerType: "future-entity-link"; value: { entityId: string; entityType: string } });
 

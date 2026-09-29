@@ -61,9 +61,17 @@ Tipos:
 - membros;
 - relações;
 - planos;
-- instrumentos;
+- Avaliações;
 - timeline;
 - resumo familiar.
+
+### Avaliações na família
+
+Avaliações permanecem no contexto da família, mas cada ficha pertence a uma pessoa selecionada explicitamente. A visão familiar mostra apenas status, datas e quantidade de aplicações. A ficha individual permite iniciar ou retomar rascunho, revisar, concluir, arquivar e iniciar retificação sem alterar o original. O formulário é derivado da definição versionada do instrumento; blocos sem fonte aparecem como indisponíveis, sem perguntas inventadas.
+
+Durante a edição, o estado é explicitamente salvo, alterado, salvando ou com erro. A troca de pessoa, aplicação ou fechamento do editor exige uma escolha quando há alterações pendentes. O progresso é apresentado por bloco, distinguindo campos não iniciados, em andamento, estruturalmente completos, em revisão, não aplicáveis e fonte ausente. A revisão estrutural lista respostas, medidas, datas, cálculos, classificações manuais, dados ausentes e perguntas não aplicáveis sem produzir narrativa clínica.
+
+Perguntas com revisão manual de aplicabilidade exibem a regra de origem e permitem override somente com justificativa breve. O override pode ser removido para retornar à regra automática; a resposta anterior permanece preservada, mas fica inativa quando marcada como não aplicável. Antes de qualquer saída, arquivamento, troca de pessoa ou abertura de outra aplicação, a interface oferece salvar, continuar editando ou descartar apenas a edição local.
 
 ## Modo acompanhamento
 

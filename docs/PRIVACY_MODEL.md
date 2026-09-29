@@ -94,3 +94,9 @@ O sistema estima risco aparente, mas não promete anonimização perfeita.
 - conteúdo interpretativo: revisão recomendada antes de mostrar;
 - informação familiar: não herda visibilidade individual automaticamente;
 - biometria: recurso oportunístico, com PIN como método obrigatório de fallback.
+
+## Avaliações individuais
+
+Respostas clínicas só são exibidas após seleção explícita da pessoa. Medidas e classificações calculadas permanecem diferenciadas de dados informados, e respostas que deixam de ser aplicáveis são preservadas como não aplicáveis, sem permanecer ativas na revisão. O modo demonstração mantém o mesmo isolamento por pessoa e remove aplicações sintéticas ao sair.
+
+`familyId` é contexto de navegação; `personId` é o sujeito clínico. A lista familiar expõe somente metadados operacionais da aplicação. A interface filtra aplicações por ambos os identificadores, reinicializa o editor ao trocar de pessoa e o domínio valida o vínculo pessoa-família antes de criar a aplicação. Respostas de outro integrante não são carregadas nem exibidas.

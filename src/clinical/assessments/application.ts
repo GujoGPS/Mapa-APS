@@ -15,7 +15,7 @@ import {
   type InstrumentDefinition,
   type VisibilityMetadata,
 } from "./types";
-import { calculateBmi, calculateBloodPressureMean, deriveAdultAgeBand } from "./calculations";
+import { calculateBmi, calculateBloodPressureMean, classifyBmi, classifyWaistCircumference, deriveAdultAgeBand } from "./calculations";
 import {
   validateApplicationAnswers,
   validateInstrumentApplication,
@@ -167,12 +167,12 @@ export async function listApplicationsByFamilyMetadata(familyId: string): Promis
 
 export async function updateDraftApplication(
   applicationId: string,
-  changes: { answers?: Record<string, InstrumentAnswer>; applicabilityOverrides?: InstrumentApplication["applicabilityOverrides"]; privateNotes?: string },
+  changes: { answers?: Record<string, InstrumentAnswer>; applicabilityOverrides?: InstrumentApplication["applicabilityOverrides"]; privateNotes?: string; waistCriterion?: InstrumentApplication["waistCriterion"] },
 ): Promise<InstrumentApplication> {
   const current = await getApplication(applicationId);
   if (!current) throw new Error("Aplicação inexistente.");
   if (current.status !== "draft" && current.status !== "in-review") throw new Error("Aplicação concluída ou arquivada não pode ser sobrescrita.");
-  const next = { ...current, ...changes, answers: changes.answers ?? current.answers, applicabilityOverrides: changes.applicabilityOverrides ?? current.applicabilityOverrides, updatedAt: now(), revisionNumber: current.revisionNumber + 1 };
+  const next = { ...current, ...changes, ...(changes.privateNotes === undefined ? {} : { privateNotes: changes.privateNotes }), ...(changes.waistCriterion === undefined ? {} : { waistCriterion: changes.waistCriterion }), answers: changes.answers ?? current.answers, applicabilityOverrides: changes.applicabilityOverrides ?? current.applicabilityOverrides, updatedAt: now(), revisionNumber: current.revisionNumber + 1 };
   const validation = validateApplicationAnswers(next, applicationDefinition(next), "draft");
   if (!validation.valid) throw new Error(validation.errors.join(" "));
   return persist(next, current);
@@ -180,6 +180,13 @@ export async function updateDraftApplication(
 
 export async function submitForReview(applicationId: string): Promise<InstrumentApplication> {
   return transitionApplication(applicationId, "in-review");
+}
+
+export async function returnApplicationToDraft(applicationId: string): Promise<InstrumentApplication> {
+  const current = await getApplication(applicationId);
+  if (!current) throw new Error("Aplicação inexistente.");
+  if (!transitionApplicationStatus(current.status, "draft")) throw new Error(`Transição inválida: ${current.status} → draft`);
+  return persist({ ...current, status: "draft", updatedAt: now(), revisionNumber: current.revisionNumber + 1 }, current);
 }
 
 export async function completeApplication(applicationId: string): Promise<InstrumentApplication> {
@@ -268,7 +275,7 @@ export function deriveApplicationResults(application: InstrumentApplication): De
       subjectPersonId: application.personId,
       familyId: application.familyId,
       questionId: "physical.bmi",
-      value: calculateBmi(weight, height),
+      value: { bmi: calculateBmi(weight, height), classification: classifyBmi(calculateBmi(weight, height)) },
       unit: "kg/m²",
       rule: { id: "derive-bmi-v1", version: "1", inputs: ["physical.weight", "physical.height"], resultType: "calculated-information", sourceType: "automatic", origin: "mathematical-derivation", automaticCalculation: true, requiresClinicalReview: false },
       provenance: { origin: "mathematical-derivation", sourceNote: "Derivado dos dados da própria aplicação." },
@@ -276,8 +283,14 @@ export function deriveApplicationResults(application: InstrumentApplication): De
     });
   }
   const readings = ["blood-pressure.visit-1.systolic", "blood-pressure.visit-2.systolic"]
-    .map((questionId) => answerValue(questionId))
-    .filter((value): value is { systolic: number; diastolic: number } => Boolean(value && typeof value === "object" && "systolic" in value && "diastolic" in value));
+    .map((questionId, index) => {
+      const prefix = `blood-pressure.visit-${index + 1}`;
+      const systolic = answerValue(`${prefix}.systolic`);
+      const diastolic = answerValue(`${prefix}.diastolic`);
+      if (systolic && typeof systolic === "object" && "systolic" in systolic) return { systolic: systolic.systolic, diastolic: typeof diastolic === "object" && diastolic && "diastolic" in diastolic ? diastolic.diastolic : undefined };
+      return undefined;
+    })
+    .filter((value): value is { systolic: number; diastolic: number } => Boolean(value && typeof value.systolic === "number" && typeof value.diastolic === "number"));
   if (readings.length === 2) {
     const firstReading = readings[0];
     const secondReading = readings[1];
@@ -290,9 +303,24 @@ export function deriveApplicationResults(application: InstrumentApplication): De
       questionId: "blood-pressure.mean",
       value: calculateBloodPressureMean([firstReading, secondReading]),
       unit: "mmHg",
-      rule: { id: "derive-blood-pressure-mean-v1", version: "1", inputs: ["blood-pressure.visit-1.systolic", "blood-pressure.visit-2.systolic"], resultType: "calculated-information", sourceType: "automatic", origin: "mathematical-derivation", automaticCalculation: true, requiresClinicalReview: false },
+      rule: { id: "derive-blood-pressure-mean-v1", version: "1", inputs: ["blood-pressure.visit-1.systolic", "blood-pressure.visit-1.diastolic", "blood-pressure.visit-2.systolic", "blood-pressure.visit-2.diastolic"], resultType: "calculated-information", sourceType: "automatic", origin: "mathematical-derivation", automaticCalculation: true, requiresClinicalReview: false },
       provenance: { origin: "mathematical-derivation", sourceNote: "Média aritmética das aferições informadas." },
       reviewRequired: false,
+    });
+  }
+  const waist = answerValue("physical.waist-circumference");
+  if (typeof waist === "number" && application.waistCriterion && application.waistCriterion !== "not-selected") {
+    results.push({
+      id: `${application.applicationId}:physical.waist-classification`,
+      applicationId: application.applicationId,
+      subjectPersonId: application.personId,
+      familyId: application.familyId,
+      questionId: "physical.waist-classification",
+      value: classifyWaistCircumference(waist, application.waistCriterion),
+      unit: "cm",
+      rule: { id: "classify-waist-local-rule-v1", version: "1", inputs: ["physical.waist-circumference"], resultType: "calculated-information", sourceType: "automatic", origin: "mathematical-derivation", automaticCalculation: true, requiresClinicalReview: true, algorithm: application.waistCriterion },
+      provenance: { origin: "mathematical-derivation", sourceNote: "Classificação calculada pelo critério local explicitamente selecionado." },
+      reviewRequired: true,
     });
   }
   return results;

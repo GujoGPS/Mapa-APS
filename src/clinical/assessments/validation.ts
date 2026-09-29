@@ -95,7 +95,9 @@ function answerValueValid(question: QuestionDefinition, answer: InstrumentAnswer
   }
   if (question.answerType === "blood-pressure") {
     const value = answer.value as { systolic?: unknown; diastolic?: unknown };
-    if (!value || typeof value !== "object" || typeof value.systolic !== "number" || typeof value.diastolic !== "number" || !Number.isFinite(value.systolic) || !Number.isFinite(value.diastolic) || value.systolic <= 0 || value.diastolic <= 0) return "pressão arterial inválida";
+    if (!value || typeof value !== "object") return "pressão arterial inválida";
+    const values = [value.systolic, value.diastolic].filter((part) => part !== undefined);
+    if (values.some((part) => typeof part !== "number" || !Number.isFinite(part) || part <= 0)) return "pressão arterial inválida";
     if (!("unit" in answer) || answer.unit !== "mmHg") return "unidade de pressão inválida";
   }
   return undefined;
@@ -141,6 +143,13 @@ export function validateApplicationAnswers(
     }
     if (mode === "complete" && question.required && applicable && !answer && !override) missing.push(question.id);
     if (question.applicability && !applicable && answer?.applicabilityState !== "not-applicable" && !override) warnings.push(`${question.id}: aplicabilidade ainda não resolvida`);
+    if (mode === "complete" && question.applicability && !applicable && answer) {
+      if (answer.applicabilityState === "not-applicable" || override?.state === "not-applicable") continue;
+    }
+    if (mode === "complete" && question.answerType === "blood-pressure" && answer && answer.applicabilityState !== "not-applicable") {
+      const value = answer.value as { systolic?: number; diastolic?: number };
+      if (value.systolic === undefined || value.diastolic === undefined) missing.push(`${question.id}: aferição incompleta`);
+    }
     if (selected.includes("other") && question.id === "summary.services" && !application.answers["summary.other-service-description"]) warnings.push("summary.other-service-description: descrição de Outro serviço pendente");
   }
   return { valid: errors.length === 0 && (mode === "draft" || missing.length === 0), errors, warnings, missing };

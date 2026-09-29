@@ -143,3 +143,10 @@ Planejamento conceitual concluído. Produção ainda não iniciada.
 - adicionados contratos para aplicações individuais, projeções e propostas familiares/ecomapa;
 - adicionados cálculos puros e testes de completude, condicionais, privacidade e isolamento por pessoa;
 - preservados como manuais os itens sem regra clínica autorizada.
+### Interface de avaliações
+
+- adicionada a área Avaliações dentro da família;
+- incluída seleção explícita de pessoa, histórico individual, rascunho, revisão, conclusão, arquivamento e retificação;
+- concluída a interface com pressão por visita, critério explícito e classificação de cintura, progresso por bloco, revisão estrutural detalhada, estado de salvamento e preservação de respostas não aplicáveis;
+- formulário renderizado a partir da definição versionada, com indicação de blocos sem fonte;
+- preservado o isolamento de respostas entre integrantes.
