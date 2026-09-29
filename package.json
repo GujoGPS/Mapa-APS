@@ -27,6 +27,7 @@
     "verify:marco6": "node scripts/verify-marco6.mjs",
     "verify:marco7": "node scripts/verify-marco7.mjs",
     "audit:static": "node scripts/audit-static.mjs",
+    "test:audit-static": "node scripts/audit-static-self-test.mjs",
     "audit:release": "node scripts/release-gate.mjs",
     "audit:internal": "bash scripts/internal-validate.sh",
     "audit:wave-b": "bun scripts/wave-b-adversarial.ts && node scripts/accessibility-static.mjs && bash scripts/internal-validate.sh",
