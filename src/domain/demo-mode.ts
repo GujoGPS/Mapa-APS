@@ -68,10 +68,14 @@ export async function enterDemoMode(): Promise<DemoSessionSnapshot> {
     schemaVersion: DEMO_SESSION_SCHEMA_VERSION,
     startedAt: nowIso(),
     snapshotRecords: normalRecords,
+    snapshotDrafts: stores[STORES.drafts],
+    snapshotEvents: stores[STORES.events],
   };
   const sessionRecord: DemoSessionMetaRecord = { id: DEMO_SESSION_META_ID, value: session, updatedAt: session.startedAt };
 
   stores[STORES.records] = [];
+  stores[STORES.drafts] = [];
+  stores[STORES.events] = [];
   stores[STORES.meta] = [
     ...stores[STORES.meta].filter((record) => asObject(record).id !== DEMO_SESSION_META_ID),
     sessionRecord,
@@ -103,6 +107,8 @@ export async function exitDemoMode(): Promise<boolean> {
 
   const stores = await readAllStores();
   stores[STORES.records] = session.snapshotRecords;
+  stores[STORES.drafts] = session.snapshotDrafts;
+  stores[STORES.events] = session.snapshotEvents;
   stores[STORES.meta] = stores[STORES.meta].filter((record) => asObject(record).id !== DEMO_SESSION_META_ID);
   await replaceAllStores(stores);
   return true;

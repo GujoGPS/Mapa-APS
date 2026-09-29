@@ -73,6 +73,32 @@ describe("ciclo reversível de demonstração", () => {
     expect(await getDemoSession()).toBeUndefined();
   });
 
+  it("isola e restaura rascunhos e eventos, sem alterar a segurança global", async () => {
+    const normalDraft = { id: "normal-draft", scope: "family", payload: { text: "rascunho normal" } };
+    const normalEvent = { id: "normal-event", type: "family-created", entityId: "normal-family-1" };
+    const security = { id: "pin", value: { hash: "preserve-me" }, updatedAt: "2026-01-01T00:00:00.000Z" };
+    memory.stores.get("drafts")!.set(normalDraft.id, normalDraft);
+    memory.stores.get("events")!.set(normalEvent.id, normalEvent);
+    memory.stores.get("security")!.set(security.id, security);
+
+    await enterDemoMode();
+    memory.stores.get("drafts")!.set("demo-draft", { id: "demo-draft", scope: "demo", payload: { text: "rascunho sintético" } });
+    memory.stores.get("events")!.set("demo-event", { id: "demo-event", type: "demo-change" });
+
+    expect([...memory.stores.get("drafts")!.values()]).toEqual([
+      { id: "demo-draft", scope: "demo", payload: { text: "rascunho sintético" } },
+    ]);
+    expect([...memory.stores.get("events")!.values()]).toEqual([
+      { id: "demo-event", type: "demo-change" },
+    ]);
+    expect([...memory.stores.get("security")!.values()]).toEqual([security]);
+
+    await exitDemoMode();
+    expect([...memory.stores.get("drafts")!.values()]).toEqual([normalDraft]);
+    expect([...memory.stores.get("events")!.values()]).toEqual([normalEvent]);
+    expect([...memory.stores.get("security")!.values()]).toEqual([security]);
+  });
+
   it("mantém a demonstração ativa entre recargas simuladas e remove apenas seus registros", async () => {
     const normal = envelope("normal-family-2", ENTITY_TYPES.family, { id: "normal-family-2", code: "F-002" });
     memory.stores.get("records")!.set(normal.id, normal);
@@ -91,9 +117,13 @@ describe("ciclo reversível de demonstração", () => {
     const normal = envelope("normal-family-3", ENTITY_TYPES.family, { id: "normal-family-3", code: "F-003" });
     memory.stores.get("records")!.set(normal.id, normal);
     await enterDemoMode();
+    memory.stores.get("drafts")!.set("demo-draft", { id: "demo-draft", scope: "demo", payload: { text: "sintético" } });
+    memory.stores.get("events")!.set("demo-event", { id: "demo-event", type: "demo-change" });
 
     const backup = await createBackup();
     expect(backup.stores.records).toEqual([normal]);
+    expect(backup.stores.drafts).toEqual([]);
+    expect(backup.stores.events).toEqual([]);
     expect(backup.stores.meta.some((record) => (record as { id?: string }).id === "active-demo-session")).toBe(false);
   });
 });

@@ -1,5 +1,5 @@
 export const DEMO_SESSION_META_ID = "active-demo-session";
-export const DEMO_SESSION_SCHEMA_VERSION = 1;
+export const DEMO_SESSION_SCHEMA_VERSION = 2;
 export const DEMO_SAMPLE_SEMESTER_ID = "sem_demo_2026_2";
 export const DEMO_SAMPLE_FAMILY_IDS = ["family_demo_horizonte", "family_demo_travessia"] as const;
 export const DEMO_SAMPLE_LEGACY_IDS = [
@@ -15,6 +15,8 @@ export interface DemoSessionSnapshot {
   schemaVersion: typeof DEMO_SESSION_SCHEMA_VERSION;
   startedAt: string;
   snapshotRecords: unknown[];
+  snapshotDrafts: unknown[];
+  snapshotEvents: unknown[];
 }
 
 export interface DemoSessionMetaRecord {

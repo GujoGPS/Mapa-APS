@@ -25,7 +25,11 @@ export async function createBackup(options: BackupOptions = {}): Promise<BackupP
 
   if (!options.includeSynthetic) {
     const session = await getDemoSession();
-    if (session) stores[STORES.records] = session.snapshotRecords;
+    if (session) {
+      stores[STORES.records] = session.snapshotRecords;
+      stores[STORES.drafts] = session.snapshotDrafts;
+      stores[STORES.events] = session.snapshotEvents;
+    }
     stores[STORES.records] = excludeSyntheticDemoRecords(stores[STORES.records]);
     stores[STORES.meta] = stores[STORES.meta].filter((record) => (record as { id?: string }).id !== DEMO_SESSION_META_ID);
   }
