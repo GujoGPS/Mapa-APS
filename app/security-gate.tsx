@@ -10,7 +10,7 @@ type GateState = "loading" | "setup" | "locked" | "unlocked";
 export function SecurityGate({ children }: { children: ReactNode }) {
   const [state, setState] = useState<GateState>("loading");
   const [pin, setPinValue] = useState("");
-  const [message, setMessage] = useState("Verificando proteção local...");
+  const [message, setMessage] = useState("");
 
   useEffect(() => { void hasPin().then((configured) => setState(configured ? "locked" : "setup")); }, []);
 
@@ -46,7 +46,7 @@ export function SecurityGate({ children }: { children: ReactNode }) {
     setState("unlocked");
   }
 
-  if (state === "loading") return <main className="gate"><p role="status">{message}</p></main>;
+  if (state === "loading") return <main className="gate"><p role="status">Verificando proteção local...</p></main>;
   if (state === "unlocked") return <>{children}</>;
 
   return (
@@ -54,16 +54,15 @@ export function SecurityGate({ children }: { children: ReactNode }) {
       <section className="gate-card" aria-labelledby="gate-title">
         <div className="brand-mark" aria-hidden="true"><span /><span /><span /></div>
         <p className="eyebrow">Proteção local</p>
-        <h1 id="gate-title">{state === "setup" ? "Crie um PIN para este dispositivo" : "Desbloquear Mapa"}</h1>
-        <p>{state === "setup" ? "O Marco 1 exige um PIN antes de abrir a área local." : "Digite o PIN configurado neste navegador."}</p>
+        <h1 id="gate-title">{state === "setup" ? "Crie um PIN para este dispositivo" : "Mapa protegido"}</h1>
+        <p>{state === "setup" ? "Defina um PIN para proteger o acesso ao Mapa neste dispositivo." : "A proteção local está ativa neste dispositivo. Digite seu PIN para continuar."}</p>
         <form onSubmit={submit}>
           <label htmlFor="local-pin">PIN de 6 a 12 dígitos</label>
           <input id="local-pin" inputMode="numeric" pattern="[0-9]*" autoComplete={state === "setup" ? "new-password" : "current-password"} value={pin} onChange={(event) => setPinValue(event.target.value)} />
           <button type="submit">{state === "setup" ? "Configurar e entrar" : "Entrar"}</button>
         </form>
-        <p className="system-message" role="status" aria-live="polite">{message}</p>
-        <p className="fine-print">{pinSecurityNotice}</p>
-        <p className="fine-print"><strong>Marco 1:</strong> não registre dados reais.</p>
+        <p className="system-message" role="status" aria-live="polite">{message || (state === "setup" ? "Escolha um PIN para configurar a proteção local." : "Proteção local ativa neste dispositivo.")}</p>
+        {state === "setup" && <p className="fine-print">{pinSecurityNotice}</p>}
       </section>
     </main>
   );

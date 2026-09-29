@@ -16,6 +16,7 @@ export function StorageDashboard() {
   const [status, setStatus] = useState<StorageStatus>({ persistence: "unsupported" });
   const [message, setMessage] = useState("Verificando armazenamento local...");
   const [busy, setBusy] = useState(false);
+  const [includeSynthetic, setIncludeSynthetic] = useState(false);
 
   useEffect(() => { void readStorageStatus().then((next) => { setStatus(next); setMessage("Armazenamento verificado."); }); }, []);
 
@@ -39,14 +40,14 @@ export function StorageDashboard() {
   async function downloadBackup() {
     setBusy(true);
     try {
-      const content = await serializeBackup();
+      const content = await serializeBackup(undefined, { includeSynthetic });
       const url = URL.createObjectURL(new Blob([content], { type: "application/json" }));
       const anchor = document.createElement("a");
       anchor.href = url;
-      anchor.download = `mapa-backup-demo-${new Date().toISOString().slice(0, 10)}.json`;
+      anchor.download = `mapa-backup-${new Date().toISOString().slice(0, 10)}.json`;
       anchor.click();
       URL.revokeObjectURL(url);
-      setMessage("Backup demonstrativo gerado e preparado para download.");
+      setMessage(includeSynthetic ? "Backup preparado com dados sintéticos, conforme sua seleção explícita." : "Backup normal preparado; dados sintéticos e sessão de demonstração foram excluídos.");
     } catch (error) { setMessage(error instanceof Error ? error.message : "Falha ao gerar backup."); }
     setBusy(false);
   }
@@ -61,12 +62,13 @@ export function StorageDashboard() {
         <div><span>Quota estimada</span><strong>{formatBytes(status.quota)}</strong></div>
       </div>
       <p className="system-message" role="status" aria-live="polite">{message}</p>
+      <label className="check-row"><input type="checkbox" checked={includeSynthetic} onChange={(event) => setIncludeSynthetic(event.target.checked)} />Incluir dados sintéticos neste backup</label>
       <div className="action-row">
         <button type="button" disabled={busy} onClick={persist}>Solicitar persistência</button>
         <button type="button" disabled={busy} onClick={testWrite}>Testar gravação</button>
-        <button type="button" disabled={busy} onClick={downloadBackup}>Gerar backup demo</button>
+        <button type="button" disabled={busy} onClick={downloadBackup}>Gerar backup</button>
       </div>
-      <p className="fine-print">Somente dados sintéticos são permitidos durante o Marco 1.</p>
+      <p className="fine-print">O padrão exclui registros sintéticos. Marque a opção acima somente se quiser incluí-los explicitamente.</p>
     </section>
   );
 }

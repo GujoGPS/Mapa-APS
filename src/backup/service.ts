@@ -2,6 +2,8 @@ import { canonicalJson, checksumOf } from "@/src/storage/hash";
 import { getAllValues, replaceAllStores } from "@/src/storage/idb";
 import { MAPA_DB_VERSION, STORES, type StoreName } from "@/src/storage/schema";
 import { protectBackup, unprotectBackup } from "./crypto";
+import { DEMO_SESSION_META_ID } from "@/src/contracts/demo";
+import { excludeSyntheticDemoRecords, getDemoSession } from "@/src/domain/demo-mode";
 import { validateBackupPure } from "./adversarial";
 import {
   BACKUP_FORMAT,
@@ -14,13 +16,21 @@ import {
 
 const storeNames = Object.values(STORES) as StoreName[];
 
-export async function createBackup(): Promise<BackupPayload> {
+export interface BackupOptions { includeSynthetic?: boolean; }
+
+export async function createBackup(options: BackupOptions = {}): Promise<BackupPayload> {
   const stores = {} as Record<StoreName, unknown[]>;
   const storeChecksums = {} as Record<StoreName, string>;
-  for (const store of storeNames) {
-    stores[store] = await getAllValues(store);
-    storeChecksums[store] = await checksumOf(stores[store]);
+  for (const store of storeNames) stores[store] = await getAllValues(store);
+
+  if (!options.includeSynthetic) {
+    const session = await getDemoSession();
+    if (session) stores[STORES.records] = session.snapshotRecords;
+    stores[STORES.records] = excludeSyntheticDemoRecords(stores[STORES.records]);
+    stores[STORES.meta] = stores[STORES.meta].filter((record) => (record as { id?: string }).id !== DEMO_SESSION_META_ID);
   }
+
+  for (const store of storeNames) storeChecksums[store] = await checksumOf(stores[store]);
   const payloadBase: Omit<BackupPayload, "payloadChecksum"> = {
     format: BACKUP_FORMAT,
     version: BACKUP_VERSION,
@@ -34,8 +44,8 @@ export async function createBackup(): Promise<BackupPayload> {
   return { ...payloadBase, payloadChecksum: await checksumOf(payloadBase) };
 }
 
-export async function serializeBackup(passphrase?: string): Promise<string> {
-  const plain = canonicalJson(await createBackup());
+export async function serializeBackup(passphrase?: string, options: BackupOptions = {}): Promise<string> {
+  const plain = canonicalJson(await createBackup(options));
   return passphrase ? JSON.stringify(await protectBackup(plain, passphrase), null, 2) : JSON.stringify(JSON.parse(plain), null, 2);
 }
 

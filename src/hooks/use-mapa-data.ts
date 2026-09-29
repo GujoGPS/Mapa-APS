@@ -8,6 +8,8 @@ import type { ExternalLink, ExternalResource, InterpersonalRelationship } from "
 import type { Addendum, CompetencyEvidence, Reflection, SemesterSnapshot, SupervisorFeedback } from "@/src/contracts/journey";
 import { ENTITY_TYPES } from "@/src/domain/entity-types";
 import { listEntities } from "@/src/domain/repository";
+import type { DemoSessionSnapshot } from "@/src/contracts/demo";
+import { getDemoSession } from "@/src/domain/demo-session";
 
 export interface MapaData {
   families: Family[];
@@ -39,18 +41,20 @@ export function useMapaData() {
   const [data, setData] = useState<MapaData>(empty);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>();
+  const [demoSession, setDemoSession] = useState<DemoSessionSnapshot>();
 
   const refresh = useCallback(async () => {
     try {
-      const [families, people, memberships, encounters, pending, semesters, semesterLinks, conditions, medications, examResults, screenings, carePlans, suggestions, relationships, resources, externalLinks, reflections, competencies, feedbacks, snapshots, addenda] = await Promise.all([
-        listEntities<Family>(ENTITY_TYPES.family), listEntities<Person>(ENTITY_TYPES.person), listEntities<FamilyMembership>(ENTITY_TYPES.membership), listEntities<Encounter>(ENTITY_TYPES.encounter), listEntities<PendingItem>(ENTITY_TYPES.pending), listEntities<Semester>(ENTITY_TYPES.semester), listEntities<SemesterFamilyLink>(ENTITY_TYPES.semesterFamily), listEntities<ConditionRecord>(ENTITY_TYPES.condition), listEntities<PersonMedicationRecord>(ENTITY_TYPES.medication), listEntities<ExamResultRecord>(ENTITY_TYPES.examResult), listEntities<ScreeningEpisode>(ENTITY_TYPES.screening), listEntities<CarePlan>(ENTITY_TYPES.carePlan), listEntities<PatientSuggestion>(ENTITY_TYPES.patientSuggestion), listEntities<InterpersonalRelationship>(ENTITY_TYPES.interpersonalRelationship), listEntities<ExternalResource>(ENTITY_TYPES.externalResource), listEntities<ExternalLink>(ENTITY_TYPES.externalLink), listEntities<Reflection>(ENTITY_TYPES.reflection), listEntities<CompetencyEvidence>(ENTITY_TYPES.competencyEvidence), listEntities<SupervisorFeedback>(ENTITY_TYPES.supervisorFeedback), listEntities<SemesterSnapshot>(ENTITY_TYPES.semesterSnapshot), listEntities<Addendum>(ENTITY_TYPES.addendum),
+      const [families, people, memberships, encounters, pending, semesters, semesterLinks, conditions, medications, examResults, screenings, carePlans, suggestions, relationships, resources, externalLinks, reflections, competencies, feedbacks, snapshots, addenda, activeDemo] = await Promise.all([
+        listEntities<Family>(ENTITY_TYPES.family), listEntities<Person>(ENTITY_TYPES.person), listEntities<FamilyMembership>(ENTITY_TYPES.membership), listEntities<Encounter>(ENTITY_TYPES.encounter), listEntities<PendingItem>(ENTITY_TYPES.pending), listEntities<Semester>(ENTITY_TYPES.semester), listEntities<SemesterFamilyLink>(ENTITY_TYPES.semesterFamily), listEntities<ConditionRecord>(ENTITY_TYPES.condition), listEntities<PersonMedicationRecord>(ENTITY_TYPES.medication), listEntities<ExamResultRecord>(ENTITY_TYPES.examResult), listEntities<ScreeningEpisode>(ENTITY_TYPES.screening), listEntities<CarePlan>(ENTITY_TYPES.carePlan), listEntities<PatientSuggestion>(ENTITY_TYPES.patientSuggestion), listEntities<InterpersonalRelationship>(ENTITY_TYPES.interpersonalRelationship), listEntities<ExternalResource>(ENTITY_TYPES.externalResource), listEntities<ExternalLink>(ENTITY_TYPES.externalLink), listEntities<Reflection>(ENTITY_TYPES.reflection), listEntities<CompetencyEvidence>(ENTITY_TYPES.competencyEvidence), listEntities<SupervisorFeedback>(ENTITY_TYPES.supervisorFeedback), listEntities<SemesterSnapshot>(ENTITY_TYPES.semesterSnapshot), listEntities<Addendum>(ENTITY_TYPES.addendum), getDemoSession(),
       ]);
       setData({ families, people, memberships, encounters, pending, semesters, semesterLinks, conditions, medications, examResults, screenings, carePlans, suggestions, relationships, resources, externalLinks, reflections, competencies, feedbacks, snapshots, addenda });
+      setDemoSession(activeDemo);
       setError(undefined);
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Falha ao carregar dados locais."); }
     finally { setLoading(false); }
   }, []);
 
   useEffect(() => { void refresh(); }, [refresh]);
-  return { data, loading, error, refresh };
+  return { data, loading, error, refresh, demoSession };
 }

@@ -42,6 +42,7 @@ export interface AuditFields {
   readonly createdAt: ISODateTime;
   readonly updatedAt: ISODateTime;
   readonly recordVersion: number;
+  readonly dataOrigin?: "synthetic-demo";
 }
 
 export interface ProvenancedRecord {
