@@ -83,3 +83,14 @@ não pesquisado -> em pesquisa -> fonte localizada -> extraído
 ```text
 recebida -> revisada -> incorporada | não incorporada | esclarecida
 ```
+
+## Aplicação individual de instrumento
+
+```text
+rascunho -> em revisão -> concluída -> retificada | arquivada
+rascunho -> arquivada
+em revisão -> rascunho
+retificada -> arquivada
+```
+
+Conclusão exige validação das respostas aplicáveis. Aplicações concluídas não são sobrescritas nem retornam a rascunho; a retificação preserva o original e cria uma nova revisão.

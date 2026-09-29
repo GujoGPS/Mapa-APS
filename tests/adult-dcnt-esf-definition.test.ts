@@ -89,7 +89,13 @@ describe("definição versionada da avaliação adulta DCNT ESF", () => {
       kind: "initial",
       createdAt: "2026-09-28T00:00:00.000Z",
       updatedAt: "2026-09-28T00:00:00.000Z",
-      responses: {},
+      answers: {},
+      applicabilityOverrides: {},
+      provenance: { origin: "digital-adaptation", sourceNote: "test" },
+      visibility: { scope: "individual", clinicalVisibility: "academic-private", personVisibility: "shareable-with-person", familyVisibility: "non-exportable", reviewRequired: true, projectionStrategy: "clinical-academic" },
+      dataOrigin: "normal",
+      schemaVersion: 1,
+      revisionNumber: 1,
     } satisfies InstrumentApplication;
     expect(validateInstrumentApplication(application).valid).toBe(true);
     expect(validateInstrumentApplication({ ...application, personId: "" }).valid).toBe(false);
@@ -111,7 +117,10 @@ describe("definição versionada da avaliação adulta DCNT ESF", () => {
     expect(byId("health.diagnosed-chronic-conditions")?.visibility.familyVisibility).toBe("non-exportable");
     const first = {
       applicationId: "application-1", familyId: "family-1", personId: "person-1", instrumentId: "adult-dcnt-esf", instrumentVersion: "v1",
-      assessmentDate: "2026-01-01", status: "completed", kind: "initial", createdAt: "2026-01-01", updatedAt: "2026-01-01", responses: {},
+      assessmentDate: "2026-01-01", status: "completed", kind: "initial", createdAt: "2026-01-01", updatedAt: "2026-01-01",
+      answers: {}, applicabilityOverrides: {}, provenance: { origin: "digital-adaptation", sourceNote: "test" },
+      visibility: { scope: "individual", clinicalVisibility: "academic-private", personVisibility: "shareable-with-person", familyVisibility: "non-exportable", reviewRequired: true, projectionStrategy: "clinical-academic" },
+      dataOrigin: "normal", schemaVersion: 1, revisionNumber: 1,
     } as InstrumentApplication;
     expect(canCompareApplications(first, { ...first, applicationId: "application-2", assessmentDate: "2026-06-01" })).toBe(true);
     expect(canCompareApplications(first, { ...first, applicationId: "application-3", personId: "person-2" })).toBe(false);

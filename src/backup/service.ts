@@ -5,6 +5,7 @@ import { protectBackup, unprotectBackup } from "./crypto";
 import { DEMO_SESSION_META_ID } from "@/src/contracts/demo";
 import { excludeSyntheticDemoRecords, getDemoSession } from "@/src/domain/demo-mode";
 import { validateBackupPure } from "./adversarial";
+import { migrateBackup } from "@/src/clinical/assessments/migration";
 import {
   BACKUP_FORMAT,
   BACKUP_VERSION,
@@ -65,9 +66,10 @@ export async function decodeBackup(text: string, passphrase?: string): Promise<B
 export const validateBackup = validateBackupPure;
 
 export async function restoreBackup(backup: BackupPayload): Promise<BackupValidation> {
-  const validation = await validateBackup(backup);
+  const migrated = await migrateBackup(backup);
+  const validation = await validateBackup(migrated);
   if (!validation.valid) return validation;
   // A substituição ocorre em uma única transação: ou todos os stores avançam, ou nenhum avança.
-  await replaceAllStores(backup.stores);
+  await replaceAllStores(migrated.stores);
   return validation;
 }

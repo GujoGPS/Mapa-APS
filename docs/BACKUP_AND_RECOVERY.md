@@ -70,6 +70,8 @@ Não prometerá permanência absoluta.
 - testar com bases realistas;
 - preservar política de visibilidade e snapshots.
 
+Aplicações ESF participam do backup por meio do store `records`. A restauração executa migração lógica idempotente de payloads legados antes da validação final, recalcula checksums e rejeita aplicações que apontem para pessoa, família ou vínculo inexistente. Durante demonstração, backups normais usam o snapshot normal e não incluem aplicações `synthetic-demo`.
+
 ## Domínio
 
 O armazenamento é associado à origem. O domínio de produção deve ser estável. URLs de preview não recebem dados reais.

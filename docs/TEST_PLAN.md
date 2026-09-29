@@ -44,6 +44,12 @@
 - classificações manuais sem cálculo automático;
 - propostas de família/ecomapa sem atualização automática;
 - políticas conservadoras para projeção clínica, da pessoa e familiar.
+- criação e persistência de aplicações por pessoa;
+- isolamento entre pessoas da mesma família;
+- respostas tipadas, estados e bloqueio de sobrescrita;
+- retificação imutável e longitudinalidade;
+- migração idempotente e checksums de aplicações no backup;
+- aplicações sintéticas identificáveis e excluídas do backup normal.
 
 ### Farmacologia
 

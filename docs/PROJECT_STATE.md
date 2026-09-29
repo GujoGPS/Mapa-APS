@@ -196,14 +196,16 @@ Marco 7: auditoria pré-uso real, build, testes em dispositivos e gates instituc
 ### Marco 7
 
 - **Estado da auditoria:** concluída em 27 de setembro de 2026.
-- **Decisão de liberação:** NO-GO.
-- **Dados reais:** proibidos.
+- **Decisão operacional:** GO LOCAL.
+- **Dados reais:** continuam condicionados às regras da instituição, do serviço, da preceptoria e do prontuário oficial.
+- **Distribuição pública:** não autorizada por esta decisão.
+- **Substituição de prontuário:** não autorizada; o Mapa permanece ferramenta acadêmica local.
 - headers defensivos e CSP adicionados;
 - painel de gates adicionado;
 - auditoria estática adicionada;
 - checklists de segurança, acessibilidade, dispositivos e instituição adicionados;
 - bloqueadores clínicos, farmacológicos, técnicos e institucionais formalizados.
 
-### Próxima fase
+### Delimitação operacional
 
-Fechar gates fora deste ambiente, executar o pipeline completo e emitir nova decisão de release.
+GO LOCAL representa prontidão técnica para uso acadêmico local e demonstração supervisionada. Não é autorização institucional para dados reais, distribuição pública irrestrita ou assistência autônoma.

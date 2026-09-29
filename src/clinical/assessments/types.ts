@@ -33,6 +33,11 @@ export type Sensitivity = "ordinary" | "personal" | "sensitive-personal" | "clin
 export type AssessmentScope = "individual" | "family-context" | "family-shared";
 export type ProjectionStrategy = "clinical-academic" | "person-friendly" | "operational-family-status" | "not-projectable";
 export type RuleSourceType = "manual" | "automatic";
+export type ApplicationDataOrigin = "normal" | "synthetic-demo";
+export type AnswerSource = "person" | "family" | "document" | "observation" | "system";
+export type AnswerStatus = "unanswered" | "answered" | "review-required" | "invalid";
+export type ApplicabilityState = "applicable" | "not-applicable" | "not-assessed" | "incomplete" | "manually-overridden";
+export type ManualProjectionReviewStatus = "pending-review" | "reviewed" | "blocked";
 
 export interface ProvenanceMetadata {
   origin: InstrumentOrigin;
@@ -175,9 +180,46 @@ export interface InstrumentApplication {
   kind: AssessmentKind;
   createdAt: string;
   updatedAt: string;
-  responses: Record<string, unknown>;
+  answers: Record<string, InstrumentAnswer>;
+  applicabilityOverrides: Record<string, ApplicabilityOverride>;
+  provenance: ProvenanceMetadata;
+  visibility: VisibilityMetadata;
+  dataOrigin: ApplicationDataOrigin;
+  schemaVersion: number;
+  revisionNumber: number;
+  completedAt?: string;
+  rectifiedAt?: string;
+  rectifiesApplicationId?: string;
   privateNotes?: string;
 }
+
+export interface ApplicabilityOverride {
+  questionId: string;
+  state: "applicable" | "not-applicable" | "not-assessed" | "incomplete";
+  justification: string;
+  source: AnswerSource;
+  updatedAt: string;
+}
+
+interface InstrumentAnswerBase {
+  questionId: string;
+  answeredAt: string;
+  updatedAt: string;
+  source: AnswerSource;
+  status: AnswerStatus;
+  applicabilityState: ApplicabilityState;
+  notes?: string;
+  visibilityOverride?: Visibility;
+}
+
+export type InstrumentAnswer =
+  | (InstrumentAnswerBase & { answerType: "short-text" | "long-text" | "date" | "clinical-code" | "service"; value: string })
+  | (InstrumentAnswerBase & { answerType: "number" | "measurement" | "laboratory-result"; value: number; unit?: string })
+  | (InstrumentAnswerBase & { answerType: "single-choice" | "yes-no" | "yes-no-never-did-does-not-remember" | "manual-classification" | "laterality-group"; value: string })
+  | (InstrumentAnswerBase & { answerType: "multiple-choice"; value: string[] })
+  | (InstrumentAnswerBase & { answerType: "blood-pressure"; value: { systolic: number; diastolic: number }; unit: "mmHg" })
+  | (InstrumentAnswerBase & { answerType: "calculated-information"; value: never })
+  | (InstrumentAnswerBase & { answerType: "future-entity-link"; value: { entityId: string; entityType: string } });
 
 export interface DerivedAssessmentResult {
   id: string;
@@ -282,4 +324,36 @@ export interface FamilyAssessmentStatusProjection {
   assessmentDate?: string;
   pendingCount: number;
   hasDomainProposals: boolean;
+}
+
+export interface ClinicalProjectionPolicy {
+  applicationId: string;
+  familyId: string;
+  personId: string;
+  instrumentId: string;
+  instrumentVersion: string;
+  generatedAt: string;
+  visibility: VisibilityMetadata;
+  reviewStatus: ManualProjectionReviewStatus;
+}
+
+export interface ProposedDomainChange {
+  proposalId: string;
+  applicationId: string;
+  familyId: string;
+  subjectPersonId: string;
+  targetDomain: "family-data" | "genogram" | "ecomap" | "care-plan" | "clinical-condition" | "referral";
+  targetEntityId?: string;
+  proposalType: string;
+  scope: AssessmentScope;
+  relatedPersonIds: string[];
+  proposedValue: unknown;
+  privateRationale: string;
+  shareableExplanation?: string;
+  status: "proposed" | "under-review" | "accepted" | "modified" | "rejected" | "applied" | "superseded";
+  createdAt: string;
+  reviewedAt?: string;
+  reviewedBy?: string;
+  provenance: ProvenanceMetadata;
+  dataOrigin: ApplicationDataOrigin;
 }

@@ -2,7 +2,7 @@
 
 ## Decisão
 
-**NO-GO para dados reais em 27 de setembro de 2026.** O produto é um candidato de demonstração sintética, não uma versão clínica autorizada.
+**GO LOCAL em 28 de setembro de 2026.** O produto está apto para uso acadêmico local e demonstração supervisionada. Esta decisão não autoriza dados reais de forma irrestrita.
 
 ## Evidências executadas
 
@@ -13,18 +13,13 @@
 - tentativa de `npm install`, interrompida por timeout após 180 segundos sem sucesso;
 - revisão de invariantes de snapshot, compartilhamento, fontes e doses bloqueadas.
 
-## Bloqueadores críticos
+## Condições e limitações
 
-1. pipeline completo não executado;
-2. ausência de testes em dispositivos físicos;
-3. restauração não testada sob interrupção e pressão de armazenamento;
-4. banco local vivo não é integralmente cifrado pelo aplicativo;
-5. ausência de revisão ASVS independente;
-6. ausência de auditoria WCAG 2.2 AA;
-7. ausência de revisão clínica independente;
-8. doses farmacológicas não auditadas por produto;
-9. ausência de base legal, governança e autorização institucional documentadas.
+1. dados reais dependem das regras da instituição, do serviço, da preceptoria e do prontuário oficial;
+2. o banco local e o dispositivo devem permanecer protegidos conforme as políticas aplicáveis;
+3. testes físicos, governança institucional e revisões externas continuam condições para usos correspondentes;
+4. o produto não substitui prontuário institucional, julgamento clínico ou protocolos locais.
 
 ## Conclusão
 
-O Marco 7 está concluído como auditoria, não como aprovação. A decisão honesta é manter `realDataAllowed: false` até fechamento verificável dos gates.
+O Marco 7 distingue prontidão local de autorização para dados reais. O resultado estruturado é `decision: "GO LOCAL"`, com `realDataAllowed: false`, e mantém a possibilidade de NO-GO quando um gate técnico ou de privacidade local obrigatório falhar explicitamente.

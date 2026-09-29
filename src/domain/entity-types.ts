@@ -23,6 +23,8 @@ export const ENTITY_TYPES = {
   supervisorFeedback: "supervisor-feedback",
   semesterSnapshot: "semester-snapshot",
   addendum: "addendum",
+  instrumentApplication: "instrument-application",
+  proposedDomainChange: "proposed-domain-change",
 } as const;
 
 export type EntityType = (typeof ENTITY_TYPES)[keyof typeof ENTITY_TYPES];

@@ -157,6 +157,8 @@ A interface pergunta apenas o necessário; metadados técnicos são automáticos
 
 Aplicações futuras podem gerar resultados derivados, classificações manuais e propostas de alteração familiar/ecomapa, mas propostas exigem revisão humana e não atualizam o domínio automaticamente. A mesma aplicação canônica poderá alimentar projeção clínica/acadêmica e projeção da pessoa sem duplicar respostas.
 
+Aplicações persistidas usam `STORES.records` com `entityType: instrument-application` e checksum do envelope. `personId` é sempre o sujeito clínico; `familyId` é contexto e é validado por `FamilyMembership`. Respostas são discriminadas por tipo, aplicações concluídas são imutáveis e uma retificação cria novo registro ligado por `rectifiesApplicationId`. Resumos familiares expõem somente status e datas operacionais.
+
 ## Proveniência
 
 - observado;
