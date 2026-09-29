@@ -65,6 +65,12 @@ Hipótese, urgência, ajuste, encaminhamento e decisão terapêutica.
 
 O motor pode recusar classificação.
 
+## Instrumento local da ESF
+
+A fundação em `src/clinical/assessments/instruments/adult-dcnt-esf/` representa a página 28 de `AVALIAÇÃO DE SAÚDE E DCNT DO ADULTO`, versão `local-esf-2026-page-28-v1`. Ela preserva origem local, IDs estáveis, ambiguidades da ficha e políticas de visibilidade. As aplicações futuras são individuais (`personId`) com `familyId` como contexto, e não transformam a família em prontuário coletivo.
+
+As únicas derivações implementadas são idade/faixa etária, IMC, média de duas aferições de pressão e circunferência conforme regra local explicitamente escolhida. Controle da pressão, risco cardiovascular, HbA1c, CIAP-2 e encaminhamentos permanecem manuais ou pendentes de fonte. Blocos 3, 4 e 5 são ausentes; o Bloco 8 tem somente título na fonte. A definição não substitui decisão clínica nem prontuário institucional.
+
 ## Conteúdo em níveis
 
 - essencial;

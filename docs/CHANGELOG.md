@@ -97,7 +97,6 @@ Planejamento conceitual concluído. Produção ainda não iniciada.
 - adicionada distinção de fonte preliminar;
 - bloqueada publicação de doses ainda não auditadas por produto.
 
-
 ## 1.6.0 - 2026-09-27
 
 ### Marco 5
@@ -134,3 +133,13 @@ Planejamento conceitual concluído. Produção ainda não iniciada.
 - adicionados checklists e matriz de dispositivos;
 - adicionada auditoria estática;
 - mantido NO-GO e bloqueio de dados reais por evidência insuficiente.
+
+
+## 1.9.0-rc.0 - 2026-09-28
+
+### Fundação do instrumento ESF
+
+- adicionada definição tipada e versionada da página 28 da avaliação adulta de DCNT;
+- adicionados contratos para aplicações individuais, projeções e propostas familiares/ecomapa;
+- adicionados cálculos puros e testes de completude, condicionais, privacidade e isolamento por pessoa;
+- preservados como manuais os itens sem regra clínica autorizada.

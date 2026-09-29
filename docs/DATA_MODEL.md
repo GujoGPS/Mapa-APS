@@ -151,6 +151,12 @@ Cada registro pode ter:
 
 A interface pergunta apenas o necessário; metadados técnicos são automáticos.
 
+## Instrumentos clínicos versionados
+
+`src/clinical/assessments/` contém definições tipadas de instrumentos, separadas de aplicações futuras. Uma `InstrumentApplication` pertence a uma pessoa por `personId`; `familyId` é somente o contexto familiar. A definição possui versão imutável, perguntas e opções com IDs estáveis, proveniência, visibilidade, sensibilidade e regras de aplicabilidade.
+
+Aplicações futuras podem gerar resultados derivados, classificações manuais e propostas de alteração familiar/ecomapa, mas propostas exigem revisão humana e não atualizam o domínio automaticamente. A mesma aplicação canônica poderá alimentar projeção clínica/acadêmica e projeção da pessoa sem duplicar respostas.
+
 ## Proveniência
 
 - observado;

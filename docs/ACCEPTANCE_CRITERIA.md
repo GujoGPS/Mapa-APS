@@ -27,6 +27,15 @@
 - [ ] Interpretação histórica preserva versão.
 - [ ] Marcadores contextuais aparecem sem causalidade automática.
 
+## Instrumento local da ESF
+
+- [ ] Definição da página 28 é tipada, versionada e possui proveniência.
+- [ ] Aplicações futuras exigem `familyId` e `personId`, com `personId` como sujeito clínico.
+- [ ] Blocos ausentes permanecem placeholders sem perguntas inventadas.
+- [ ] Idade, IMC, média de PA e circunferência local têm cálculos puros testados.
+- [ ] Controle da PA, risco cardiovascular, HbA1c e CIAP-2 permanecem manuais.
+- [ ] Propostas de atualização familiar/ecomapa exigem revisão e não atualizam o domínio automaticamente.
+
 ## Farmacologia
 
 - [ ] Medicamento desconhecido pode ser registrado.

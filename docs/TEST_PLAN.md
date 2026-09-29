@@ -35,6 +35,16 @@
 - população não coberta;
 - dados insuficientes.
 
+### Instrumento ESF
+
+- completude de perguntas, opções, IDs, dependências e proveniência;
+- isolamento de aplicações por pessoa dentro do contexto familiar;
+- condicionais com estado não aplicável;
+- idade, IMC, média de pressão e circunferência local;
+- classificações manuais sem cálculo automático;
+- propostas de família/ecomapa sem atualização automática;
+- políticas conservadoras para projeção clínica, da pessoa e familiar.
+
 ### Farmacologia
 
 - medicamento desconhecido;
