@@ -16,6 +16,10 @@
   humana e texto compartilhável;
 - visões acadêmica, da pessoa e comparação entre aplicações dentro da área da família.
 
+- camada de desenho dos diagramas familiares migrada para React Flow, com o motor de dominio
+  intacto como fonte de verdade, teste de renderizacao e teste de paridade do painel;
+- exportacao de diagrama em vetor preservada via `html-to-image` sobre o viewport do fluxo.
+
 ### Corrigido
 
 - `summary.services` ace selections múltiplas, como na ficha impressa;
