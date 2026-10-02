@@ -35,6 +35,8 @@
     "audit:wave-d": "bun scripts/wave-d-pilot.ts && bun scripts/wave-d-release-council.ts && bun scripts/wave-c-audit.ts && bun scripts/wave-b-adversarial.ts && node scripts/accessibility-static.mjs && bash scripts/internal-validate.sh"
   },
   "dependencies": {
+    "@xyflow/react": "^12.12.0",
+    "html-to-image": "^1.11.13",
     "next": "^16.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

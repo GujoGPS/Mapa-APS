@@ -367,3 +367,13 @@ button.secondary { color: var(--text); background: rgba(15,95,82,.08); }
 .fact-group li, .fact-changes li { display: flex; justify-content: space-between; gap: .8rem; padding: .2rem 0; }
 .fact-group small, .fact-changes small { color: var(--muted); white-space: nowrap; }
 .fact-changes small { text-transform: uppercase; font-size: .7rem; letter-spacing: .04em; }
+.family-diagram-flow { height: 520px; border: 1px solid var(--line); border-radius: 1rem; overflow: hidden; background: var(--surface); }
+.flow-node { min-width: 116px; padding: .5rem .7rem; border: 2px solid var(--line); border-radius: .9rem; background: var(--surface); text-align: center; box-shadow: var(--shadow); }
+.flow-node.person { border-radius: .6rem; }
+.flow-node.family { border-color: var(--brand); }
+.flow-node.resource { border-radius: 2rem; border-style: dashed; }
+.flow-node.selected { outline: 3px solid var(--accent); }
+.flow-node-label { display: block; font-size: .85rem; }
+.flow-node-subtitle { display: block; color: var(--muted); font-size: .7rem; }
+.flow-edge-label { font-size: 10px; fill: var(--muted); text-anchor: middle; }
+.react-flow__edge-path { stroke-linecap: round; }
