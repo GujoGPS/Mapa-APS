@@ -5,5 +5,6 @@ export * from "./validation";
 export * from "./application";
 export * from "./facts";
 export * from "./fact-repository";
+export * from "./proposals";
 export * from "./migration";
 export { adultDcntEsfDefinition } from "./instruments/adult-dcnt-esf/definition";

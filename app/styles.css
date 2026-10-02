@@ -353,3 +353,10 @@ footer { padding: 1.5rem .25rem; color: var(--muted); font-size: .84rem; text-al
 @media(max-width:30rem){.audit-summary{grid-template-columns:repeat(2,1fr)}}
 .clinical-card code { overflow-wrap:anywhere; color:var(--accent-strong); font-weight:700; }
 .clinical-card .claim { margin-top:.8rem; }
+.proposal-review { margin-top: 1rem; }
+.proposal-review h3, .proposal-review h4 { margin: .4rem 0; }
+.proposal-card { display: grid; gap: .6rem; padding: .8rem; margin-bottom: .6rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); }
+.proposal-card strong { display: block; text-transform: capitalize; }
+.proposal-card span, .proposal-card small { display: block; color: var(--muted); }
+.proposal-links { margin: .2rem 0 0; padding-left: 1.1rem; text-transform: capitalize; }
+button.secondary { color: var(--text); background: rgba(15,95,82,.08); }

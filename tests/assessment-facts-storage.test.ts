@@ -32,6 +32,7 @@ import {
   supersedeFactsOfApplication,
 } from "@/src/clinical/assessments/fact-repository";
 import { factsForCurrentRevision } from "@/src/clinical/assessments/facts";
+import { listEcomapLinksForFamily, listProposalsForFamily } from "@/src/clinical/assessments/proposals";
 import { ENTITY_TYPES } from "@/src/domain/entity-types";
 import { createBackup } from "@/src/backup/service";
 import type { Family, FamilyMembership, Person } from "@/src/contracts/family";
@@ -125,6 +126,17 @@ describe("persistência dos fatos clínicos derivados", () => {
     const backup = await createBackup();
     const storedIds = backup.stores.records.map((record) => (record as { id: string }).id);
     expect(storedIds).not.toContain(facts[0]!.factId);
+  });
+
+  it("concluir a aplicação registra as propostas de serviço para revisão humana", async () => {
+    const application = await createApplication({ familyId: "family-1", personId: "person-1", assessmentDate: "2026-01-01" });
+    await saveAnswer(application.applicationId, { questionId: "summary.services", answerType: "multiple-choice", value: ["physiotherapy-or-rehabilitation"], source: "person", status: "answered", applicabilityState: "applicable", answeredAt: date, updatedAt: date });
+    await submitForReview(application.applicationId);
+    const completed = await completeApplication(application.applicationId);
+    const proposals = await listProposalsForFamily("family-1");
+    expect(proposals).toHaveLength(1);
+    expect(proposals[0]).toMatchObject({ applicationId: completed.applicationId, decision: "pending-review", serviceOrNetworkId: "physiotherapy-or-rehabilitation" });
+    await expect(listEcomapLinksForFamily("family-1")).resolves.toEqual([]);
   });
 
   it("preserva fatos normais enquanto a demonstração remove seus registros", async () => {

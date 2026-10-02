@@ -16,7 +16,8 @@ import {
   type VisibilityMetadata,
 } from "./types";
 import { calculateBmi, calculateBloodPressureMean, classifyBmi, classifyWaistCircumference, deriveAdultAgeBand } from "./calculations";
-import { persistApplicationFacts, supersedeFactsOfApplication } from "./fact-repository";
+import { listFactsForApplication, persistApplicationFacts, supersedeFactsOfApplication } from "./fact-repository";
+import { persistProposal, proposalsForApplication } from "./proposals";
 import {
   validateApplicationAnswers,
   validateInstrumentApplication,
@@ -190,6 +191,12 @@ export async function returnApplicationToDraft(applicationId: string): Promise<I
   return persist({ ...current, status: "draft", updatedAt: now(), revisionNumber: current.revisionNumber + 1 }, current);
 }
 
+/** Servicos marcados na ficha entram como propostas pendentes; o ecomapa so muda por decisao humana. */
+async function persistProposalsForApplication(application: InstrumentApplication): Promise<void> {
+  const facts = await listFactsForApplication(application.applicationId);
+  for (const proposal of proposalsForApplication(facts, application)) await persistProposal(proposal);
+}
+
 export async function completeApplication(applicationId: string): Promise<InstrumentApplication> {
   const current = await getApplication(applicationId);
   if (!current) throw new Error("Aplicação inexistente.");
@@ -199,6 +206,7 @@ export async function completeApplication(applicationId: string): Promise<Instru
   const completedAt = now();
   const completed = await persist({ ...current, status: "completed", completedAt, updatedAt: completedAt, revisionNumber: current.revisionNumber + 1 }, current);
   await persistApplicationFacts(completed);
+  await persistProposalsForApplication(completed);
   return completed;
 }
 

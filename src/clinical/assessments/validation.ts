@@ -177,7 +177,7 @@ export function validateEcomapProposal(proposal: EcomapLinkProposal, familyPerso
   if (!proposal.subjectPersonId || !familyPersonIds.includes(proposal.subjectPersonId)) errors.push("A proposta deve identificar uma pessoa da família.");
   if (proposal.relatedPersonIds.some((personId) => !familyPersonIds.includes(personId))) errors.push("Todos os integrantes propostos devem pertencer à família.");
   if (!proposal.applicationId || !proposal.familyId) errors.push("A proposta deve preservar a origem individual.");
-  if (proposal.decision !== "pending-review" && !proposal.shareableText) errors.push("Decisão confirmada ou modificada exige texto compartilhável.");
+  if (proposal.decision !== "pending-review" && proposal.decision !== "rejected" && !proposal.shareableText) errors.push("Decisão confirmada ou modificada exige texto compartilhável.");
   return { valid: errors.length === 0, errors };
 }
 

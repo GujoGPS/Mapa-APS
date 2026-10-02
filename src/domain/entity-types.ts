@@ -26,6 +26,7 @@ export const ENTITY_TYPES = {
   instrumentApplication: "instrument-application",
   proposedDomainChange: "proposed-domain-change",
   careFact: "care-fact",
+  ecomapLink: "ecomap-link",
 } as const;
 
 export type EntityType = (typeof ENTITY_TYPES)[keyof typeof ENTITY_TYPES];
