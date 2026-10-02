@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, type RefObject } from "react";
 import {
   Background,
   Controls,
@@ -28,6 +28,8 @@ export interface FamilyFlowProps {
   model: DiagramModel;
   onSelectNode?: (nodeId: string) => void;
   selectedNodeId?: string;
+  /** Permite exportar o desenho sem conhecer a estrutura interna do React Flow. */
+  containerRef?: RefObject<HTMLDivElement | null>;
 }
 
 export interface FamilyNodeData extends Record<string, unknown> {
@@ -118,13 +120,13 @@ function FamilyEdge({ data, sourceX, sourceY, targetX, targetY, sourcePosition, 
 const nodeTypes = { familyNode: FamilyNode };
 const edgeTypes = { familyEdge: FamilyEdge };
 
-function FamilyDiagram({ model, onSelectNode, selectedNodeId }: FamilyFlowProps) {
+function FamilyDiagram({ model, onSelectNode, selectedNodeId, containerRef }: FamilyFlowProps) {
   const nodes = useMemo(() => toFlowNodes(model, selectedNodeId), [model, selectedNodeId]);
   const edges = useMemo(() => toFlowEdges(model), [model]);
   const onNodeClick = useCallback((_: unknown, node: Node) => { onSelectNode?.(node.id); }, [onSelectNode]);
 
   return (
-    <div className="family-diagram family-diagram-flow" data-testid="family-diagram-flow">
+    <div className="family-diagram family-diagram-flow" data-testid="family-diagram-flow" ref={containerRef}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
