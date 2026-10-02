@@ -279,7 +279,7 @@ const physicalQuestions: QuestionDefinition[] = [
 ];
 
 const summaryQuestions: QuestionDefinition[] = [
-  question("summary.services", "global-summary-and-referrals", "Serviços relacionados ou encaminhamentos", "service", {
+  question("summary.services", "global-summary-and-referrals", "Serviços relacionados ou encaminhamentos", "multiple-choice", {
     options: options([
       ["social-assistance-cras-creas", "Assistente Social, CRAS/CREAS"], ["psychology-or-mental-health", "Psicologia / Saúde Mental"],
       ["caps-psychosocial-care", "CAPS, Atenção Psicossocial"], ["physiotherapy-or-rehabilitation", "Fisioterapia / Reabilitação"],

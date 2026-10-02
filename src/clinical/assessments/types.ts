@@ -358,3 +358,100 @@ export interface ProposedDomainChange {
   provenance: ProvenanceMetadata;
   dataOrigin: ApplicationDataOrigin;
 }
+
+export type CareFactDerivationType =
+  | "reported"
+  | "measured"
+  | "calculated"
+  | "manually-classified"
+  | "applicability-derived"
+  | "missing-information"
+  | "care-follow-up"
+  | "proposed-domain-change"
+  | "source-limitation";
+
+export type CareFactCategory =
+  | "demographic"
+  | "social-context"
+  | "reported-condition"
+  | "screening"
+  | "measurement"
+  | "calculated-result"
+  | "manual-classification"
+  | "physical-exam"
+  | "foot-assessment"
+  | "service-or-referral"
+  | "care-follow-up"
+  | "missing-data"
+  | "source-limitation"
+  | "family-context"
+  | "proposed-change";
+
+export type CareFactSubjectScope = "individual" | "family-context" | "family-shared";
+export type CareFactReviewStatus = "auto-derived" | "needs-review" | "reviewed" | "confirmed" | "rejected" | "superseded";
+export type CareFactClinicalVisibility = "visible" | "summary-only" | "private-note" | "hidden";
+export type CareFactPersonVisibility = "visible" | "visible-after-review" | "summary-only" | "hidden";
+export type CareFactFamilyVisibility = "operational-status-only" | "shared-context" | "hidden";
+export type CareFactCertainty = "reported" | "measured" | "calculated" | "manual" | "uncertain" | "missing" | "limited";
+
+export interface CareFact {
+  factId: string;
+  factType: CareFactDerivationType;
+  factVersion: string;
+  applicationId: string;
+  instrumentId: string;
+  instrumentVersion: string;
+  familyId: string;
+  personId: string;
+  sourceQuestionIds: string[];
+  subjectScope: CareFactSubjectScope;
+  category: CareFactCategory;
+  topic: string;
+  value: unknown;
+  unit?: string;
+  occurredAt?: string;
+  recordedAt: string;
+  derivationType: CareFactDerivationType;
+  ruleId?: string;
+  ruleVersion?: string;
+  provenance: ProvenanceMetadata;
+  certaintyState: CareFactCertainty;
+  reviewStatus: CareFactReviewStatus;
+  clinicalVisibility: CareFactClinicalVisibility;
+  personVisibility: CareFactPersonVisibility;
+  familyVisibility: CareFactFamilyVisibility;
+  actionable: boolean;
+  invalidatedAt?: string;
+  invalidationReason?: string;
+  rectifiesApplicationId?: string;
+  relatedPersonIds?: string[];
+  applicabilityState?: ApplicabilityState;
+  status?: ServiceRelationshipState;
+}
+
+export interface CareFactDerivationError {
+  code: "invalid-application" | "unsupported-instrument" | "invalid-source";
+  message: string;
+}
+
+export interface CareFactDerivationResult {
+  facts: CareFact[];
+  errors: CareFactDerivationError[];
+}
+
+export type LongitudinalChangeType =
+  | "added"
+  | "removed"
+  | "changed"
+  | "unchanged"
+  | "became-applicable"
+  | "became-not-applicable"
+  | "newly-missing"
+  | "resolved-missing";
+
+export interface LongitudinalFactChange {
+  topic: string;
+  changeType: LongitudinalChangeType;
+  previous?: CareFact;
+  current?: CareFact;
+}

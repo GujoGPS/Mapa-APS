@@ -3,8 +3,8 @@
 import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import type { Family, FamilyMembership, Person } from "@/src/contracts/family";
 import {
-  adultDcntEsfDefinition, archiveApplication, completeApplication, createAnswer, createApplication,
-  createRectification, deriveApplicationResults, returnApplicationToDraft, submitForReview,
+  adultDcntEsfDefinition, archiveApplication, automaticApplicabilityState, completeApplication, createAnswer, createApplication,
+  createRectification, deriveApplicationResults, questionApplicable, returnApplicationToDraft, submitForReview,
   updateDraftApplication, type ApplicabilityOverride, type InstrumentAnswer, type InstrumentApplication,
   type QuestionDefinition, type SectionDefinition, validateApplicationAnswers,
 } from "@/src/clinical/assessments";
@@ -15,27 +15,6 @@ const statusLabels: Record<InstrumentApplication["status"], string> = { "not-sta
 const waistLabels = { "male-local-rule": "Critério local masculino", "female-local-rule": "Critério local feminino", "not-selected": "Critério não selecionado" };
 const waistClassificationLabels = { low: "baixo", increased: "aumentado", "very-increased": "muito aumentado" };
 const answerTypeLabels: Record<string, string> = { "short-text": "texto curto", "long-text": "texto longo", date: "data", number: "número", "single-choice": "escolha única", "multiple-choice": "múltipla escolha", "yes-no": "sim/não", "yes-no-never-did-does-not-remember": "rastreamento", measurement: "medida", "blood-pressure": "pressão arterial", "laboratory-result": "resultado laboratorial", "laterality-group": "lateralidade", "clinical-code": "código clínico", service: "serviço", "calculated-information": "informação calculada", "manual-classification": "classificação manual", "future-entity-link": "vínculo futuro" };
-
-function questionApplicable(application: InstrumentApplication, question: QuestionDefinition): boolean {
-  if (!question.applicability) return true;
-  const override = application.applicabilityOverrides[question.id];
-  if (override) return override.state === "applicable";
-  if (question.applicability.condition.includes("contains")) {
-    const dependency = application.answers[question.applicability.dependencies[0] ?? ""];
-    const values = dependency?.answerType === "multiple-choice" ? dependency.value : dependency?.answerType === "single-choice" ? [dependency.value] : [];
-    if (question.applicability.condition.includes("other")) return values.includes("other");
-    if (question.applicability.condition.includes("hypertension")) return values.includes("hypertension");
-    return values.length > 0;
-  }
-
-  return false;
-}
-
-function automaticApplicabilityState(application: InstrumentApplication, question: QuestionDefinition): "applicable" | "not-applicable" | "not-assessed" {
-  if (!question.applicability) return "applicable";
-  if (question.applicability.condition.includes("contains")) return questionApplicable({ ...application, applicabilityOverrides: {} }, question) ? "applicable" : "not-applicable";
-  return "not-assessed";
-}
 
 export function assessmentRendererFor(answerType: QuestionDefinition["answerType"]): string {
   if (answerType === "short-text") return "short-text";
