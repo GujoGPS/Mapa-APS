@@ -360,3 +360,10 @@ footer { padding: 1.5rem .25rem; color: var(--muted); font-size: .84rem; text-al
 .proposal-card span, .proposal-card small { display: block; color: var(--muted); }
 .proposal-links { margin: .2rem 0 0; padding-left: 1.1rem; text-transform: capitalize; }
 button.secondary { color: var(--text); background: rgba(15,95,82,.08); }
+.assessment-views { margin-top: 1rem; }
+.fact-groups { display: grid; gap: .8rem; }
+.fact-group h4 { margin: 0 0 .3rem; font-size: .95rem; }
+.fact-group ul, .fact-changes { margin: 0; padding-left: 1.1rem; }
+.fact-group li, .fact-changes li { display: flex; justify-content: space-between; gap: .8rem; padding: .2rem 0; }
+.fact-group small, .fact-changes small { color: var(--muted); white-space: nowrap; }
+.fact-changes small { text-transform: uppercase; font-size: .7rem; letter-spacing: .04em; }

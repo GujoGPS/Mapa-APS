@@ -1,5 +1,28 @@
 # Modelo de Dados Conceitual
 
+## Fatos clínicos derivados
+
+`CareFact` é derivado da aplicação individual e nunca substitui a resposta original.
+
+Campos essenciais:
+
+- `factId` estável (`{applicationId}:fact:{key}`) e `factVersion`;
+- `applicationId`, `instrumentId`, `instrumentVersion`, `familyId`, `personId`;
+- `derivationType` e `ruleId`/`ruleVersion` quando o valor é calculado;
+- `certaintyState` (reported, measured, calculated, manual, uncertain, missing, limited);
+- visibilidade independente: `clinicalVisibility`, `personVisibility`, `familyVisibility`;
+- `reviewStatus`, com `superseded` e `invalidatedAt` quando uma retificação assume;
+- `dataOrigin`, para que fatos sintéticos saiam junto do isolamento da demonstração.
+
+Fatos `source-limitation` registram o que a ficha impressa não resolve; eles existem para impedir
+interpretação silenciosa.
+
+## Propostas de mudança de domínio
+
+Serviços marcados na ficha geram `EcomapLinkProposal` (`pending-review`). Somente decisão humana
+confirmada ou modificada gera `EcomapLink` com `originApplicationId`; rejeição fica registrada sem
+criar vínculo.
+
 ## Entidades nucleares
 
 ### Person

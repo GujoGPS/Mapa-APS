@@ -1,5 +1,28 @@
 # Changelog da Especificação
 
+## Não datado - fluxo ESF do adulto e projeções derivadas
+
+### Acrescentado
+
+- questionário da ficha "Avaliação de Saúde e DCNT do Adulto" como instrumento tipado e
+  versionado, com as opções legíveis da página e as limitações de bloco declaradas;
+- fatos clínicos derivados (`care-fact`), com proveniência, regra, certeza e visibilidade
+  independente para clínica, pessoa e família;
+- projeção de informação faltante baseada nas condições de aplicabilidade da própria ficha;
+- persistência dos fatos ao concluir a aplicação, com supersessão na retificação;
+- demonstração isolada com snapshot reversível, saída pela interface e backup normal limpo;
+- edição de família e de pessoa preservando identidade, vitalidade e origem;
+- serviços da ficha como propostas revisadas: nenhum vínculo de ecomapa nasce sem confirmação
+  humana e texto compartilhável;
+- visões acadêmica, da pessoa e comparação entre aplicações dentro da área da família.
+
+### Corrigido
+
+- `summary.services` ace selections múltiplas, como na ficha impressa;
+- rejeição de proposta não exige texto compartilhável;
+- parametricidade de `supersedeFacts` corrigida;
+- aplicabilidade movida da interface para o domínio.
+
 ## 1.0.0 - 2026-09-27
 
 ### Consolidado

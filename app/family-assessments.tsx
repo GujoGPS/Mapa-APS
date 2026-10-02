@@ -9,6 +9,7 @@ import {
   type QuestionDefinition, type SectionDefinition, validateApplicationAnswers,
 } from "@/src/clinical/assessments";
 import { peopleInFamily } from "@/src/domain/selectors";
+import { AssessmentViews } from "./assessment-views";
 
 interface Props { family: Family; people: Person[]; memberships: FamilyMembership[]; applications: InstrumentApplication[]; demoActive: boolean; onSaved: () => Promise<void>; }
 const statusLabels: Record<InstrumentApplication["status"], string> = { "not-started": "Não iniciada", draft: "Rascunho", "in-review": "Em revisão", completed: "Concluída", rectified: "Retificada", archived: "Arquivada" };
@@ -78,6 +79,7 @@ export function FamilyAssessmentsPanel({ family, people, memberships, applicatio
     <div className="assessment-member-list">{familyPeople.map((person) => { const items = applications.filter((item) => item.familyId === family.id && item.personId === person.id); const latest = [...items].sort((a, b) => b.assessmentDate.localeCompare(a.assessmentDate))[0]; return <button className={person.id === personId ? "assessment-member selected" : "assessment-member"} key={person.id} onClick={() => guarded(() => setPersonId(person.id))}><strong>{person.displayName || person.code}</strong><span>{latest ? `${statusLabels[latest.status]} · ${latest.assessmentDate}` : "Avaliação não iniciada"}</span><small>{items.length} aplicação(ões)</small></button>; })}</div>
     {selectedPerson && <div className="assessment-person-area" key={selectedPerson.id}>
       <div className="assessment-person-header"><div><p className="eyebrow">Pessoa selecionada</p><h3>{selectedPerson.displayName || selectedPerson.code}</h3><small>Família {family.code} · {adultDcntEsfDefinition.version}</small></div><div className="action-row"><button onClick={() => void start()}>Nova aplicação</button><button onClick={() => void start("reassessment")}>Nova longitudinal</button></div></div>
+      <AssessmentViews personId={selectedPerson.id} personLabel={selectedPerson.displayName || selectedPerson.code} applications={personApplications} />
       <div className="assessment-history">{personApplications.length ? personApplications.map((item) => <AssessmentHistoryCard key={item.applicationId} application={item} onOpen={() => guarded(() => setActiveApplicationId(item.applicationId))} onRectify={() => void rectify(item)} />) : <p className="fine-print">Nenhuma aplicação para esta pessoa.</p>}</div>
       {applications.find((item) => item.applicationId === activeApplicationId) && <AssessmentEditor key={activeApplicationId} application={applications.find((item) => item.applicationId === activeApplicationId)!} onSaved={onSaved} onClose={() => guarded(() => setActiveApplicationId(undefined))} onRequestAction={(action) => guarded(() => { void action(); })} onEditStateChange={setEditorControls} demoActive={demoActive} />}
     </div>}

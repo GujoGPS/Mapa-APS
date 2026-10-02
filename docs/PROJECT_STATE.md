@@ -57,6 +57,7 @@ O Mapa apoiará um estudante de Medicina durante atividades longitudinais na APS
 - Round 3: experiência, compartilhamento e privacidade operacional.
 - Round 4: auditoria adversarial.
 - Round 5: simulação integral de semestre com duas famílias sintéticas.
+- Round 6: ficha ESF do adulto como instrumento tipado, fatos derivados com proveniência, demonstração isolada e revisão humana de mudanças propostas.
 
 ## Próximo marco
 
@@ -205,6 +206,15 @@ Marco 7: auditoria pré-uso real, build, testes em dispositivos e gates instituc
 - auditoria estática adicionada;
 - checklists de segurança, acessibilidade, dispositivos e instituição adicionados;
 - bloqueadores clínicos, farmacológicos, técnicos e institucionais formalizados.
+
+### Fluxo ESF e projeções derivadas
+
+- a ficha da ESF é aplicada por pessoa, dentro da área da família;
+- blocos 3, 4 e 5 continuam indisponíveis e o bloco de diagramas existe apenas pelo título; nenhuma lacuna foi preenchida por inferência;
+- fatos derivados carregam regra, versão, certeza e visibilidade por audiência;
+- serviços marcados na ficha são propostas; o ecomapa só muda por decisão humana;
+- o genograma não recebe mudanças automáticas: a fonte não descreve campos de parentesco;
+- a demonstração é uma sessão isolada e reversível e nunca alimenta o backup normal.
 
 ### Delimitação operacional
 
