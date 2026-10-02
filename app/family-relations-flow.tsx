@@ -137,6 +137,7 @@ function FamilyDiagram({ model, onSelectNode, selectedNodeId, containerRef }: Fa
         nodesConnectable={false}
         elementsSelectable
         fitView
+        style={{ width: "100%", height: "100%" }}
         proOptions={{ hideAttribution: true }}
         aria-label={`${model.kind === "genogram" ? "Genograma" : "Ecomapa"} da família`}
       >
