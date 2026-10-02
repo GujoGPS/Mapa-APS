@@ -105,6 +105,7 @@ footer { padding: 1.5rem .25rem; color: var(--muted); font-size: .84rem; text-al
 .app-header { display: flex; align-items: center; justify-content: space-between; padding: .8rem .25rem .2rem; }
 .app-header h1 { margin: 0; font-size: 2rem; letter-spacing: -.05em; }
 .local-badge { padding: .4rem .65rem; border-radius: 999px; color: var(--brand); background: rgba(15,95,82,.1); font-size: .75rem; font-weight: 800; }
+.local-badge.demo-badge { color: var(--warning); background: rgba(179,107,23,.12); }
 .hero-card h2 { max-width: none; }
 .quick-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: .7rem; margin-top: 1rem; }
 .quick-grid button, .section-head button, .journey-family button { min-height: 3.2rem; border: 1px solid var(--line); border-radius: 1.2rem; color: var(--text); background: var(--surface); font-weight: 800; box-shadow: var(--shadow); }

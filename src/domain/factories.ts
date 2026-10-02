@@ -29,6 +29,15 @@ export function createPerson(input: { code: string; displayName?: string; lifeSt
   return { ...auditFields(newId("person")), code: input.code.trim(), ...(input.displayName?.trim() ? { displayName: input.displayName.trim() } : {}), ...(input.lifeStage ? { lifeStage: input.lifeStage } : {}), vitalStatus: "alive" };
 }
 
+export function updatePerson(person: Person, input: { code: string; displayName?: string; lifeStage?: Person["lifeStage"] }): Person {
+  const updated: Person = { ...person, code: input.code.trim(), ...updatedAudit(person) };
+  const displayName = input.displayName?.trim();
+  if (displayName) updated.displayName = displayName;
+  else delete updated.displayName;
+  if (input.lifeStage) updated.lifeStage = input.lifeStage;
+  return updated;
+}
+
 export function createMembership(input: { personId: string; familyId: string; roleLabel: string; careRole?: FamilyMembership["careRole"] }): FamilyMembership {
   return { ...auditFields(newId("membership")), ...defaultTrust, sensitivity: "family", sharingState: "private", personId: input.personId, familyId: input.familyId, roleLabel: input.roleLabel.trim(), ...(input.careRole ? { careRole: input.careRole } : {}), validFrom: nowIso() };
 }
