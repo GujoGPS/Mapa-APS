@@ -16,6 +16,7 @@ import {
   type VisibilityMetadata,
 } from "./types";
 import { calculateBmi, calculateBloodPressureMean, classifyBmi, classifyWaistCircumference, deriveAdultAgeBand } from "./calculations";
+import { persistApplicationFacts, supersedeFactsOfApplication } from "./fact-repository";
 import {
   validateApplicationAnswers,
   validateInstrumentApplication,
@@ -196,7 +197,9 @@ export async function completeApplication(applicationId: string): Promise<Instru
   const validation = validateApplicationAnswers(current, applicationDefinition(current), "complete");
   if (!validation.valid) throw new Error([...validation.errors, ...(validation.missing ?? []).map((id) => `${id}: dado ausente`)].join(" "));
   const completedAt = now();
-  return persist({ ...current, status: "completed", completedAt, updatedAt: completedAt, revisionNumber: current.revisionNumber + 1 }, current);
+  const completed = await persist({ ...current, status: "completed", completedAt, updatedAt: completedAt, revisionNumber: current.revisionNumber + 1 }, current);
+  await persistApplicationFacts(completed);
+  return completed;
 }
 
 async function transitionApplication(applicationId: string, status: "draft" | "in-review" | "archived"): Promise<InstrumentApplication> {
@@ -220,7 +223,7 @@ export async function createRectification(applicationId: string): Promise<Instru
   await assertPersonInFamily(original.familyId, original.personId);
   const timestamp = now();
   const { completedAt: _completedAt, rectifiedAt: _rectifiedAt, ...withoutCompletion } = original;
-  return persist({
+  const rectification = await persist({
     ...withoutCompletion,
     applicationId: `assessment_${crypto.randomUUID()}`,
     status: "draft",
@@ -233,6 +236,8 @@ export async function createRectification(applicationId: string): Promise<Instru
     revisionNumber: original.revisionNumber + 1,
     provenance: { origin: "digital-adaptation", sourceNote: `Retificação da aplicação ${original.applicationId}.` },
   });
+  await supersedeFactsOfApplication(original.applicationId, rectification.applicationId);
+  return rectification;
 }
 
 export async function saveAnswer(

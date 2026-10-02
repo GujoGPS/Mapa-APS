@@ -427,6 +427,7 @@ export interface CareFact {
   relatedPersonIds?: string[];
   applicabilityState?: ApplicabilityState;
   status?: ServiceRelationshipState;
+  dataOrigin?: ApplicationDataOrigin;
 }
 
 export interface CareFactDerivationError {

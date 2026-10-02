@@ -25,6 +25,7 @@ export const ENTITY_TYPES = {
   addendum: "addendum",
   instrumentApplication: "instrument-application",
   proposedDomainChange: "proposed-domain-change",
+  careFact: "care-fact",
 } as const;
 
 export type EntityType = (typeof ENTITY_TYPES)[keyof typeof ENTITY_TYPES];
