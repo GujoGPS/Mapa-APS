@@ -12,6 +12,15 @@ O app informará:
 
 Não prometerá permanência absoluta.
 
+## Escopo do backup e demonstração
+
+- o backup normal exclui registros marcados como `synthetic-demo` e a sessão de demonstração;
+- incluir dados sintéticos exige marcação explícita na interface;
+- fatos derivados (`care-fact`) entram no backup normal quando a aplicação é normal, porque são
+  parte do registro longitudinal da pessoa;
+- fatos sem `dataOrigin` em backup antigo migram para `normal`; a migração não infere origem sintética;
+- ao sair da demonstração, o snapshot do estado normal substitui o espaço ativo.
+
 ## Tipos de saída
 
 ### Backup integral protegido
