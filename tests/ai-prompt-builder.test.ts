@@ -128,10 +128,13 @@ describe("separacao entre privacidade e lacuna de preenchimento", () => {
     expect(texto).not.toMatch(/waist-classification-criterion|source-missing-block-3|tacs-acs/);
   });
 
-  it("nomeia o bloco sem fonte de forma legivel", () => {
+  it("nao deixa escapar o identificador tecnico de um topico que saiu da definicao", () => {
+    // Banco antigo pode ter CareFact com o topico que existia quando os blocos 3/4/5
+    // eram inventados. O prompt tem de falar humano, nunca "source-missing-block-3".
     const r = buildPrompt(entrada({ facts: [fato({ factId: "cf-b", topic: "source-missing-block-3", factType: "source-limitation", category: "source-limitation", familyVisibility: "hidden" })] }));
-    expect(r.gapSummary[0]).toMatch(/Bloco 3/);
-    expect(r.gapSummary[0]).toMatch(/digitalizado/i);
+    expect(r.gapSummary[0]).not.toMatch(/source-missing-block/);
+    expect(r.gapSummary[0]).toMatch(/[A-Za-zÀ-ÿ]/);
+    expect(r.text).not.toMatch(/source-missing-block/);
   });
 
   it("usa o rotulo da propria ficha quando a pergunta existe", () => {

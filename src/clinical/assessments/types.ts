@@ -6,7 +6,7 @@ export type InstrumentOrigin =
   | "pending-preceptor-validation";
 
 export type EditorialStatus = "draft-local" | "pending-preceptor-validation" | "active-local";
-export type SectionStatus = "available" | "source-missing" | "title-only-in-source";
+export type SectionStatus = "available" | "source-missing" | "title-only-in-source" | "covered-elsewhere";
 export type AssessmentStatus = "not-started" | "draft" | "in-review" | "completed" | "rectified" | "archived";
 export type AnswerType =
   | "short-text"
@@ -123,6 +123,15 @@ export interface SectionDefinition {
   missingReason?: string;
   implementable: boolean;
   declarativeCapabilities?: string[];
+  /**
+   * Nome como aparece na interface. O `title` preserva a grafia da folha impressa e continua
+   * sendo o que vai para o prontuário e para o prompt; este e o rotulo que a pessoa le.
+   */
+  displayTitle?: string;
+  /**
+   * Quando a funcionalidade ja vive em outra tela do app. Nao e lacuna de dado: e remissao.
+   */
+  coveredElsewhere?: { screen: "care"; label: string; description: string };
 }
 
 export interface InstrumentAmbiguity {

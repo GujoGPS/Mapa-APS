@@ -19,13 +19,21 @@ describe("definição versionada da avaliação adulta DCNT ESF", () => {
     expect(adultDcntEsfDefinition.origin).toContain("Instrumento local");
     expect(adultDcntEsfDefinition.sourcePage).toBe(28);
     expect(adultDcntEsfDefinition.availableSections).toEqual([1, 2, 6, 7, 8]);
-    expect(adultDcntEsfDefinition.missingSections).toEqual([3, 4, 5]);
-    expect(adultDcntEsfDefinition.sections.filter((section) => section.status === "source-missing")).toHaveLength(3);
-    expect(adultDcntEsfDefinition.sections.find((section) => section.printedBlockNumber === 8)?.status).toBe("title-only-in-source");
+    // A ficha vai do Bloco 2 direto ao Bloco 6. Nao existe 3, 4 nem 5: sao numeros que a
+    // folha pula. Criar secoes para eles seria inventar conteudo que nao esta na fonte.
+    expect(adultDcntEsfDefinition.missingSections).toEqual([]);
+    expect(adultDcntEsfDefinition.sections.filter((section) => section.status === "source-missing")).toHaveLength(0);
+    expect(adultDcntEsfDefinition.sections.map((section) => section.printedBlockNumber)).not.toContain(3);
+    expect(adultDcntEsfDefinition.sections.map((section) => section.printedBlockNumber)).not.toContain(5);
+    // Bloco 8 nao e lacuna: genograma e ecomapa ja vivem na aba Cuidado.
+    const bloco8 = adultDcntEsfDefinition.sections.find((section) => section.printedBlockNumber === 8);
+    expect(bloco8?.status).toBe("covered-elsewhere");
+    expect(bloco8?.coveredElsewhere?.screen).toBe("care");
   });
 
   it("mantém a completude dos campos e opções da página", () => {
-    expect(adultDcntEsfDefinition.sections).toHaveLength(10);
+    expect(adultDcntEsfDefinition.sections).toHaveLength(7);
+    expect(adultDcntEsfDefinition.sections.filter((section) => section.implementable)).toHaveLength(6);
     expect(adultDcntEsfDefinition.questions).toHaveLength(45);
     expect(adultDcntEsfDefinition.questions.reduce((total, question) => total + question.options.length, 0)).toBe(114);
     expect(adultDcntEsfDefinition.questions.map((question) => question.id)).toEqual(expect.arrayContaining([
@@ -60,11 +68,13 @@ describe("definição versionada da avaliação adulta DCNT ESF", () => {
     expect(sectionsWithoutQuestions.every((section) => section.questions.length === 0)).toBe(true);
     expect(adultDcntEsfDefinition.questions.every((question) => question.provenance.origin && question.visibility)).toBe(true);
     expect(adultDcntEsfDefinition.questions.every((question) => question.visibility.scope !== "individual" || conservativeVisibility(question))).toBe(true);
-    expect(adultDcntEsfDefinition.ambiguities).toHaveLength(10);
+    // A ambiguidade "missing-blocks" saiu junto com os blocos que ela descrevia.
+    expect(adultDcntEsfDefinition.ambiguities).toHaveLength(9);
+    expect(adultDcntEsfDefinition.ambiguities.map((ambiguity) => ambiguity.id)).not.toContain("missing-blocks");
     expect(adultDcntEsfDefinition.ambiguities.map((ambiguity) => ambiguity.id)).toEqual(expect.arrayContaining([
       "occupation-selection-mode", "cervical-overlap", "mammography-overlap-gap", "bone-densitometry-overlap",
       "colorectal-method", "tacs-acs", "blood-pressure-control-threshold", "cardiovascular-risk-algorithm",
-      "block-8-title-only", "missing-blocks",
+      "block-8-title-only",
     ]));
     expect(adultDcntEsfDefinition.sections.find((section) => section.printedBlockNumber === 8)?.declarativeCapabilities).toHaveLength(12);
     expect(adultDcntEsfDefinition.futureServiceStates).toHaveLength(12);

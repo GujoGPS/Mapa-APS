@@ -31,11 +31,27 @@ async function abrir(answers: Record<string, unknown> = {}) {
 }
 
 describe("abas dos blocos do instrumento", () => {
-  it("lidera com o nome descritivo e deixa o número como secundário", async () => {
+  it("lidera com o nome do que a seção coleta e deixa o número da ficha como secundário", async () => {
     const tablist = await abrir();
-    const aba = within(tablist).getByRole("tab", { name: /Perfil Sociodemográfico/ });
-    expect(aba.textContent).toMatch(/^Perfil Sociodemográfico/);
-    expect(aba.textContent).toMatch(/Bloco 1/);
+    const aba = within(tablist).getByRole("tab", { name: /Perfil sociodemográfico/ });
+    expect(aba.textContent).toMatch(/^Perfil sociodemográfico/);
+    expect(aba.textContent).toMatch(/Bloco 1 da ficha/);
+  });
+
+  it("não existe aba para bloco que a ficha pula", async () => {
+    // A folha vai do Bloco 2 direto ao Bloco 6. Não há 3, 4 nem 5 para digitalizar.
+    const tablist = await abrir();
+    for (const rotulo of ["Bloco 3", "Bloco 4", "Bloco 5"]) {
+      expect(within(tablist).queryByRole("tab", { name: new RegExp(rotulo) })).toBeNull();
+    }
+    expect(within(tablist).getAllByRole("tab")).toHaveLength(adultDcntEsfDefinition.sections.length);
+  });
+
+  it("o Bloco 8 aponta para onde a funcionalidade vive, em vez de dizer que falta", async () => {
+    const tablist = await abrir();
+    const aba = within(tablist).getByRole("tab", { name: /Genograma, ecomapa e observações/ });
+    expect(aba.textContent).toMatch(/Ver em Cuidado/);
+    expect(aba.textContent).not.toMatch(/Fonte ausente/);
   });
 
   it("mostra a prévia de preenchimento sem precisar entrar no bloco", async () => {
@@ -44,24 +60,10 @@ describe("abas dos blocos do instrumento", () => {
     const tablist = await abrir({
       [pergunta.id]: { questionId: pergunta.id, answerType: pergunta.answerType, value: "1980-01-01", answeredAt: t, updatedAt: t, source: "person", status: "answered", applicabilityState: "applicable" },
     });
-    const aba = within(tablist).getByRole("tab", { name: /Perfil Sociodemográfico/ });
+    const aba = within(tablist).getByRole("tab", { name: /Perfil sociodemográfico/ });
     const previa = within(aba).getByText(/preenchidos/);
     expect(previa.textContent).toMatch(/1 de/);
     expect(previa.textContent).toMatch(/pendentes/);
   });
 
-  it("marca na propria aba os blocos sem fonte digitalizada", async () => {
-    const tablist = await abrir();
-    const aba3 = within(tablist).getByRole("tab", { name: /Bloco 3/ });
-    expect(aba3.textContent).toMatch(/Fonte ausente/);
-    expect(aba3.textContent).toMatch(/ainda não foi digitalizado/i);
-  });
-
-  it("não inventa nome descritivo para bloco sem fonte", async () => {
-    const tablist = await abrir();
-    const aba4 = within(tablist).getByRole("tab", { name: /Bloco 4/ });
-    // o titulo continua sendo apenas "Bloco 4": nada foi inventado para preencher a lacuna
-    const titulo = within(aba4).getByText("Bloco 4", { selector: ".assessment-tab-title" });
-    expect(titulo.textContent).toBe("Bloco 4");
-  });
 });

@@ -90,9 +90,13 @@ describe("interface de avaliações na família", () => {
     expect(screen.getByText("muito aumentado")).toBeTruthy();
     expect(screen.getByText("125.0 / 82.0 mmHg (média das duas visitas)")).toBeTruthy();
     expect(screen.getByText(/Visita 1: 120\/80 mmHg/)).toBeTruthy();
-    expect(screen.getAllByText(/Bloco 3: Fonte ausente/).length).toBeGreaterThan(0);
-    fireEvent.click(screen.getAllByRole("tab", { name: /Bloco 8/ }).at(-1)!);
-    expect(screen.getByText(/capacidades futuras/i)).toBeTruthy();
+    // A ficha pula do Bloco 2 para o 6: nao ha "fonte ausente" para mostrar.
+    expect(screen.queryByText(/Fonte ausente/)).toBeNull();
+    // O Bloco 8 nao e lacuna: ele diz onde a funcionalidade ja vive.
+    expect(screen.getAllByText(/Coberto pela aba Cuidado/).length).toBeGreaterThan(0);
+    fireEvent.click(screen.getAllByRole("tab", { name: /Genograma, ecomapa e observações/ }).at(-1)!);
+    expect(screen.getByText(/já são registrados em Cuidado/i)).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Ir para as relações familiares/i })).toBeTruthy();
   });
 
   it("marca uma resposta dependente como não aplicável sem apagar seu valor", async () => {

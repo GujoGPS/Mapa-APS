@@ -18,10 +18,6 @@ import { validateApplicationAnswers } from "./validation";
 
 export const CARE_FACT_VERSION = "1";
 const sourceLimitationDefinitions = [
-  ["source-missing-block-3", "Bloco 3 não disponível."],
-  ["source-missing-block-4", "Bloco 4 não disponível."],
-  ["source-missing-block-5", "Bloco 5 não disponível."],
-  ["family-diagrams-and-clinical-observations", "Bloco 8 disponível somente pelo título."],
   ["cardiovascular-risk-algorithm", "Algoritmo de risco cardiovascular ausente."],
   ["blood-pressure-control-threshold", "Limiar automático de controle de PA ausente."],
   ["cervical-overlap", "Sobreposição das categorias do rastreamento cervical preservada."],

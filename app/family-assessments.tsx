@@ -63,6 +63,7 @@ function answerText(answer?: InstrumentAnswer): string {
 }
 
 function statusForSection(section: SectionDefinition, application: InstrumentApplication, validation: ReturnType<typeof validateApplicationAnswers>) {
+  if (section.status === "covered-elsewhere") return "covered";
   if (section.status === "source-missing") return "source-missing";
   if (!section.implementable) return "not-applicable";
   const questions = section.questions.filter((question) => question.answerType !== "calculated-information");
@@ -74,7 +75,7 @@ function statusForSection(section: SectionDefinition, application: InstrumentApp
   return "in-progress";
 }
 
-function statusLabel(status: string) { return ({ "not-started": "Não iniciado", "in-progress": "Em andamento", "structurally-complete": "Estruturalmente completo", "needs-review": "Requer revisão", "not-applicable": "Não aplicável", "source-missing": "Fonte ausente" } as Record<string, string>)[status] ?? status; }
+function statusLabel(status: string) { return ({ "not-started": "Não iniciado", "in-progress": "Em andamento", "structurally-complete": "Estruturalmente completo", "needs-review": "Requer revisão", "not-applicable": "Não aplicável", "source-missing": "Fonte ausente", "covered": "Ver na aba Cuidado" } as Record<string, string>)[status] ?? status; }
 
 function firstBlockingQuestion(application: InstrumentApplication, validation: ReturnType<typeof validateApplicationAnswers>): QuestionDefinition | undefined {
   return adultDcntEsfDefinition.questions.find((question) => validation.errors.some((error) => error.startsWith(`${question.id}:`)) || validation.missing?.some((missing) => missing.startsWith(question.id)) || (question.required && !application.answers[question.id] && questionApplicable(application, question)));
@@ -128,7 +129,15 @@ function AssessmentEditor({ application: initial, onSaved, onClose, onRequestAct
   useEffect(() => { onEditStateChange({ state: editState, save, discard: () => { setApplication(initial); setEditState("saved"); } }); }, [editState, initial, onEditStateChange]);
   useEffect(() => { const handler = (event: BeforeUnloadEvent) => { if (editState === "dirty" || editState === "save-error") { event.preventDefault(); event.returnValue = ""; } }; window.addEventListener("beforeunload", handler); return () => window.removeEventListener("beforeunload", handler); }, [editState]);
   const validation = validateApplicationAnswers(application, adultDcntEsfDefinition, "draft"); const structural = validateApplicationAnswers(application, adultDcntEsfDefinition, "complete"); const results = deriveApplicationResults(application); const section = adultDcntEsfDefinition.sections.find((item) => item.id === sectionId) ?? adultDcntEsfDefinition.sections[0]; const editable = application.status === "draft" || application.status === "in-review";
-  const sectionProgress = adultDcntEsfDefinition.sections.map((item) => ({ section: item, status: statusForSection(item, application, structural) }));
+  // Numeracao do app: sequencial, sem pular como na folha impressa. O numero do bloco
+ // impresso continua no subtitulo, para quem esta com a ficha na mao.
+ const sectionsOrdenadas = adultDcntEsfDefinition.sections;
+ const numerosDoApp = new Map(sectionsOrdenadas.filter((s) => s.implementable).map((s, i) => [s.id, i + 1]));
+ const sectionProgress = sectionsOrdenadas.map((item) => ({
+   section: item,
+   numeroDoApp: numerosDoApp.get(item.id),
+   status: statusForSection(item, application, structural),
+ }));
   function markChanged(next: InstrumentApplication) { setApplication(next); setEditState("dirty"); }
   const autosaveTimer = useRef<number | undefined>(undefined);
   function cancelAutosave() { if (autosaveTimer.current !== undefined) { window.clearTimeout(autosaveTimer.current); autosaveTimer.current = undefined; } }
@@ -175,13 +184,15 @@ function AssessmentEditor({ application: initial, onSaved, onClose, onRequestAct
     <div className="assessment-editor-header"><div><p className="eyebrow">Pessoa {application.personId}</p><h3 id={`assessment-editor-${application.applicationId}`}>{adultDcntEsfDefinition.title}</h3><small>{adultDcntEsfDefinition.version} · {statusLabels[application.status]} · {application.assessmentDate}</small></div><Botao variante="secundario" onClick={close}>Fechar ficha</Botao></div>
     {demoActive && <p className="scope-callout">Aplicação demonstrativa: desaparece ao sair da demonstração e não entra no backup normal.</p>}
     <p className="assessment-save-status">{editState === "dirty" ? "Alterações não salvas" : editState === "saving" ? "Salvando…" : editState === "save-error" ? `Erro ao salvar: ${message}` : `Salvo em ${new Date(lastSaved).toLocaleString("pt-BR")}`}</p>
-    <div className="assessment-progress"><strong>Conclusão dos campos disponíveis nesta versão</strong><span>{sectionProgress.filter((item) => !["source-missing", "not-applicable"].includes(item.status)).filter((item) => item.status === "structurally-complete").length}/{sectionProgress.filter((item) => item.status !== "source-missing").length} blocos incorporados</span><div className="assessment-section-statuses">{sectionProgress.map(({ section: item, status }) => <span key={item.id} data-status={status}>{item.printedBlockNumber ? `Bloco ${item.printedBlockNumber}` : "Cabeçalho"}: {statusLabel(status)}</span>)}</div></div>
+    <div className="assessment-progress"><strong>Conclusão dos campos disponíveis nesta versão</strong><span>{sectionProgress.filter((item) => item.numeroDoApp !== undefined && item.status === "structurally-complete").length}/{sectionProgress.filter((item) => item.numeroDoApp !== undefined).length} blocos preenchidos</span><div className="assessment-section-statuses">{sectionProgress.map(({ section: item, status, numeroDoApp }) => item.coveredElsewhere ? <span key={item.id} data-status="covered" className="status-covered"><span className="status-covered-titulo">{item.displayTitle ?? item.title}</span><button type="button" className="status-covered-acao" onClick={() => { close(); requestAnimationFrame(() => document.querySelector('[aria-label="Relações familiares"]')?.scrollIntoView({ behavior: "smooth", block: "start" })); }}>{item.coveredElsewhere.label} <span aria-hidden="true">→</span></button></span> : <span key={item.id} data-status={status}>{numeroDoApp ? `${numeroDoApp}. ` : ""}{item.displayTitle ?? item.title}: {statusLabel(status)}</span>)}</div></div>
     <div className="assessment-section-tabs" role="tablist" aria-label="Blocos do formulário">{adultDcntEsfDefinition.sections.map((item) => {
       const ausente = item.status === "source-missing";
+    const remetido = Boolean(item.coveredElsewhere);
       return <button role="tab" aria-selected={item.id === section?.id} key={item.id} className={item.id === section?.id ? "active" : ""} onClick={() => setSectionId(item.id)}>
-        <span className="assessment-tab-title">{item.title}</span>
-        <small>{item.printedBlockNumber ? `Bloco ${item.printedBlockNumber}` : "Cabeçalho"}</small>
+        <span className="assessment-tab-title">{item.displayTitle ?? item.title}</span>
+        <small>{item.coveredElsewhere ? "Ver em Cuidado" : item.printedBlockNumber ? `Bloco ${item.printedBlockNumber} da ficha` : "Cabeçalho da ficha"}</small>
         <small className="assessment-tab-preview">{sectionPreview(item, application)}</small>
+        {remetido && <small className="assessment-tab-missing">Já registrado em Cuidado — toque para ir lá</small>}
         {ausente && <small className="assessment-tab-missing">Fonte ausente — bloco ainda não foi digitalizado</small>}
       </button>;
     })}</div>
@@ -195,6 +206,7 @@ function AssessmentEditor({ application: initial, onSaved, onClose, onRequestAct
 
 function AssessmentSection({ section, application, editable, onAnswer, onWaistCriterion, onApplicabilityOverride, results, firstError, firstBlocking, registerField }: { section: SectionDefinition; application: InstrumentApplication; editable: boolean; onAnswer: (question: QuestionDefinition, value: string | string[] | number) => void; onWaistCriterion: (value: InstrumentApplication["waistCriterion"]) => void; onApplicabilityOverride: (question: QuestionDefinition, state: ApplicabilityOverride["state"] | undefined, justification: string) => void; results: ReturnType<typeof deriveApplicationResults>; firstError: RefObject<HTMLDivElement | null>; firstBlocking: QuestionDefinition | undefined; registerField: (id: string, element: HTMLElement | null) => void }) {
   if (section.status === "source-missing") return <section className="assessment-missing-source"><h4>{section.title}</h4><p>Fonte ainda não disponível. Este bloco não entra no progresso preenchível e não bloqueia a conclusão dos campos disponíveis.</p></section>;
+  if (section.coveredElsewhere) return <section className="assessment-covered"><h4>{section.displayTitle ?? section.title}</h4><p><strong>{section.coveredElsewhere.label}.</strong> {section.coveredElsewhere.description}</p><button type="button" onClick={() => document.querySelector('[aria-label="Relações familiares"]')?.scrollIntoView({ behavior: "smooth", block: "start" })}>Ir para as relações familiares na aba Cuidado →</button></section>;
   if (section.status === "title-only-in-source") return <section className="assessment-missing-source"><h4>{section.title}</h4><p>A fonte disponível contém apenas o título. Capacidades futuras, sem campos clínicos:</p><ul>{section.declarativeCapabilities?.map((item) => <li key={item}>{item.replaceAll("-", " ")}</li>)}</ul></section>;
   return <section className="assessment-question-list"><h4>{section.title}</h4>{section.questions.map((question) => {
     const answer = application.answers[question.id]; const applicable = questionApplicable(application, question); const result = results.find((item) => item.questionId === question.id);
