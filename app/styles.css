@@ -5,67 +5,43 @@
    removido de proposito: era a cor que mais pesava e puxava o app para o
    registro clinico que nao queremos.
    ========================================================================== */
-:root {
-  color-scheme: dark;
-
-  /* --- superficies: a noite e um degrau, nao cinco --- */
+:root {  color-scheme: dark;
   --noite: #081028;
   --noite-alta: #0d1731;
   --noite-mais-alta: #131f42;
   --vidro: rgba(19, 31, 66, .72);
-
-  /* --- texto --- */
-  --creme: #f4e4d0;              /* a propria cor do "Mapa" da marca  15.1:1 */
+  --creme: #f4e4d0;
   --creme-medio: #b9bed6;
   --creme-fraco: #6d769a;
-
-  /* --- acao: creme com tinta escura. O dourado nunca e botao primario. --- */
   --primario: #f4e4d0;
   --primario-tinta: #081028;
-
-  /* --- sinais --- */
-  --luz: #f0e4a2;                /* luz das janelas: ativo, vivo, em atencao */
+  --luz: #f0e4a2;
   --luz-suave: rgba(240, 228, 162, .16);
-  --seguro: #8ac6b4;             /* copa das arvores: confirmado, salvo */
+  --seguro: #8ac6b4;
   --seguro-suave: rgba(138, 198, 180, .16);
-  --info: #5a9ce4;               /* arco de conexao */
+  /* Tints do verde, no lugar do teal do tema anterior. */
+  --tinte-1: rgba(138, 198, 180, .08);
+  --tinte-2: rgba(138, 198, 180, .14);
+  --info: #5a9ce4;
   --info-suave: rgba(90, 156, 228, .16);
-  /* terracota derivado da familia quente: matiz 10 graus, 41 graus longe do
-     dourado. Nao e vermelho de alarme. Sempre acompanhado de icone e rotulo,
-     porque so a cor nao sobrevive a luz forte de sol. */
   --erro: #de735e;
   --erro-suave: rgba(222, 115, 94, .16);
-
   --linha: rgba(146, 178, 255, .16);
   --linha-forte: rgba(146, 178, 255, .32);
   --foco: #f0e4a2;
-
-  /* --- espaco: escala de 4. Antes eram 25 valores soltos --- */
   --e-1: .25rem;  --e-2: .5rem;   --e-3: .75rem;  --e-4: 1rem;
   --e-5: 1.5rem;  --e-6: 2rem;    --e-7: 3rem;    --e-8: 4rem;
-
-  /* --- raio: tres passos + circulo --- */
   --r-1: .6rem; --r-2: 1rem; --r-3: 1.4rem; --r-cheio: 999px;
-
-  /* --- tipografia: cinco tamanhos --- */
   --t-micro: .72rem; --t-2: .8rem; --t-1: .9375rem; --t-0: 1.0625rem;
   --t-1g: 1.375rem; --t-2g: 1.75rem;
-
-  /* --- sombra --- */
   --sombra: 0 18px 48px rgba(2, 6, 20, .55);
   --sombra-alta: 0 28px 70px rgba(2, 6, 20, .7);
-
-  /* --- movimento --- */
   --v-rapido: 140ms;
   --v-medio: 240ms;
   --v-lento: 420ms;
   --curva: cubic-bezier(.2, .7, .3, 1);
   --curva-entrada: cubic-bezier(.16, 1, .3, 1);
-
-  /* --- alvo de toque: piso unico, respeitado por tudo --- */
   --toque: 44px;
-
-  /* === legado: apelidos para as telas ainda nao migradas === */
   --bg: var(--noite);
   --surface: var(--vidro);
   --text: var(--creme);
@@ -74,8 +50,7 @@
   --brand-2: var(--info);
   --warning: var(--luz);
   --shadow: var(--sombra);
-  --glow: var(--luz);
-}
+  --glow: var(--luz); }
 
 * { box-sizing: border-box; }
 html { min-height: 100%; background: var(--bg); }
@@ -161,19 +136,23 @@ footer { padding: 1.5rem .25rem; color: var(--muted); font-size: .84rem; text-al
 .section-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .section-head h2 { max-width: none; }
 .section-head button { min-height: var(--toque); padding: .5rem .85rem; }
-.family-list { display: grid; gap: .6rem; margin-top: 1rem; }
-.family-button { display: grid; grid-template-columns: auto 1fr; gap: .15rem .7rem; width: 100%; padding: .9rem; text-align: left; color: var(--text); border: 1px solid var(--line); border-radius: 1.15rem; background: transparent; }
-.family-button span { grid-row: span 2; align-self: center; color: var(--brand); font-weight: 850; }
-.family-button small { color: var(--muted); }
-.family-button.selected { background: rgba(15,95,82,.1); border-color: var(--brand); }
+.family-list {display: grid; gap: var(--e-2); margin-top: var(--e-4); }
+.family-button {display: grid; gap: .15rem; width: 100%; min-height: var(--toque); padding: var(--e-3);
+  text-align: left; border: 1px solid var(--linha); border-radius: var(--r-2);
+  background: var(--noite); color: var(--creme); cursor: pointer;
+  transition: border-color var(--v-medio) var(--curva), background-color var(--v-medio) var(--curva); }
+.family-button span {font-size: var(--t-micro); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--creme-fraco); }
+.family-button small {color: var(--creme-medio); font-size: var(--t-2); line-height: 1.45; }
+.family-button.selected {border-color: var(--luz); background: var(--luz-suave); box-shadow: inset 3px 0 0 var(--luz); }
+.family-button.selected span { color: var(--luz); }
 .people-list { display: grid; gap: .55rem; margin: 1rem 0; }
-.people-list article { display: flex; justify-content: space-between; gap: 1rem; padding: .8rem; border-radius: 1rem; background: rgba(15,95,82,.06); }
+.people-list article { display: flex; justify-content: space-between; gap: 1rem; padding: .8rem; border-radius: 1rem; background: var(--tinte-1); }
 .people-list span { color: var(--muted); font-size: .84rem; }
 .timeline { display: grid; gap: .25rem; }
 .timeline article { display: grid; grid-template-columns: 1rem 1fr; gap: .65rem; padding: .75rem .15rem; }
 .timeline p { margin: .2rem 0; }
 .timeline small { color: var(--muted); }
-.timeline-dot { width: .72rem; height: .72rem; margin-top: .25rem; border-radius: 999px; background: var(--brand); box-shadow: 0 0 0 5px rgba(15,95,82,.08); }
+.timeline-dot { width: .72rem; height: .72rem; margin-top: .25rem; border-radius: 999px; background: var(--brand); box-shadow: 0 0 0 5px var(--tinte-1); }
 .timeline-dot.pending { background: var(--warning); }
 .journey-stats { display: flex; flex-wrap: wrap; gap: .45rem; margin: .8rem 0; }
 .journey-stats span { padding: .4rem .6rem; border-radius: 999px; background: rgba(15,95,82,.08); color: var(--muted); font-size: .8rem; }
@@ -238,7 +217,7 @@ footer { padding: 1.5rem .25rem; color: var(--muted); font-size: .84rem; text-al
 .assessment-field input[aria-invalid="true"] { border-color: var(--warning); outline: 2px solid rgba(179,107,23,.2); }
 .assessment-question-list select { width: 100%; min-height: 2.8rem; padding: .65rem .75rem; border: 1px solid var(--line); border-radius: .8rem; color: var(--text); background: var(--surface); }
 .assessment-review details { margin-top: .45rem; padding: .45rem; border-top: 1px solid var(--line); }
-.assessment-review summary { cursor: pointer; font-weight: 750; }
+.assessment-review summary { cursor: pointer; font-weight: 750; min-height: var(--toque); }
 .assessment-review li { overflow-wrap: anywhere; }
 .assessment-applicability { margin-top: .6rem; padding: .65rem; border: 1px dashed var(--line); border-radius: .7rem; }
 .assessment-applicability select, .assessment-applicability input { width: 100%; min-height: 2.5rem; margin-top: .35rem; padding: .5rem; border: 1px solid var(--line); border-radius: .6rem; background: var(--surface); color: var(--text); }
@@ -249,18 +228,22 @@ footer { padding: 1.5rem .25rem; color: var(--muted); font-size: .84rem; text-al
 @media (min-width: 44rem) { .family-list { grid-template-columns: repeat(2,1fr); } .journey-family { display: grid; grid-template-columns: 1fr auto; } .journey-family > * { grid-column: 1; } .journey-family > button { grid-column: 2; grid-row: 1 / span 4; align-self: center; padding: 0 1rem; } }
 
 
-.person-button { display:flex; justify-content:space-between; gap:1rem; width:100%; padding:.8rem; border:1px solid transparent; border-radius:1rem; color:var(--text); background:rgba(15,95,82,.06); text-align:left; }
+.person-button { display:flex; justify-content:space-between; gap:1rem; width:100%; padding:.8rem; border:1px solid transparent; border-radius:1rem; color:var(--text); background:var(--tinte-1); text-align:left; }
 .person-button span { color:var(--muted); font-size:.84rem; }
 .person-button.selected { border-color:var(--brand); background:rgba(15,95,82,.12); }
 .care-panel { margin-top:1rem; padding-top:1rem; border-top:1px solid var(--line); }
 .care-title { display:flex; align-items:center; justify-content:space-between; gap:1rem; }
 .care-title h2 { margin:0; }
-.care-title button,.professional-tools button { min-height: var(--toque); padding:.55rem .8rem; border:1px solid var(--line); border-radius:1rem; color:var(--text); background:rgba(15,95,82,.08); font-weight:750; }
+.care-title button,.professional-tools button { min-height: var(--toque); padding:.55rem .8rem; border:1px solid var(--linha); border-radius:1rem; color:var(--text); background:var(--tinte-1); font-weight:750; }
 .care-actions { display:flex; gap:.45rem; overflow:auto; padding:.9rem 0; scrollbar-width:none; }
 .care-actions button { flex:0 0 auto; min-height: var(--toque); padding:.5rem .75rem; border:0; border-radius:999px; color:var(--brand); background:rgba(15,95,82,.1); font-weight:800; }
 .care-sections { display:grid; gap:.6rem; }
 .care-section { border:1px solid var(--line); border-radius:1rem; overflow:hidden; }
-.care-section-head { display:flex; justify-content:space-between; width:100%; padding:.8rem; border:0; color:var(--text); background:transparent; font-weight:850; }
+.care-section-head {display: flex; justify-content: space-between; align-items: center; gap: var(--e-2);
+  width: 100%; min-height: var(--toque); padding: var(--e-2) var(--e-3);
+  border: 1px solid var(--linha); border-radius: var(--r-2); background: var(--noite);
+  color: var(--creme); text-align: left; cursor: pointer;
+  transition: border-color var(--v-medio) var(--curva), background-color var(--v-medio) var(--curva); }
 .care-section>div { padding:0 .75rem .65rem; }
 .care-row { display:flex; align-items:center; justify-content:space-between; gap:.8rem; padding:.65rem 0; border-top:1px solid var(--line); }
 .care-row:first-child { border-top:0; }
@@ -296,7 +279,7 @@ footer { padding: 1.5rem .25rem; color: var(--muted); font-size: .84rem; text-al
 .clinical-library { padding-bottom:1rem; }
 .clinical-header { display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; }
 .clinical-header h1 { margin:0; font-size:2rem; }
-.clinical-status { display:inline-flex; padding:.35rem .55rem; border-radius:999px; color:var(--muted); background:rgba(15,95,82,.08); font-size:.72rem; font-weight:800; }
+.clinical-status { display:inline-flex; padding:.35rem .55rem; border-radius:999px; color:var(--muted); background:var(--tinte-1); font-size:.72rem; font-weight:800; }
 .clinical-status.ok { color:var(--brand); }
 .clinical-status.error { color:var(--warning); }
 .clinical-search { display:grid; gap:.35rem; margin:1rem 0; color:var(--muted); font-size:.8rem; font-weight:800; }
@@ -341,13 +324,16 @@ footer { padding: 1.5rem .25rem; color: var(--muted); font-size: .84rem; text-al
 .relations-panel { margin-top:1rem; padding-top:1rem; border-top:1px solid var(--line); }
 .relations-head { display:flex; align-items:center; justify-content:space-between; gap:1rem; }
 .relations-head h2 { margin:0; }
-.relations-head>button,.diagram-controls>button { min-height: var(--toque); padding:.55rem .8rem; border:1px solid var(--line); border-radius:1rem; color:var(--text); background:rgba(15,95,82,.08); font-weight:800; }
-.relations-tabs { display:flex; gap:.4rem; overflow:auto; margin:.8rem 0; }
-.relations-tabs button { flex:0 0 auto; padding:.5rem .7rem; border:0; border-radius:999px; color:var(--muted); background:rgba(15,95,82,.06); font-weight:750; }
-.relations-tabs button.active { color:var(--brand); background:rgba(15,95,82,.14); }
+.relations-head>button,.diagram-controls>button { min-height: var(--toque); padding:.55rem .8rem; border:1px solid var(--linha); border-radius:1rem; color:var(--text); background:var(--tinte-1); font-weight:800; }
+.relations-tabs {display: flex; flex-wrap: wrap; gap: var(--e-1); margin: var(--e-3) 0; }
+.relations-tabs button {flex: 0 0 auto; min-height: var(--toque); padding: 0 var(--e-3); border: 1px solid var(--linha);
+  border-radius: var(--r-cheio); color: var(--creme-medio); background: transparent; font-weight: 700;
+  transition: color var(--v-medio) var(--curva), background-color var(--v-medio) var(--curva), border-color var(--v-medio) var(--curva); }
+.relations-tabs button.active {color: var(--luz); background: var(--luz-suave); border-color: var(--luz); }
 .diagram-controls { display:flex; align-items:end; flex-wrap:wrap; gap:.5rem; margin-bottom:.7rem; }
 .diagram-controls label { display:grid; gap:.25rem; color:var(--muted); font-size:.72rem; font-weight:800; }
-.diagram-controls select { min-height:2.5rem; padding:.45rem .6rem; border:1px solid var(--line); border-radius:.85rem; color:var(--text); background:var(--surface); }
+.diagram-controls select {min-height: var(--toque); padding: 0 var(--e-2); border: 1px solid var(--linha);
+  border-radius: var(--r-1); color: var(--creme); background: var(--noite); }
 .family-diagram { width:100%; min-height:20rem; border:1px solid var(--line); border-radius:1.2rem; background:var(--surface); }
 .diagram-node { fill:var(--bg); stroke:var(--brand); stroke-width:2; }
 .diagram-node.family { fill:rgba(15,95,82,.12); stroke-width:4; }
@@ -357,7 +343,8 @@ footer { padding: 1.5rem .25rem; color: var(--muted); font-size: .84rem; text-al
 .edge-label { paint-order:stroke; stroke:var(--surface); stroke-width:4px; }
 .diagram-text,.diagram-description pre { padding:1rem; border-radius:1rem; white-space:pre-wrap; color:var(--text); background:var(--surface); font:inherit; line-height:1.6; }
 .diagram-description { margin-top:.7rem; color:var(--muted); }
-.diagram-description summary { cursor:pointer; font-weight:800; }
+.diagram-description summary { min-height: var(--toque); padding: var(--e-2) 0;
+  display: flex; align-items: center; cursor: pointer; font-weight: 800; }
 .prompt-panel textarea { width:100%; min-height:22rem; padding:1rem; border:1px solid var(--line); border-radius:1rem; color:var(--text); background:var(--surface); font:inherit; line-height:1.45; }
 .prompt-panel button { width:100%; min-height:3rem; margin-top:.6rem; border:0; border-radius:1rem; color:var(--bg); background:var(--brand); font-weight:850; }
 
@@ -449,8 +436,9 @@ button.secondary { color: var(--text); background: rgba(15,95,82,.08); }
 .family-diagram-flow .react-flow__attribution { color: var(--muted); }
 /* Regras diretas alem das variaveis: se a biblioteca mudar qual variante consulta, a paleta do
    aplicativo continua valendo. */
-.family-diagram-flow .react-flow__controls-button { background: var(--surface); color: var(--text); border-color: var(--line); }
-.family-diagram-flow .react-flow__controls-button:hover { background: color-mix(in srgb, var(--brand) 22%, var(--surface)); color: var(--brand); }
+.family-diagram-flow .react-flow__controls-button {width: var(--toque); height: var(--toque); background: var(--noite-alta);
+  color: var(--creme); border-color: var(--linha); }
+.family-diagram-flow .react-flow__controls-button:hover {background: var(--luz-suave); color: var(--luz); }
 .family-diagram-flow .react-flow__controls-button svg { fill: currentColor; }
 .family-diagram-flow .react-flow__minimap { background: var(--surface); border: 1px solid var(--line); }
 .family-diagram-flow .react-flow__minimap-mask { fill: color-mix(in srgb, var(--bg) 55%, transparent); }
@@ -474,7 +462,7 @@ button.secondary { color: var(--text); background: rgba(15,95,82,.08); }
 .diagram-controls > .diagram-primary:hover { background: var(--brand-2); border-color: var(--brand-2); }
 .diagram-kind-switch { display: inline-flex; gap: .3rem; margin-bottom: .6rem; padding: .25rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); }
 .diagram-kind-switch button { min-height: var(--toque); padding: .4rem .9rem; border: 0; border-radius: .8rem; color: var(--muted); background: transparent; font-weight: 800; }
-.diagram-kind-switch button.active { color: var(--bg); background: var(--brand); }
+.diagram-kind-switch button.active {color: var(--primario-tinta); background: var(--primario); }
 .link-registry { display: grid; gap: 1rem; margin-top: .8rem; }
 .link-group { padding: .9rem; border: 1px solid var(--line); border-radius: 1.2rem; background: var(--surface); }
 .link-group h4 { margin: 0; font-size: 1rem; }
