@@ -115,14 +115,6 @@ footer { padding: 1.5rem .25rem; color: var(--muted); font-size: .84rem; text-al
 
 
 .gate { min-height: 100dvh; display: grid; place-items: center; padding: 1rem; }
-.gate-card { width: min(100%, 28rem); padding: 1.4rem; border: 1px solid var(--line); border-radius: 1.7rem; background: var(--surface); box-shadow: var(--shadow); }
-.gate-card h1 { margin: 0; letter-spacing: -.04em; }
-.gate-card form { display: grid; gap: .65rem; margin-top: 1.2rem; }
-.gate-card label { font-weight: 700; }
-.gate-card input { min-height: 3rem; padding: .7rem .9rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--bg); color: var(--text); font-size: 1.2rem; letter-spacing: .18em; }
-.gate-card button { min-height: 3rem; border: 0; border-radius: 1rem; background: var(--brand); color: var(--bg); font-weight: 800; }
-
-
 .app-shell { padding-bottom: 7rem; }
 /* O titulo da aba manda; a marca vem depois e em escala menor. */
 .app-header { display: flex; align-items: center; gap: var(--e-3); padding: var(--e-2) var(--e-1) 0; }
@@ -1084,3 +1076,88 @@ button.secondary { color: var(--text); background: var(--tinte-1); }
 }
 
 .assessment-progress .concluido { color: var(--seguro); font-weight: 700; }
+
+/* ==========================================================================
+   TELA DE PROTEÇÃO LOCAL
+   ========================================================================== */
+.gate {
+  min-height: 100dvh; display: grid; place-items: center;
+  padding: var(--e-5) var(--e-4) calc(var(--e-6) + env(safe-area-inset-bottom));
+  background:
+    radial-gradient(120% 70% at 50% -10%, rgba(240, 228, 162, .10), transparent 60%),
+    radial-gradient(90% 60% at 15% 110%, rgba(90, 156, 228, .12), transparent 65%),
+    var(--noite);
+}
+.gate-esperando { align-items: center; color: var(--creme-medio); }
+
+.gate-topo { align-self: center; display: grid; justify-items: center; gap: var(--e-3); margin-bottom: var(--e-5); }
+.gate-logo {
+  width: min(52vw, 9.5rem); height: auto; border-radius: var(--r-3);
+  box-shadow: 0 0 0 1px var(--linha), 0 18px 40px rgba(2, 6, 20, .6);
+}
+/* O nome e texto de verdade: nítido em qualquer tela, e some com prefers-reduced-motion. */
+.gate-nome {
+  margin: 0; font-size: var(--t-2g); font-weight: 800; letter-spacing: -.02em;
+  color: var(--creme); line-height: 1;
+}
+
+.gate-card {
+  width: min(100%, 25rem);
+  display: flex; flex-direction: column; align-items: flex-start;
+  padding: var(--e-6) var(--e-5);
+  border: 1px solid var(--linha); border-radius: var(--r-3);
+  background: var(--noite-alta); box-shadow: var(--sombra-alta);
+  animation: gate-entra var(--v-lento) var(--curva-entrada) both;
+}
+.gate-card h1 { margin: 0 0 var(--e-2); font-size: var(--t-2g); line-height: 1.15; letter-spacing: -.03em; }
+.gate-esperando { align-items: center; color: var(--creme-medio); }
+@keyframes gate-entra {
+  from { opacity: 0; transform: translateY(1rem); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) { .gate-card { animation: none; } }
+.gate-card .eyebrow { color: var(--luz); }
+.gate-descricao { margin: 0 0 var(--e-5); color: var(--creme-medio); font-size: var(--t-1); line-height: 1.55; }
+
+.gate-form { width: 100%; display: flex; flex-direction: column; gap: var(--e-2); }
+.gate-form label { font-size: var(--t-2); font-weight: 700; color: var(--creme-medio); }
+
+/* O campo do PIN: alvos grandes, contador a direita, erro com forma. */
+.gate-campo { position: relative; display: flex; align-items: center; }
+.gate-campo input {
+  width: 100%; min-height: 3.4rem; padding: 0 3.4rem 0 var(--e-4);
+  border: 1px solid var(--linha); border-radius: var(--r-2);
+  background: var(--noite); color: var(--creme);
+  font: inherit; font-size: var(--t-1g); letter-spacing: .35em;
+}
+.gate-campo input:focus-visible { outline: 2px solid var(--foco); outline-offset: 2px; border-color: var(--foco); }
+.gate-contador {
+  position: absolute; right: var(--e-4);
+  font-size: var(--t-micro); font-weight: 700; color: var(--creme-fraco);
+  font-variant-numeric: tabular-nums; pointer-events: none;
+}
+.gate-campo-erro input { border-color: var(--erro); box-shadow: 0 0 0 3px var(--erro-suave); }
+
+.gate-erro {
+  display: flex; align-items: center; gap: var(--e-2); margin: var(--e-1) 0 0;
+  padding: var(--e-2) var(--e-3); border-radius: var(--r-2);
+  background: var(--erro-suave); color: var(--erro);
+  font-size: var(--t-2); font-weight: 600;
+}
+.gate-erro span { font-weight: 700; }
+.gate-dica { margin: 0; font-size: var(--t-micro); color: var(--creme-fraco); }
+
+.gate-form .btn { margin-top: var(--e-2); width: 100%; min-height: 3.2rem; }
+.gate-form .btn:disabled { opacity: .45; cursor: not-allowed; }
+
+.gate-aviso {
+  margin: var(--e-5) 0 0; padding-top: var(--e-4);
+  border-top: 1px solid var(--linha);
+  color: var(--creme-fraco); font-size: var(--t-micro); line-height: 1.6;
+}
+
+@keyframes gate-entra {
+  from { opacity: 0; transform: translateY(1rem); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {  }

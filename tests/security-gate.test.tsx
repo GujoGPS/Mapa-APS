@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { hasPin, pinSecurityNotice, setPin, validatePinPolicy, verifyPin } from "@/src/security/pin";
 import { SecurityGate } from "@/app/security-gate";
@@ -31,9 +31,10 @@ describe("tela de proteção local", () => {
     render(<SecurityGate>Conteúdo local</SecurityGate>);
 
     expect(await screen.findByRole("heading", { name: "Crie um PIN para este dispositivo" })).toBeInTheDocument();
-    expect(screen.getByText("Defina um PIN para proteger o acesso ao Mapa neste dispositivo.")).toBeInTheDocument();
+    expect(screen.getByText(/O PIN protege o acesso ao Mapa neste aparelho/)).toBeInTheDocument();
     expect(screen.getByText(pinSecurityNotice)).toBeInTheDocument();
-    expect(screen.getByRole("status")).toHaveTextContent("Escolha um PIN para configurar a proteção local.");
+    // a linha "Escolha um PIN..." repetia o titulo e a descricao: foi removida
+    expect(screen.queryByText(/Escolha um PIN para configurar/)).not.toBeInTheDocument();
     expect(screen.queryByText(/Marco 1/i)).not.toBeInTheDocument();
   });
 
@@ -42,10 +43,47 @@ describe("tela de proteção local", () => {
     render(<SecurityGate>Conteúdo local</SecurityGate>);
 
     expect(await screen.findByRole("heading", { name: "Mapa protegido" })).toBeInTheDocument();
-    expect(screen.getByText("A proteção local está ativa neste dispositivo. Digite seu PIN para continuar.")).toBeInTheDocument();
-    await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("Proteção local ativa neste dispositivo."));
-    expect(screen.queryByText("Verificando proteção local...")).not.toBeInTheDocument();
+    expect(screen.getByText(/A proteção local está ativa neste aparelho/)).toBeInTheDocument();
+    // A linha fixa que repetia "proteção local ativa" foi removida: o que a pessoa precisa
+    // ver aqui e o campo do PIN, nao uma frase que repete o titulo.
+    expect(screen.getByLabelText(/PIN de 6 a 12/)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Entrar" })).toBeInTheDocument();
+    expect(screen.queryByText(/Verificando a proteção local/)).not.toBeInTheDocument();
     expect(screen.queryByText(pinSecurityNotice)).not.toBeInTheDocument();
     expect(screen.queryByText(/Marco 1/i)).not.toBeInTheDocument();
+  });
+
+  it("mascara o PIN, conta os dígitos e só libera o botão quando dá", async () => {
+    mockHasPin.mockResolvedValue(true);
+    render(<SecurityGate>Conteúdo local</SecurityGate>);
+    const campo = await screen.findByLabelText(/PIN de 6 a 12/);
+    const entrar = screen.getByRole("button", { name: "Entrar" });
+
+    // Dígito não digitado não vaza na tela.
+    expect(campo).toHaveAttribute("type", "password");
+    expect(entrar).toBeDisabled();
+
+    fireEvent.change(campo, { target: { value: "12345" } });
+    expect(entrar).toBeDisabled();
+    expect(screen.getByText("5/12")).toBeInTheDocument();
+
+    fireEvent.change(campo, { target: { value: "123456" } });
+    expect(entrar).toBeEnabled();
+  });
+
+  it("recusa PIN curto com mensagem de erro e não entra", async () => {
+    mockHasPin.mockResolvedValue(true);
+    mockVerifyPin.mockResolvedValue(false);
+    render(<SecurityGate>Conteúdo local</SecurityGate>);
+    const campo = await screen.findByLabelText(/PIN de 6 a 12/);
+    fireEvent.change(campo, { target: { value: "123456" } });
+    fireEvent.click(screen.getByRole("button", { name: "Entrar" }));
+
+    const erro = await screen.findByRole("alert");
+    expect(erro).toHaveTextContent(/PIN incorreto/);
+    expect(campo).toHaveAttribute("aria-invalid", "true");
+    // O campo é limpo para a pessoa tentar de novo sem apagar à mão.
+    expect(campo).toHaveValue("");
+    expect(screen.queryByText("Conteúdo local")).not.toBeInTheDocument();
   });
 });
