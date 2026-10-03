@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { buildPrompt, type PromptInput } from "@/src/clinical/ai/prompt-builder";
 import type { CareFact } from "@/src/clinical/assessments/types";
+import { adultDcntEsfDefinition } from "@/src/clinical/assessments/instruments/adult-dcnt-esf/definition";
 import type { Family, Person } from "@/src/contracts/family";
 
 const t = "2026-01-01T00:00:00.000Z";
@@ -68,13 +69,15 @@ describe("prompt monta mesmo com restricao parcial", () => {
 describe("separacao entre privacidade e lacuna de preenchimento", () => {
   it("classifica retirada de dado de pessoa como privacidade", () => {
     const r = buildPrompt(entrada({ facts: [fato({ topic: "segredo", familyVisibility: "hidden", derivationType: "measured", category: "measurement" })] }));
-    expect(r.privacy.map((e) => e.detail)).toContain("segredo");
+    expect(r.privacy).toHaveLength(1);
+    expect(r.privacy[0]!.reason).toMatch(/não exportável/i);
     expect(r.gaps).toHaveLength(0);
   });
 
   it("classifica limite do instrumento como lacuna, nao como privacidade", () => {
     const r = buildPrompt(entrada({ facts: [fato({ topic: "bloco-3-sem-fonte", factType: "source-limitation", category: "source-limitation", familyVisibility: "hidden" })] }));
-    expect(r.gaps.map((e) => e.detail)).toContain("bloco-3-sem-fonte");
+    expect(r.gaps).toHaveLength(1);
+    expect(r.gaps[0]!.reason).toMatch(/Lacuna/);
     expect(r.privacy).toHaveLength(0);
   });
 
@@ -88,6 +91,54 @@ describe("separacao entre privacidade e lacuna de preenchimento", () => {
     const r = buildPrompt(entrada({ nonExportableLinkLabels: ["segredo familiar"] }));
     expect(r.privacy).toHaveLength(1);
     expect(r.gaps).toHaveLength(0);
+  });
+
+  it("identifica cada retirada por um id unico, mesmo com topicos repetidos", () => {
+    const r = buildPrompt(entrada({
+      facts: [
+        fato({ factId: "cf-a1", topic: "source-missing-block-3", factType: "source-limitation", category: "source-limitation", familyVisibility: "hidden" }),
+        fato({ factId: "cf-a2", topic: "source-missing-block-3", factType: "source-limitation", category: "source-limitation", familyVisibility: "hidden" }),
+      ],
+    }));
+    const ids = r.gaps.map((g) => g.id);
+    expect(new Set(ids).size).toBe(r.gaps.length);
+  });
+
+  it("resume topicos repetidos em uma linha com contagem", () => {
+    const r = buildPrompt(entrada({
+      facts: [
+        fato({ factId: "cf-a1", topic: "source-missing-block-3", factType: "source-limitation", category: "source-limitation", familyVisibility: "hidden" }),
+        fato({ factId: "cf-a2", topic: "source-missing-block-3", factType: "source-limitation", category: "source-limitation", familyVisibility: "hidden" }),
+        fato({ factId: "cf-a3", topic: "source-missing-block-3", factType: "source-limitation", category: "source-limitation", familyVisibility: "hidden" }),
+      ],
+    }));
+    expect(r.gapSummary).toHaveLength(1);
+    expect(r.gapSummary[0]).toMatch(/3/);
+  });
+
+  it("nao mostra identificador tecnico do instrumento", () => {
+    const r = buildPrompt(entrada({
+      facts: [
+        fato({ factId: "cf-a", topic: "waist-classification-criterion", factType: "source-limitation", category: "source-limitation", familyVisibility: "hidden" }),
+        fato({ factId: "cf-b", topic: "source-missing-block-3", factType: "source-limitation", category: "source-limitation", familyVisibility: "hidden" }),
+        fato({ factId: "cf-c", topic: "tacs-acs", factType: "source-limitation", category: "source-limitation", familyVisibility: "hidden" }),
+      ],
+    }));
+    const texto = r.gapSummary.join(" ");
+    expect(texto).not.toMatch(/waist-classification-criterion|source-missing-block-3|tacs-acs/);
+  });
+
+  it("nomeia o bloco sem fonte de forma legivel", () => {
+    const r = buildPrompt(entrada({ facts: [fato({ factId: "cf-b", topic: "source-missing-block-3", factType: "source-limitation", category: "source-limitation", familyVisibility: "hidden" })] }));
+    expect(r.gapSummary[0]).toMatch(/Bloco 3/);
+    expect(r.gapSummary[0]).toMatch(/digitalizado/i);
+  });
+
+  it("usa o rotulo da propria ficha quando a pergunta existe", () => {
+    const bloco1 = adultDcntEsfDefinition.sections.find((s) => s.printedBlockNumber === 1)!;
+    const pergunta = bloco1.questions[0]!;
+    const r = buildPrompt(entrada({ facts: [fato({ factId: "cf-d", topic: "limite-x", factType: "source-limitation", category: "source-limitation", familyVisibility: "hidden", sourceQuestionIds: [pergunta.id] })] }));
+    expect(r.gapSummary[0]).toContain(pergunta.printedLabel);
   });
 
   it("mantém o total somando os dois grupos", () => {

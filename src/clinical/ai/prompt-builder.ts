@@ -1,3 +1,4 @@
+import { adultDcntEsfDefinition } from "@/src/clinical/assessments/instruments/adult-dcnt-esf/definition";
 import type { CareFact } from "@/src/clinical/assessments/types";
 import type { Family, Person } from "@/src/contracts/family";
 
@@ -9,6 +10,8 @@ export interface PromptMember {
 }
 
 export interface Exclusion {
+  /** Identificador estavel do registro retirado: topic repete entre aplicacoes e nao serve de chave. */
+  id: string;
   reason: string;
   detail: string;
 }
@@ -26,6 +29,8 @@ export interface PromptBuild {
   privacy: Exclusion[];
   /** Lacuna do instrumento ou campo não preenchido: não é decisão sobre a pessoa. */
   gaps: Exclusion[];
+  /** Lacunas agrupadas por topico, com a repeticao contada: um bloco sem fonte aparece uma vez. */
+  gapSummary: string[];
   excluded: Exclusion[];
 }
 
@@ -88,6 +93,35 @@ function idadeDe(facts: CareFact[], personId: string): number | undefined {
  * e informada em `excluded`. Identificadores (CPF, nome, data de nascimento, endereco) passam
  * pelo higienizador, que e a única passagem de dado de saude para fora do app.
  */
+const rotulosDeAmbiguidade = new Map(adultDcntEsfDefinition.ambiguities.map((a) => [a.id, a.location]));
+const rotulosDePergunta = new Map(adultDcntEsfDefinition.questions.map((q) => [q.id, q.printedLabel]));
+// Blocos inteiros sem implementação também aparecem como limitação da ficha.
+const rotulosDeBloco = new Map(
+  adultDcntEsfDefinition.sections
+    .filter((s) => s.questions.length === 0 && s.title)
+    .map((s) => [s.id, s.printedBlockNumber ? `Bloco ${s.printedBlockNumber} ainda não digitalizado` : s.title]),
+);
+
+/**
+ * Rótulo legível de uma retirada.
+ *
+ * Os tópicos das CareFacts são identificadores internos (`tacs-acs`, `cervical-overlap`) e não
+ * dizem nada para quem lê o aviso. Onde a ficha tem ambiguidade declarada, vale a localização;
+ * onde o fato vem de uma pergunta, vale o rótulo impresso dela.
+ */
+function rotuloDe(fact: CareFact): string {
+  const ambiguidade = rotulosDeAmbiguidade.get(fact.topic);
+  if (ambiguidade) return ambiguidade;
+  const bloco = rotulosDeBloco.get(fact.topic);
+  if (bloco) return bloco;
+  for (const questionId of fact.sourceQuestionIds ?? []) {
+    const rotulo = rotulosDePergunta.get(questionId);
+    if (rotulo) return rotulo;
+  }
+  if (fact.factType === "missing-information" || fact.category === "missing-data") return "Campo ainda não preenchido";
+  return "Limite do próprio instrumento";
+}
+
 /** Lacuna do formulário ou limite da fonte: não é dado da pessoa. */
 function ehLacunaDeInstrumento(fact: CareFact): boolean {
   return fact.factType === "source-limitation"
@@ -99,14 +133,15 @@ function ehLacunaDeInstrumento(fact: CareFact): boolean {
 export function buildPrompt(input: PromptInput): PromptBuild {
   const privacy: Exclusion[] = [];
   const gaps: Exclusion[] = [];
+  const lacunasPorId = new Map<string, CareFact>();
   const bloqueados = new Set(input.nonExportablePersonIds ?? []);
 
   for (const personId of bloqueados) {
     const pessoa = input.members.find((item) => item.person.id === personId)?.person ?? input.person;
-    privacy.push({ reason: "Registro marcado como não exportável", detail: pessoa ? pseudonimo(pessoa) : personId });
+    privacy.push({ id: `person:${personId}`, reason: "Registro marcado como não exportável", detail: pessoa ? pseudonimo(pessoa) : personId });
   }
   for (const label of input.nonExportableLinkLabels ?? []) {
-    privacy.push({ reason: "Vínculo familiar marcado como não exportável", detail: label });
+    privacy.push({ id: `link:${label}`, reason: "Vínculo familiar marcado como não exportável", detail: label });
   }
 
   const membros = input.members.filter((m) => !bloqueados.has(m.person.id));
@@ -116,12 +151,13 @@ export function buildPrompt(input: PromptInput): PromptBuild {
   for (const fact of input.facts) {
     if (!pessoasVisiveis.has(fact.personId)) continue;
     if (fact.sourceQuestionIds?.some((id) => PERGUNTAS_IDENTIFICADOR.has(id))) {
-      privacy.push({ reason: "Identificador", detail: fact.topic });
+      privacy.push({ id: fact.factId || `identifier:${fact.topic}`, reason: "Identificador", detail: rotuloDe(fact) });
       continue;
     }
     if (fact.familyVisibility === "hidden" || fact.clinicalVisibility === "hidden" || fact.clinicalVisibility === "private-note") {
       const alvo = ehLacunaDeInstrumento(fact) ? gaps : privacy;
-      alvo.push({ reason: ehLacunaDeInstrumento(fact) ? "Lacuna do instrumento ou campo não preenchido" : "Dado marcado como não exportável", detail: fact.topic });
+      if (ehLacunaDeInstrumento(fact)) lacunasPorId.set(`gap:${fact.factId || `${fact.topic}:${fact.applicationId}`}`, fact);
+      alvo.push({ id: fact.factId || `${fact.topic}:${fact.applicationId}`, reason: ehLacunaDeInstrumento(fact) ? "Lacuna do instrumento ou campo não preenchido" : "Dado marcado como não exportável", detail: rotuloDe(fact) });
       continue;
     }
     fatos.push(fact);
@@ -158,5 +194,15 @@ export function buildPrompt(input: PromptInput): PromptBuild {
   linhas.push("");
   linhas.push(INSTRUCOES[input.kind]);
 
-  return { text: higienizar(linhas.join("\n")), privacy, gaps, excluded: [...privacy, ...gaps] };
+  // O mesmo limite se repete a cada aplicacao; agrupar evita a lista parecer quebrada.
+  const porRotulo = new Map<string, { rotulo: string; total: number }>();
+  for (const lacuna of gaps) {
+    const original = lacunasPorId.get(lacuna.id);
+    const rotulo = original ? rotuloDe(original) : lacuna.detail;
+    const atual = porRotulo.get(rotulo);
+    porRotulo.set(rotulo, { rotulo, total: (atual?.total ?? 0) + 1 });
+  }
+  const gapSummary = [...porRotulo.values()].map((item) => (item.total > 1 ? `${item.rotulo} (${item.total} vezes)` : item.rotulo));
+
+  return { text: higienizar(linhas.join("\n")), privacy, gaps, gapSummary, excluded: [...privacy, ...gaps] };
 }
