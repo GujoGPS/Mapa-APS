@@ -108,6 +108,26 @@ describe("rotulos em portugues do diagrama", () => {
     expect(resource?.subtitle).not.toContain("active");
     const person = model.nodes.find((node) => node.id === "p1");
     expect(person?.subtitle).not.toContain("adult");
+    expect(person?.subtitle).toBe("membro");
+  });
+
+  it("traduz a faixa etaria no genograma, que antes vazava o valor cru", () => {
+    const withStage = buildGenogram({
+      family,
+      people: [
+        { ...people[0]!, lifeStage: "adult" },
+        { ...people[1]!, lifeStage: "child" },
+      ],
+      memberships,
+      relationships: [],
+      layer: "structural",
+    });
+    const adult = withStage.nodes.find((node) => node.id === "p1");
+    const child = withStage.nodes.find((node) => node.id === "p2");
+    expect(adult?.subtitle).toBe("adulta");
+    expect(child?.subtitle).toBe("crianca");
+    // \b evita casar "adulta"; o vazamento real seria o valor cru em ingles.
+    expect(withStage.nodes.map((node) => node.subtitle).join(" ")).not.toMatch(/\b(adult|child|adolescent|older-adult)\b/);
   });
 
   it("traduz os rotulos de acessibilidade da biblioteca", () => {

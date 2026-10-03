@@ -121,11 +121,20 @@ describe("interacoes do diagrama", () => {
     expect(screen.queryByText("Qualidade do vinculo")).toBeNull();
   });
 
-  it("oferece voltar ao desenho original quando ha layout salvo", async () => {
+  it("esconde o botao de voltar ao original enquanto nao ha layout salvo", async () => {
     renderPanel();
     await diagramElement();
-    const reset = screen.getByRole("button", { name: "Voltar ao desenho original" });
-    expect(reset.hasAttribute("disabled")).toBe(true);
+    expect(screen.queryByRole("button", { name: "Voltar ao desenho original" })).toBeNull();
+  });
+
+  it("oferece criar vinculo familiar junto ao diagrama", async () => {
+    renderPanel();
+    await diagramElement();
+    const button = screen.getByRole("button", { name: /Vínculo familiar/ });
+    expect(button.hasAttribute("disabled")).toBe(false);
+    fireEvent.click(button);
+    expect(await screen.findByRole("dialog")).toBeTruthy();
+    expect(screen.getByText(/Abordagem familiar/)).toBeTruthy();
   });
 
   it("avisa a quem seleciona pessoa ao clicar num no", async () => {

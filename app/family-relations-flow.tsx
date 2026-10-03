@@ -234,8 +234,8 @@ function FamilyDiagram({ model, onSelectNode, selectedNodeId, containerRef, onFl
         <MiniMap pannable zoomable />
         <Controls />
         {showLegend && model.edges.length > 0 && <RelationshipLegend />}
-        {onResetLayout && <Panel position="top-left" className="flow-legend">
-          <button type="button" className="flow-layout-reset" onClick={onResetLayout} disabled={!hasSavedLayout}>Voltar ao desenho original</button>
+        {onResetLayout && hasSavedLayout && <Panel position="top-left" className="flow-legend">
+          <button type="button" className="flow-layout-reset" onClick={onResetLayout}>Voltar ao desenho original</button>
         </Panel>}
       </ReactFlow>
     </div>

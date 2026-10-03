@@ -390,6 +390,13 @@ button.secondary { color: var(--text); background: rgba(15,95,82,.08); }
   --xy-attribution-background-color-default: transparent;
 }
 .family-diagram-flow .react-flow__attribution { color: var(--muted); }
+/* Regras diretas alem das variaveis: se a biblioteca mudar qual variante consulta, a paleta do
+   aplicativo continua valendo. */
+.family-diagram-flow .react-flow__controls-button { background: var(--surface); color: var(--text); border-color: var(--line); }
+.family-diagram-flow .react-flow__controls-button:hover { background: color-mix(in srgb, var(--brand) 22%, var(--surface)); color: var(--brand); }
+.family-diagram-flow .react-flow__controls-button svg { fill: currentColor; }
+.family-diagram-flow .react-flow__minimap { background: var(--surface); border: 1px solid var(--line); }
+.family-diagram-flow .react-flow__minimap-mask { fill: color-mix(in srgb, var(--bg) 55%, transparent); }
 .flow-node { min-width: 116px; padding: .5rem .7rem; border: 2px solid var(--line); border-radius: .9rem; background: var(--surface); text-align: center; box-shadow: var(--shadow); }
 .flow-node.person { border-radius: .6rem; }
 .flow-node.family { border-color: var(--brand); }
@@ -406,3 +413,5 @@ button.secondary { color: var(--text); background: rgba(15,95,82,.08); }
 .flow-legend-line { display: inline-block; width: 22px; border-top-width: 3px; border-top-style: solid; }
 .flow-layout-reset { min-height: 2rem; padding: .35rem .6rem; border: 1px solid var(--line); border-radius: .7rem; color: var(--text); background: var(--surface); font-size: .72rem; font-weight: 800; }
 .flow-layout-reset:disabled { opacity: .45; cursor: default; }
+.diagram-controls > .diagram-primary { background: var(--brand); color: var(--bg); border-color: var(--brand); }
+.diagram-controls > .diagram-primary:hover { background: var(--brand-2); border-color: var(--brand-2); }
