@@ -40,6 +40,8 @@ describe("barra principal apos a troca", () => {
   it("Jornada passou para dentro de Mais e continua acessivel", async () => {
     await renderApp();
     fireEvent.click(screen.getByRole("button", { name: /Mais/ }));
-    expect(screen.getAllByText(/Nenhuma Jornada ativa/).length).toBeGreaterThan(0);
+    // Depois da reestruturação, Mais é menu: a Jornada continua acessível a partir dele.
+    fireEvent.click(screen.getByRole("button", { name: /Jornada/ }));
+    await waitFor(() => expect(screen.getAllByText(/Nenhuma Jornada ativa/).length).toBeGreaterThan(0));
   });
 });

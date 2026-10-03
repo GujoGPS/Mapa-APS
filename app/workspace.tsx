@@ -2,6 +2,7 @@
 
 import {AiPromptsPanel} from "./ai-prompts-panel";
 import {UbsPanel} from "./ubs-panel";
+import {MoreMenu, type MoreSection} from "./more-menu";
 import {HistoryPanel} from "./history-panel";
 import {Sheet} from "./sheet";
 import { type FormEvent, useMemo, useState } from "react";
@@ -28,6 +29,7 @@ const labels: Record<Tab, string> = { home: "Início", clinical: "Clínica", car
 export function Workspace() {
   const { data, loading, error, refresh, demoSession } = useMapaData();
   const [tab, setTab] = useState<Tab>("home");
+  const [moreSection, setMoreSection] = useState<MoreSection | undefined>(undefined);
   const [composer, setComposer] = useState<Composer>(null);
   const [selectedFamilyId, setSelectedFamilyId] = useState<string>();
   const [selectedPersonId, setSelectedPersonId] = useState<string>();
@@ -110,9 +112,15 @@ export function Workspace() {
 
       {tab === "ubs" && <UbsPanel />}
 
-      {tab === "more" && <>{journeySemester ? <JourneyDashboard data={data} semester={journeySemester} onSaved={refresh} onVisit={(familyId)=>{setSelectedFamilyId(familyId);setTab("care")}} /> : <section className="card"><p className="eyebrow">Semestre ativo</p><h2>Nenhuma Jornada ativa</h2><p>Crie uma Jornada para organizar o acompanhamento longitudinal.</p><button onClick={() => setComposer("semester")}>Criar Jornada</button></section>}<DemoModePanel session={demoSession} families={data.families} onChanged={refresh} /><AiPromptsPanel families={data.families} people={data.people} memberships={data.memberships} relationships={data.relationships}/><HistoryPanel families={data.families} people={data.people} memberships={data.memberships} relationships={data.relationships} externalLinks={data.externalLinks} assessments={data.assessments} /><StorageDashboard /><section className="card"><p className="eyebrow">Escopo de uso</p><h2>O que este app é</h2><p>Ferramenta local de acompanhamento familiar e de ensino em saúde da família. Os dados ficam neste aparelho. O Mapa não substitui prontuário, prescrição nem registro institucional, e não substitui julgamento clínico.</p></section></>}
+      {tab === "more" && <MoreMenu aberta={moreSection} aoAbrir={setMoreSection} conteudo={<>
+        {moreSection === "journey" && (journeySemester ? <JourneyDashboard data={data} semester={journeySemester} onSaved={refresh} onVisit={(familyId)=>{setSelectedFamilyId(familyId);setTab("care")}} /> : <section className="card"><p className="eyebrow">Semestre ativo</p><h2>Nenhuma Jornada ativa</h2><p>Crie uma Jornada para organizar o acompanhamento longitudinal.</p><button onClick={() => setComposer("semester")}>Criar Jornada</button></section>)}
+        {moreSection === "demo" && <DemoModePanel session={demoSession} families={data.families} onChanged={refresh} />}
+        {moreSection === "prompts" && <AiPromptsPanel families={data.families} people={data.people} memberships={data.memberships} relationships={data.relationships}/>}
+        {moreSection === "history" && <HistoryPanel families={data.families} people={data.people} memberships={data.memberships} relationships={data.relationships} externalLinks={data.externalLinks} assessments={data.assessments} />}
+        {moreSection === "device" && <StorageDashboard />}
+      </>} />}
 
-      <nav className="bottom-nav" aria-label="Navegação principal">{(Object.keys(labels) as Tab[]).map((item) => <button key={item} className={tab===item?"active":""} onClick={() => setTab(item)}><span aria-hidden="true">{item === "home" ? "⌂" : item === "clinical" ? "+" : item === "care" ? "✦" : item === "ubs" ? "⌖" : "•••"}</span>{labels[item]}</button>)}</nav>
+      <nav className="bottom-nav" aria-label="Navegação principal">{(Object.keys(labels) as Tab[]).map((item) => <button key={item} className={tab===item?"active":""} onClick={() => { setTab(item); setMoreSection(undefined); }}><span aria-hidden="true">{item === "home" ? "⌂" : item === "clinical" ? "+" : item === "care" ? "✦" : item === "ubs" ? "⌖" : "•••"}</span>{labels[item]}</button>)}</nav>
 
       {composer && <Sheet open onClose={() => setComposer(null)} labelledBy="composer-title" handle closeOnBackdrop>{composer === "family" && <FamilyForm code={nextFamilyCode(data.families)} onSubmit={submitFamily} />}{composer === "family-edit" && selectedFamily && <FamilyForm code={selectedFamily.code} family={selectedFamily} onSubmit={submitFamily} />}{composer === "person" && selectedFamily && <PersonForm code={nextPersonCode(data.people, selectedFamily.code)} onSubmit={submitPerson} />}{composer === "person-edit" && selectedPerson && <PersonForm code={selectedPerson.code} person={selectedPerson} onSubmit={submitPerson} />}{composer === "encounter" && <EncounterForm families={data.families} people={data.people} memberships={data.memberships} onSubmit={submitEncounter} />}{composer === "semester" && <SemesterForm onSubmit={submitSemester} />}</Sheet>}
     </main>

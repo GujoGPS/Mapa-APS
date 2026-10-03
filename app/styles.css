@@ -487,3 +487,10 @@ button.secondary { color: var(--text); background: rgba(15,95,82,.08); }
 .ubs-list small { display: block; color: var(--muted); font-size: .78rem; }
 .ubs-link { display: inline-block; margin-top: .5rem; padding: .6rem .9rem; border: 1px solid var(--brand); border-radius: .9rem; color: var(--brand); font-weight: 800; text-decoration: none; }
 .ubs-link:hover { background: rgba(15, 95, 82, .08); }
+.more-menu-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: .6rem; margin-top: .8rem; }
+.more-menu-card { display: flex; align-items: center; gap: .8rem; width: 100%; padding: .9rem 1rem; border: 1px solid var(--line); border-radius: 1.2rem; background: var(--surface); color: inherit; text-align: left; }
+.more-menu-card:hover { border-color: var(--brand); }
+.more-menu-icon { display: grid; place-items: center; flex: 0 0 2.2rem; height: 2.2rem; border-radius: .8rem; background: rgba(15, 95, 82, .1); color: var(--brand); font-size: 1.05rem; }
+.more-menu-text strong { display: block; }
+.more-menu-text small { display: block; color: var(--muted); font-size: .82rem; }
+.more-slot { display: grid; gap: 1rem; margin-top: 1rem; }
