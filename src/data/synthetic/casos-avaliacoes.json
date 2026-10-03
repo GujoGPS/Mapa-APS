@@ -1,0 +1,940 @@
+{
+  "synthetic": true,
+  "scenarioVersion": 2,
+  "assessments": [
+    {
+      "id": "av_a_1",
+      "person": "p_a_1",
+      "date": "2026-03-11",
+      "status": "completed",
+      "answers": {
+        "header.person-name": [
+          "short-text",
+          "Helena Ribeiro"
+        ],
+        "header.birth-date": [
+          "date",
+          "1966-05-20"
+        ],
+        "header.health-unit": [
+          "short-text",
+          "UBS de referência (bairro periférico)"
+        ],
+        "header.community-health-worker": [
+          "short-text",
+          "Agente comunitária de saúde"
+        ],
+        "header.assessment-date": [
+          "date",
+          "2026-03-11"
+        ],
+        "sociodemographic.self-declared-race": [
+          "single-choice",
+          "brown"
+        ],
+        "sociodemographic.marital-status": [
+          "single-choice",
+          "married-or-stable-union"
+        ],
+        "sociodemographic.education": [
+          "single-choice",
+          "elementary-complete"
+        ],
+        "sociodemographic.current-occupation": [
+          "multiple-choice",
+          [
+            "retired"
+          ]
+        ],
+        "sociodemographic.family-income-per-capita": [
+          "single-choice",
+          "one-to-two-minimum-wages"
+        ],
+        "health.diagnosed-chronic-conditions": [
+          "multiple-choice",
+          [
+            "hypertension",
+            "diabetes-mellitus"
+          ]
+        ],
+        "health.other-chronic-condition-description": [
+          "long-text",
+          ""
+        ],
+        "health.chronic-disease-follow-up-exams": [
+          "yes-no",
+          "yes"
+        ],
+        "health.hypertension-blood-pressure-follow-up": [
+          "yes-no",
+          "yes"
+        ],
+        "screening.cervical-preventive": [
+          "yes-no-never-did-does-not-remember",
+          "less-than-one-year"
+        ],
+        "screening.mammography": [
+          "yes-no-never-did-does-not-remember",
+          "less-than-two-years"
+        ],
+        "screening.bone-densitometry": [
+          "single-choice",
+          "yes"
+        ],
+        "screening.colorectal-cancer": [
+          "single-choice",
+          "never"
+        ],
+        "physical.weight": [
+          "measurement",
+          88.5
+        ],
+        "physical.height": [
+          "measurement",
+          1.58
+        ],
+        "physical.waist-circumference": [
+          "measurement",
+          112
+        ],
+        "laboratory.hba1c.value": [
+          "laboratory-result",
+          8.4
+        ],
+        "laboratory.hba1c.date": [
+          "date",
+          "2026-03-05"
+        ],
+        "blood-pressure.visit-1.systolic": [
+          "blood-pressure",
+          {
+            "systolic": 152
+          }
+        ],
+        "blood-pressure.visit-1.diastolic": [
+          "blood-pressure",
+          {
+            "diastolic": 94
+          }
+        ],
+        "blood-pressure.visit-1.date": [
+          "date",
+          "2026-03-11"
+        ],
+        "blood-pressure.visit-2.systolic": [
+          "blood-pressure",
+          {
+            "systolic": 148
+          }
+        ],
+        "blood-pressure.visit-2.diastolic": [
+          "blood-pressure",
+          {
+            "diastolic": 91
+          }
+        ],
+        "blood-pressure.visit-2.date": [
+          "date",
+          "2026-06-11"
+        ],
+        "blood-pressure.control": [
+          "manual-classification",
+          "controlled"
+        ],
+        "cardiovascular-risk": [
+          "manual-classification",
+          "intermediate"
+        ],
+        "foot.skin-and-deformity-findings": [
+          "multiple-choice",
+          [
+            "dry-skin-or-cracks"
+          ]
+        ],
+        "foot.neuropathy-screening": [
+          "single-choice",
+          "one-or-more-insensitive-areas"
+        ],
+        "foot.right.dorsalis-pedis-pulse": [
+          "laterality-group",
+          "palpable"
+        ],
+        "foot.right.posterior-tibial-pulse": [
+          "laterality-group",
+          "palpable"
+        ],
+        "foot.left.dorsalis-pedis-pulse": [
+          "laterality-group",
+          "palpable"
+        ],
+        "foot.left.posterior-tibial-pulse": [
+          "laterality-group",
+          "not-palpable"
+        ],
+        "summary.services": [
+          "multiple-choice",
+          [
+            "nutrition-or-food-care",
+            "focal-medical-specialist"
+          ]
+        ],
+        "summary.other-service-description": [
+          "short-text",
+          ""
+        ],
+        "summary.ciap-2": [
+          "clinical-code",
+          "W66.0"
+        ]
+      }
+    },
+    {
+      "id": "av_a_2",
+      "person": "p_a_1",
+      "date": "2026-08-19",
+      "status": "completed",
+      "rectifies": "av_a_1",
+      "answers": {
+        "header.person-name": [
+          "short-text",
+          "Helena Ribeiro"
+        ],
+        "header.birth-date": [
+          "date",
+          "1966-05-20"
+        ],
+        "header.health-unit": [
+          "short-text",
+          "UBS de referência (bairro periférico)"
+        ],
+        "header.community-health-worker": [
+          "short-text",
+          "Agente comunitária de saúde"
+        ],
+        "header.assessment-date": [
+          "date",
+          "2026-08-19"
+        ],
+        "sociodemographic.self-declared-race": [
+          "single-choice",
+          "brown"
+        ],
+        "sociodemographic.marital-status": [
+          "single-choice",
+          "married-or-stable-union"
+        ],
+        "sociodemographic.education": [
+          "single-choice",
+          "elementary-complete"
+        ],
+        "sociodemographic.current-occupation": [
+          "multiple-choice",
+          [
+            "retired"
+          ]
+        ],
+        "sociodemographic.family-income-per-capita": [
+          "single-choice",
+          "one-to-two-minimum-wages"
+        ],
+        "health.diagnosed-chronic-conditions": [
+          "multiple-choice",
+          [
+            "hypertension",
+            "diabetes-mellitus"
+          ]
+        ],
+        "health.other-chronic-condition-description": [
+          "long-text",
+          ""
+        ],
+        "health.chronic-disease-follow-up-exams": [
+          "yes-no",
+          "yes"
+        ],
+        "health.hypertension-blood-pressure-follow-up": [
+          "yes-no",
+          "yes"
+        ],
+        "screening.cervical-preventive": [
+          "yes-no-never-did-does-not-remember",
+          "less-than-one-year"
+        ],
+        "screening.mammography": [
+          "yes-no-never-did-does-not-remember",
+          "less-than-two-years"
+        ],
+        "screening.bone-densitometry": [
+          "single-choice",
+          "yes"
+        ],
+        "screening.colorectal-cancer": [
+          "single-choice",
+          "never"
+        ],
+        "physical.weight": [
+          "measurement",
+          86.2
+        ],
+        "physical.height": [
+          "measurement",
+          1.58
+        ],
+        "physical.waist-circumference": [
+          "measurement",
+          109
+        ],
+        "laboratory.hba1c.value": [
+          "laboratory-result",
+          7.9
+        ],
+        "laboratory.hba1c.date": [
+          "date",
+          "2026-08-12"
+        ],
+        "blood-pressure.visit-1.systolic": [
+          "blood-pressure",
+          {
+            "systolic": 146
+          }
+        ],
+        "blood-pressure.visit-1.diastolic": [
+          "blood-pressure",
+          {
+            "diastolic": 89
+          }
+        ],
+        "blood-pressure.visit-1.date": [
+          "date",
+          "2026-08-19"
+        ],
+        "blood-pressure.visit-2.systolic": [
+          "blood-pressure",
+          {
+            "systolic": 143
+          }
+        ],
+        "blood-pressure.visit-2.diastolic": [
+          "blood-pressure",
+          {
+            "diastolic": 87
+          }
+        ],
+        "blood-pressure.visit-2.date": [
+          "date",
+          "2026-09-16"
+        ],
+        "blood-pressure.control": [
+          "manual-classification",
+          "controlled"
+        ],
+        "cardiovascular-risk": [
+          "manual-classification",
+          "intermediate"
+        ],
+        "foot.skin-and-deformity-findings": [
+          "multiple-choice",
+          [
+            "dry-skin-or-cracks"
+          ]
+        ],
+        "foot.neuropathy-screening": [
+          "single-choice",
+          "one-or-more-insensitive-areas"
+        ],
+        "foot.right.dorsalis-pedis-pulse": [
+          "laterality-group",
+          "palpable"
+        ],
+        "foot.right.posterior-tibial-pulse": [
+          "laterality-group",
+          "palpable"
+        ],
+        "foot.left.dorsalis-pedis-pulse": [
+          "laterality-group",
+          "palpable"
+        ],
+        "foot.left.posterior-tibial-pulse": [
+          "laterality-group",
+          "not-palpable"
+        ],
+        "summary.services": [
+          "multiple-choice",
+          [
+            "nutrition-or-food-care",
+            "psychology-or-mental-health"
+          ]
+        ],
+        "summary.other-service-description": [
+          "short-text",
+          ""
+        ],
+        "summary.ciap-2": [
+          "clinical-code",
+          "W66.0"
+        ]
+      }
+    },
+    {
+      "id": "av_b_1",
+      "person": "p_b_2",
+      "date": "2026-05-06",
+      "status": "completed",
+      "answers": {
+        "header.person-name": [
+          "short-text",
+          "Davi Prado"
+        ],
+        "header.birth-date": [
+          "date",
+          "2010-11-03"
+        ],
+        "header.health-unit": [
+          "short-text",
+          "UBS de referencia (bairro periférico)"
+        ],
+        "header.community-health-worker": [
+          "short-text",
+          "Agente comunitária de saúde"
+        ],
+        "header.assessment-date": [
+          "date",
+          "2026-05-06"
+        ],
+        "sociodemographic.self-declared-race": [
+          "single-choice",
+          "brown"
+        ],
+        "sociodemographic.marital-status": [
+          "single-choice",
+          "single"
+        ],
+        "sociodemographic.education": [
+          "single-choice",
+          "secondary-incomplete"
+        ],
+        "sociodemographic.current-occupation": [
+          "multiple-choice",
+          [
+            "student"
+          ]
+        ],
+        "sociodemographic.family-income-per-capita": [
+          "single-choice",
+          "half-to-one-minimum-wage"
+        ],
+        "health.diagnosed-chronic-conditions": [
+          "multiple-choice",
+          [
+            "psychiatric-disorders"
+          ]
+        ],
+        "health.other-chronic-condition-description": [
+          "long-text",
+          ""
+        ],
+        "health.chronic-disease-follow-up-exams": [
+          "yes-no",
+          "no"
+        ],
+        "health.hypertension-blood-pressure-follow-up": [
+          "yes-no",
+          "no"
+        ],
+        "screening.cervical-preventive": [
+          "yes-no-never-did-does-not-remember",
+          "never"
+        ],
+        "screening.mammography": [
+          "yes-no-never-did-does-not-remember",
+          "never"
+        ],
+        "screening.bone-densitometry": [
+          "single-choice",
+          "no"
+        ],
+        "screening.colorectal-cancer": [
+          "single-choice",
+          "never"
+        ],
+        "physical.weight": [
+          "measurement",
+          64
+        ],
+        "physical.height": [
+          "measurement",
+          1.72
+        ],
+        "physical.waist-circumference": [
+          "measurement",
+          78
+        ],
+        "laboratory.hba1c.value": [
+          "laboratory-result",
+          5.4
+        ],
+        "laboratory.hba1c.date": [
+          "date",
+          "2026-04-28"
+        ],
+        "blood-pressure.visit-1.systolic": [
+          "blood-pressure",
+          {
+            "systolic": 118
+          }
+        ],
+        "blood-pressure.visit-1.diastolic": [
+          "blood-pressure",
+          {
+            "diastolic": 74
+          }
+        ],
+        "blood-pressure.visit-1.date": [
+          "date",
+          "2026-05-06"
+        ],
+        "blood-pressure.visit-2.systolic": [
+          "blood-pressure",
+          {
+            "systolic": 116
+          }
+        ],
+        "blood-pressure.visit-2.diastolic": [
+          "blood-pressure",
+          {
+            "diastolic": 72
+          }
+        ],
+        "blood-pressure.visit-2.date": [
+          "date",
+          "2026-08-06"
+        ],
+        "blood-pressure.control": [
+          "manual-classification",
+          "controlled"
+        ],
+        "cardiovascular-risk": [
+          "manual-classification",
+          "low"
+        ],
+        "foot.skin-and-deformity-findings": [
+          "multiple-choice",
+          [
+            "calluses"
+          ]
+        ],
+        "foot.neuropathy-screening": [
+          "single-choice",
+          "sensitive-throughout"
+        ],
+        "foot.right.dorsalis-pedis-pulse": [
+          "laterality-group",
+          "palpable"
+        ],
+        "foot.right.posterior-tibial-pulse": [
+          "laterality-group",
+          "palpable"
+        ],
+        "foot.left.dorsalis-pedis-pulse": [
+          "laterality-group",
+          "palpable"
+        ],
+        "foot.left.posterior-tibial-pulse": [
+          "laterality-group",
+          "palpable"
+        ],
+        "summary.services": [
+          "multiple-choice",
+          [
+            "psychology-or-mental-health",
+            "social-assistance-cras-creas"
+          ]
+        ],
+        "summary.other-service-description": [
+          "short-text",
+          ""
+        ],
+        "summary.ciap-2": [
+          "clinical-code",
+          "F93.0"
+        ]
+      }
+    },
+    {
+      "id": "av_c_1",
+      "person": "p_c_1",
+      "date": "2026-02-18",
+      "status": "completed",
+      "answers": {
+        "header.person-name": [
+          "short-text",
+          "Idalina Campos"
+        ],
+        "header.birth-date": [
+          "date",
+          "1943-09-12"
+        ],
+        "header.health-unit": [
+          "short-text",
+          "UBS de referencia (bairro periférico)"
+        ],
+        "header.community-health-worker": [
+          "short-text",
+          "Agente comunitária de saúde"
+        ],
+        "header.assessment-date": [
+          "date",
+          "2026-02-18"
+        ],
+        "sociodemographic.self-declared-race": [
+          "single-choice",
+          "brown"
+        ],
+        "sociodemographic.marital-status": [
+          "single-choice",
+          "widowed"
+        ],
+        "sociodemographic.education": [
+          "single-choice",
+          "illiterate"
+        ],
+        "sociodemographic.current-occupation": [
+          "multiple-choice",
+          [
+            "retired"
+          ]
+        ],
+        "sociodemographic.family-income-per-capita": [
+          "single-choice",
+          "below-quarter-minimum-wage"
+        ],
+        "health.diagnosed-chronic-conditions": [
+          "multiple-choice",
+          [
+            "hypertension",
+            "neurological-or-neurodegenerative-disease"
+          ]
+        ],
+        "health.other-chronic-condition-description": [
+          "long-text",
+          "Relatos de esquecimentos recentes e dificuldade para usar medicação com regularidade."
+        ],
+        "health.chronic-disease-follow-up-exams": [
+          "yes-no",
+          "yes"
+        ],
+        "health.hypertension-blood-pressure-follow-up": [
+          "yes-no",
+          "yes"
+        ],
+        "screening.cervical-preventive": [
+          "yes-no-never-did-does-not-remember",
+          "more-than-three-years"
+        ],
+        "screening.mammography": [
+          "yes-no-never-did-does-not-remember",
+          "never"
+        ],
+        "screening.bone-densitometry": [
+          "single-choice",
+          "no"
+        ],
+        "screening.colorectal-cancer": [
+          "single-choice",
+          "never"
+        ],
+        "physical.weight": [
+          "measurement",
+          58
+        ],
+        "physical.height": [
+          "measurement",
+          1.52
+        ],
+        "physical.waist-circumference": [
+          "measurement",
+          92
+        ],
+        "laboratory.hba1c.value": [
+          "laboratory-result",
+          6.1
+        ],
+        "laboratory.hba1c.date": [
+          "date",
+          "2026-02-10"
+        ],
+        "blood-pressure.visit-1.systolic": [
+          "blood-pressure",
+          {
+            "systolic": 158
+          }
+        ],
+        "blood-pressure.visit-1.diastolic": [
+          "blood-pressure",
+          {
+            "diastolic": 88
+          }
+        ],
+        "blood-pressure.visit-1.date": [
+          "date",
+          "2026-02-18"
+        ],
+        "blood-pressure.visit-2.systolic": [
+          "blood-pressure",
+          {
+            "systolic": 155
+          }
+        ],
+        "blood-pressure.visit-2.diastolic": [
+          "blood-pressure",
+          {
+            "diastolic": 85
+          }
+        ],
+        "blood-pressure.visit-2.date": [
+          "date",
+          "2026-05-18"
+        ],
+        "blood-pressure.control": [
+          "manual-classification",
+          "uncontrolled"
+        ],
+        "cardiovascular-risk": [
+          "manual-classification",
+          "high"
+        ],
+        "foot.skin-and-deformity-findings": [
+          "multiple-choice",
+          [
+            "dry-skin-or-cracks",
+            "calluses"
+          ]
+        ],
+        "foot.neuropathy-screening": [
+          "single-choice",
+          "one-or-more-insensitive-areas"
+        ],
+        "foot.right.dorsalis-pedis-pulse": [
+          "laterality-group",
+          "not-palpable"
+        ],
+        "foot.right.posterior-tibial-pulse": [
+          "laterality-group",
+          "not-palpable"
+        ],
+        "foot.left.dorsalis-pedis-pulse": [
+          "laterality-group",
+          "not-palpable"
+        ],
+        "foot.left.posterior-tibial-pulse": [
+          "laterality-group",
+          "not-palpable"
+        ],
+        "summary.services": [
+          "multiple-choice",
+          [
+            "social-assistance-cras-creas",
+            "physiotherapy-or-rehabilitation"
+          ]
+        ],
+        "summary.other-service-description": [
+          "short-text",
+          ""
+        ],
+        "summary.ciap-2": [
+          "clinical-code",
+          "G30.9"
+        ]
+      }
+    },
+    {
+      "id": "av_c_2",
+      "person": "p_c_1",
+      "date": "2026-09-10",
+      "status": "completed",
+      "answers": {
+        "header.person-name": [
+          "short-text",
+          "Idalina Campos"
+        ],
+        "header.birth-date": [
+          "date",
+          "1943-09-12"
+        ],
+        "header.health-unit": [
+          "short-text",
+          "UBS de referencia (bairro periférico)"
+        ],
+        "header.community-health-worker": [
+          "short-text",
+          "Agente comunitária de saúde"
+        ],
+        "header.assessment-date": [
+          "date",
+          "2026-09-10"
+        ],
+        "sociodemographic.self-declared-race": [
+          "single-choice",
+          "brown"
+        ],
+        "sociodemographic.marital-status": [
+          "single-choice",
+          "widowed"
+        ],
+        "sociodemographic.education": [
+          "single-choice",
+          "illiterate"
+        ],
+        "sociodemographic.current-occupation": [
+          "multiple-choice",
+          [
+            "retired"
+          ]
+        ],
+        "sociodemographic.family-income-per-capita": [
+          "single-choice",
+          "below-quarter-minimum-wage"
+        ],
+        "health.diagnosed-chronic-conditions": [
+          "multiple-choice",
+          [
+            "hypertension",
+            "neurological-or-neurodegenerative-disease"
+          ]
+        ],
+        "health.other-chronic-condition-description": [
+          "long-text",
+          "Perda de peso e recusa de alimentos; uso da medicação depende da filha."
+        ],
+        "health.chronic-disease-follow-up-exams": [
+          "yes-no",
+          "yes"
+        ],
+        "health.hypertension-blood-pressure-follow-up": [
+          "yes-no",
+          "yes"
+        ],
+        "screening.cervical-preventive": [
+          "yes-no-never-did-does-not-remember",
+          "more-than-three-years"
+        ],
+        "screening.mammography": [
+          "yes-no-never-did-does-not-remember",
+          "never"
+        ],
+        "screening.bone-densitometry": [
+          "single-choice",
+          "no"
+        ],
+        "screening.colorectal-cancer": [
+          "single-choice",
+          "never"
+        ],
+        "physical.weight": [
+          "measurement",
+          52.4
+        ],
+        "physical.height": [
+          "measurement",
+          1.52
+        ],
+        "physical.waist-circumference": [
+          "measurement",
+          88
+        ],
+        "laboratory.hba1c.value": [
+          "laboratory-result",
+          6.4
+        ],
+        "laboratory.hba1c.date": [
+          "date",
+          "2026-09-02"
+        ],
+        "blood-pressure.visit-1.systolic": [
+          "blood-pressure",
+          {
+            "systolic": 152
+          }
+        ],
+        "blood-pressure.visit-1.diastolic": [
+          "blood-pressure",
+          {
+            "diastolic": 84
+          }
+        ],
+        "blood-pressure.visit-1.date": [
+          "date",
+          "2026-09-10"
+        ],
+        "blood-pressure.visit-2.systolic": [
+          "blood-pressure",
+          {
+            "systolic": 149
+          }
+        ],
+        "blood-pressure.visit-2.diastolic": [
+          "blood-pressure",
+          {
+            "diastolic": 82
+          }
+        ],
+        "blood-pressure.visit-2.date": [
+          "date",
+          "2026-09-24"
+        ],
+        "blood-pressure.control": [
+          "manual-classification",
+          "uncontrolled"
+        ],
+        "cardiovascular-risk": [
+          "manual-classification",
+          "high"
+        ],
+        "foot.skin-and-deformity-findings": [
+          "multiple-choice",
+          [
+            "dry-skin-or-cracks",
+            "calluses",
+            "active-ulceration"
+          ]
+        ],
+        "foot.neuropathy-screening": [
+          "single-choice",
+          "one-or-more-insensitive-areas"
+        ],
+        "foot.right.dorsalis-pedis-pulse": [
+          "laterality-group",
+          "not-palpable"
+        ],
+        "foot.right.posterior-tibial-pulse": [
+          "laterality-group",
+          "not-palpable"
+        ],
+        "foot.left.dorsalis-pedis-pulse": [
+          "laterality-group",
+          "not-palpable"
+        ],
+        "foot.left.posterior-tibial-pulse": [
+          "laterality-group",
+          "not-palpable"
+        ],
+        "summary.services": [
+          "multiple-choice",
+          [
+            "social-assistance-cras-creas",
+            "nutrition-or-food-care",
+            "physiotherapy-or-rehabilitation"
+          ]
+        ],
+        "summary.other-service-description": [
+          "short-text",
+          ""
+        ],
+        "summary.ciap-2": [
+          "clinical-code",
+          "G30.9"
+        ]
+      }
+    }
+  ]
+}

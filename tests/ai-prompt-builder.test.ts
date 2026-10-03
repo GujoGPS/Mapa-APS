@@ -95,6 +95,17 @@ describe("retirada de identificadores", () => {
     expect(r.excluded.length).toBe(1);
   });
 
+  it("nao corrompe numero decimal que parece CPF", () => {
+    const r = buildPrompt(entrada({ facts: [fato({ topic: "bmi", value: { value: 21.0557058, classification: "normal" } })] }));
+    expect(r.text).toContain("21.0557058");
+    expect(r.text).not.toContain("identificador removido");
+  });
+
+  it("nao corrompe medidas nem datas em formato numerico", () => {
+    const r = buildPrompt(entrada({ facts: [fato({ topic: "altura", value: 172, unit: "cm" })] }));
+    expect(r.text).toContain("172 cm");
+  });
+
   it("mantem o texto clinico legitimo intacto", () => {
     const r = buildPrompt(entrada());
     expect(r.text).toContain("peso");

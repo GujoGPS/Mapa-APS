@@ -39,10 +39,11 @@ const INSTRUCOES: Record<PromptKind, string> = {
 const PERGUNTAS_IDENTIFICADOR = new Set(["header.cpf", "header.person-name"]);
 
 /** Padroes de dado pessoal que podem aparecer colados em texto livre derivado. */
-const PADRAO_CPF = /\d{3}\.?\d{3}\.?\d{3}-?\d{2}/g;
-const PADRAO_DATA_BR = /\b\d{2}\/\d{2}\/\d{4}\b/g;
-const PADRAO_DATA_ISO = /\b\d{4}-\d{2}-\d{2}\b/g;
-const PADRAO_CEP = /\b\d{5}-?\d{3}\b/g;
+// Nao pode casar dentro de um decimal: 21.05 -> "21.055" casaria como CPF e corromperia dado clínico.
+const PADRAO_CPF = /(?<![\d.,])\d{3}\.\d{3}\.\d{3}-\d{2}(?![\d])|(?<![\d.,])\d{11}(?![\d])/g;
+const PADRAO_DATA_BR = /(?<![\d.])\d{2}\/\d{2}\/\d{4}(?![\d])/g;
+const PADRAO_DATA_ISO = /(?<![\d.])\d{4}-\d{2}-\d{2}(?![\d.])/g;
+const PADRAO_CEP = /(?<![\d.])\d{5}-?\d{3}(?![\d])/g;
 const PADRAO_LOGRADOURO = /\b(rua|avenida|av\.|travessa|praça|rodovia|estrada|rua)\s+[^,;\n]{3,60}/gi;
 
 function pseudonimo(person: Person): string {
@@ -64,7 +65,7 @@ function higienizar(texto: string): string {
 }
 
 function idadeDe(facts: CareFact[], personId: string): number | undefined {
-  const fato = facts.find((item) => item.personId === personId && item.topic === "age" && typeof item.value === "number");
+  const fato = facts.find((item) => item.personId === personId && item.topic === "age-at-assessment" && typeof item.value === "number");
   return typeof fato?.value === "number" ? fato.value : undefined;
 }
 
@@ -121,7 +122,7 @@ export function buildPrompt(input: PromptInput): PromptBuild {
     linhas.push(`Pessoa selecionada: ${pseudonimo(input.person)}${idade !== undefined ? ` · ${idade} anos` : ""}`);
   }
 
-  const clinicos = fatos.filter((fact) => fact.subjectScope === "individual" && fact.topic !== "age" && fact.value !== undefined && fact.value !== null && fact.value !== "");
+  const clinicos = fatos.filter((fact) => fact.subjectScope === "individual" && fact.topic !== "age-at-assessment" && fact.value !== undefined && fact.value !== null && fact.value !== "");
   if (clinicos.length) {
     linhas.push("");
     linhas.push("DADOS CLÍNICOS DERIVADOS (proveniência e revisão preservadas):");
