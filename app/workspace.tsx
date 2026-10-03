@@ -89,7 +89,14 @@ export function Workspace() {
   if (loading) return <SplashScreen />;
   return (
     <main className="shell app-shell">
-      <header className="app-header"><img className="app-header-logo" src="/brand/icon-512.png" alt="" width={512} height={512} /><div><p className="eyebrow">Mapa</p><h1>{labels[tab]}</h1></div><span className={demoSession ? "local-badge demo-badge" : "local-badge"}>{demoSession ? "DEMONSTRAÇÃO · SINTÉTICO" : "Local"}</span></header>
+      <header className="app-header"><img className="app-header-logo" src="/brand/icon-512.png" alt="" width={512} height={512} /><div><p className="eyebrow">Mapa</p><h1>{labels[tab]}</h1></div>{demoSession
+        ? <span className="selo-demo" title="Dados sintéticos de demonstração" aria-label="Demonstração: dados sintéticos">
+            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+              <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+              <circle cx="12" cy="12" r="2.6" fill="currentColor" />
+            </svg>
+          </span>
+        : <span className="local-badge">Local</span>}</header>
       {error && <p className="error-banner" role="alert">{error}</p>}
       <p className="system-message" role="status" aria-live="polite">{message}</p>
       {primeiraAvaliacao && <p className="first-assessment-offer"><strong>Atalho</strong><span>Ir direto para a ficha ESF desta pessoa, sem navegar pela lista.</span><button onClick={() => { setTab("care"); setStartEvaluationFor(primeiraAvaliacao); setPrimeiraAvaliacao(undefined); }}>Iniciar primeira avaliação (ESF)</button></p>}
