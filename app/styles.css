@@ -494,3 +494,13 @@ button.secondary { color: var(--text); background: rgba(15,95,82,.08); }
 .more-menu-text strong { display: block; }
 .more-menu-text small { display: block; color: var(--muted); font-size: .82rem; }
 .more-slot { display: grid; gap: 1rem; margin-top: 1rem; }
+.vaccine-faixa { margin-top: 1.2rem; }
+.vaccine-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); gap: .4rem; margin: 0; padding: 0; list-style: none; }
+.vaccine-item { display: block; width: 100%; padding: .7rem .8rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); color: inherit; text-align: left; }
+.vaccine-item:hover { border-color: var(--brand); }
+.vaccine-item.marcada { opacity: .5; }
+.vaccine-item.marcada .vaccine-nome { text-decoration: line-through; }
+.vaccine-idade { display: block; font-size: .72rem; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: var(--brand); }
+.vaccine-nome { display: block; font-size: .93rem; }
+.vaccine-doses { display: block; color: var(--muted); font-size: .8rem; }
+.vaccine-obs { display: block; margin-top: .25rem; color: var(--muted); font-size: .74rem; line-height: 1.4; }
