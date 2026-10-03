@@ -149,8 +149,11 @@ footer { padding: 1.5rem .25rem; color: var(--muted); font-size: .84rem; text-al
 
 
 .app-shell { padding-bottom: 7rem; }
-.app-header { display: flex; align-items: center; justify-content: space-between; padding: .8rem .25rem .2rem; }
-.app-header h1 { margin: 0; font-size: 2rem; letter-spacing: -.05em; }
+/* O titulo da aba manda; a marca vem depois e em escala menor. */
+.app-header { display: flex; align-items: center; gap: var(--e-3); padding: var(--e-2) var(--e-1) 0; }
+.app-header-titulo { margin: 0; font-size: var(--t-2g); letter-spacing: -.03em; line-height: 1.15; }
+.app-header-marca { display: inline-flex; align-items: center; gap: var(--e-2); opacity: .7; }
+.app-header-wordmark { font-size: var(--t-micro); font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--creme-fraco); }
 .local-badge { padding: .4rem .65rem; border-radius: 999px; color: var(--brand); background: rgba(15,95,82,.1); font-size: .75rem; font-weight: 800; }
 .hero-card h2 { max-width: none; }
 .quick-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: .7rem; margin-top: 1rem; }
@@ -589,7 +592,7 @@ button.secondary { color: var(--text); background: rgba(15,95,82,.08); }
 }
 
 .brand-mark-image { width: 5rem; height: 5rem; border-radius: 1.4rem; object-fit: cover; margin-bottom: .6rem; }
-.app-header-logo { width: 2.6rem; height: 2.6rem; border-radius: .8rem; object-fit: cover; flex: 0 0 auto; }
+.app-header-logo { width: 1.6rem; height: 1.6rem; border-radius: .45rem; object-fit: cover; flex: 0 0 auto; }
 
 @media (prefers-reduced-motion: reduce) {
   .splash-pulse { animation: none !important; opacity: .5; }
