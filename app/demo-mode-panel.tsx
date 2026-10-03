@@ -3,18 +3,18 @@
 import {Sheet} from "./sheet";
 import { useState } from "react";
 import type { Family } from "@/src/contracts/family";
-import { isSyntheticDemoFamily } from "@/src/contracts/demo";
+import { isSyntheticDemoFamily, type DemoSessionSnapshot } from "@/src/contracts/demo";
 import { enterDemoMode, exitDemoMode, removeDemoData } from "@/src/domain/demo-mode";
 
 interface Props {
-  active: boolean;
+  session?: DemoSessionSnapshot | undefined;
   families: Family[];
   onChanged: () => Promise<void>;
 }
 
 type Confirmation = "enter" | "remove" | null;
 
-export function DemoModePanel({ active, families, onChanged }: Props) {
+export function DemoModePanel({ session, families, onChanged }: Props) {
   const [confirmation, setConfirmation] = useState<Confirmation>(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
@@ -65,9 +65,10 @@ export function DemoModePanel({ active, families, onChanged }: Props) {
     <section className="card" aria-labelledby="demo-mode-title">
       <p className="eyebrow">Ambiente local separado</p>
       <h2 id="demo-mode-title">Modo demonstração</h2>
-      {active ? (
+      {session ? (
         <>
-          <p className="safety-callout" role="status"><strong>Ativo · somente dados sintéticos.</strong> Os registros normais estão ocultos e guardados em um snapshot local.</p>
+          <p className="safety-callout" role="status"><strong>Ativo · somente dados sintéticos.</strong> Os registros normais estão ocultos e guardados em um snapshot local{session.startedAt ? ` desde ${new Date(session.startedAt).toLocaleString("pt-BR")}` : ""}.</p>
+          {session.incomplete && <p className="shared-callout">Este modo foi ativado numa versão anterior do app, que não guardou rascunhos nem histórico de eventos. Ao sair, famílias e pessoas voltam normalmente; esses dois tipos de registro não podem ser recuperados.</p>}
           <div className="action-row">
             <button type="button" disabled={busy} onClick={() => void exit()}>Sair e restaurar estado anterior</button>
             <button type="button" className="secondary" disabled={busy} onClick={() => setConfirmation("remove")}>Remover dados de demonstração</button>

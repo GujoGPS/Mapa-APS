@@ -107,8 +107,10 @@ export async function exitDemoMode(): Promise<boolean> {
 
   const stores = await readAllStores();
   stores[STORES.records] = session.snapshotRecords;
-  stores[STORES.drafts] = session.snapshotDrafts;
-  stores[STORES.events] = session.snapshotEvents;
+  // Schema antigo nao guardou drafts nem eventos: restaura o que existe e limpa o resto,
+  // em vez de recusar a saida e deixar o usuario preso na demonstracao.
+  stores[STORES.drafts] = session.snapshotDrafts ?? [];
+  stores[STORES.events] = session.snapshotEvents ?? [];
   stores[STORES.meta] = stores[STORES.meta].filter((record) => asObject(record).id !== DEMO_SESSION_META_ID);
   await replaceAllStores(stores);
   return true;

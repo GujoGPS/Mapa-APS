@@ -24,7 +24,6 @@ export function StorageDashboard() {
   const [status, setStatus] = useState<StorageStatus>({ persistence: "unsupported" });
   const [message, setMessage] = useState("Verificando armazenamento local...");
   const [busy, setBusy] = useState(false);
-  const [includeSynthetic, setIncludeSynthetic] = useState(false);
 
   useEffect(() => { void readStorageStatus().then((next) => { setStatus(next); setMessage("Armazenamento verificado."); }); }, []);
 
@@ -48,14 +47,14 @@ export function StorageDashboard() {
   async function downloadBackup() {
     setBusy(true);
     try {
-      const content = await serializeBackup(undefined, { includeSynthetic });
+      const content = await serializeBackup();
       const url = URL.createObjectURL(new Blob([content], { type: "application/json" }));
       const anchor = document.createElement("a");
       anchor.href = url;
       anchor.download = `mapa-backup-${new Date().toISOString().slice(0, 10)}.json`;
       anchor.click();
       URL.revokeObjectURL(url);
-      setMessage(includeSynthetic ? "Backup preparado com dados sintéticos, conforme sua seleção explícita." : "Backup normal preparado; dados sintéticos e sessão de demonstração foram excluídos.");
+      setMessage("Backup preparado com os seus dados; registros de demonstração nunca entram.");
     } catch (error) { setMessage(error instanceof Error ? error.message : "Falha ao gerar backup."); }
     setBusy(false);
   }
@@ -71,13 +70,13 @@ export function StorageDashboard() {
         <div><span>Espaço usado do navegador</span><strong>{formatPercent(status.usageRatio)}</strong></div>
       </div>
       <p className="system-message" role="status" aria-live="polite">{message}</p>
-      <label className="check-row"><input type="checkbox" checked={includeSynthetic} onChange={(event) => setIncludeSynthetic(event.target.checked)} />Incluir dados sintéticos neste backup</label>
+      
       <div className="action-row">
         <button type="button" disabled={busy} onClick={persist}>Solicitar persistência</button>
         <button type="button" disabled={busy} onClick={testWrite}>Testar gravação</button>
         <button type="button" disabled={busy} onClick={downloadBackup}>Gerar backup</button>
       </div>
-      <p className="fine-print">O padrão exclui registros sintéticos. Marque a opção acima somente se quiser incluí-los explicitamente.</p>
+      
     </section>
   );
 }

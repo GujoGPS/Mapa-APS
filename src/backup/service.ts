@@ -17,19 +17,21 @@ import {
 
 const storeNames = Object.values(STORES) as StoreName[];
 
-export interface BackupOptions { includeSynthetic?: boolean; }
+/** Opcoes de backup. Dados sinteticos de demonstracao nunca sao incluidos, por desenho. */
+export type BackupOptions = Record<string, never>;
 
 export async function createBackup(options: BackupOptions = {}): Promise<BackupPayload> {
   const stores = {} as Record<StoreName, unknown[]>;
   const storeChecksums = {} as Record<StoreName, string>;
   for (const store of storeNames) stores[store] = await getAllValues(store);
 
-  if (!options.includeSynthetic) {
+  // Dado sintetico nunca entra em backup: a demonstracao ja vem com o app e nao e dado da pessoa.
+  {
     const session = await getDemoSession();
     if (session) {
       stores[STORES.records] = session.snapshotRecords;
-      stores[STORES.drafts] = session.snapshotDrafts;
-      stores[STORES.events] = session.snapshotEvents;
+      stores[STORES.drafts] = session.snapshotDrafts ?? [];
+      stores[STORES.events] = session.snapshotEvents ?? [];
     }
     stores[STORES.records] = excludeSyntheticDemoRecords(stores[STORES.records]);
     stores[STORES.meta] = stores[STORES.meta].filter((record) => (record as { id?: string }).id !== DEMO_SESSION_META_ID);

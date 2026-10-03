@@ -10,13 +10,22 @@ export const DEMO_SAMPLE_LEGACY_IDS = [
 
 export type DataOrigin = "synthetic-demo";
 
+/**
+ * Snapshot da sessao de demonstracao.
+ *
+ * `snapshotDrafts` e `snapshotEvents` sao opcionais porque a versao 1 do schema so guardava
+ * `snapshotRecords`. Uma sessao antiga continua sendo uma sessao valida: o que falta e
+ * restaurado como vazio, e o app nao pode recusar a saida por causa disso.
+ */
 export interface DemoSessionSnapshot {
   state: "active";
-  schemaVersion: typeof DEMO_SESSION_SCHEMA_VERSION;
+  schemaVersion: number;
   startedAt: string;
   snapshotRecords: unknown[];
-  snapshotDrafts: unknown[];
-  snapshotEvents: unknown[];
+  snapshotDrafts?: unknown[] | undefined;
+  snapshotEvents?: unknown[] | undefined;
+  /** Verdadeiro quando a sessao veio de um schema anterior e nao cobre drafts nem eventos. */
+  incomplete?: boolean | undefined;
 }
 
 export interface DemoSessionMetaRecord {

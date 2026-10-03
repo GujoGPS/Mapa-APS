@@ -37,7 +37,7 @@ const secondMembership: FamilyMembership = { ...membership, id: "demo-membership
 
 function DemoFlow() {
   const [, refresh] = React.useState(0);
-  return <><DemoModePanel active={state.active} families={state.active ? [family] : []} onChanged={async () => refresh((value) => value + 1)} /><FamilyAssessmentsPanel family={family} people={[person, secondPerson]} memberships={[membership, secondMembership]} applications={state.applications} demoActive={state.active} onSaved={async () => refresh((value) => value + 1)} /></>;
+  return <><DemoModePanel session={state.active ? { state: "active", schemaVersion: 2, startedAt: "2026-01-01T00:00:00.000Z", snapshotRecords: [], snapshotDrafts: [], snapshotEvents: [] } : undefined} families={state.active ? [family] : []} onChanged={async () => refresh((value) => value + 1)} /><FamilyAssessmentsPanel family={family} people={[person, secondPerson]} memberships={[membership, secondMembership]} applications={state.applications} demoActive={state.active} onSaved={async () => refresh((value) => value + 1)} /></>;
 }
 
 describe("fluxo de avaliações no modo demonstração", () => {
