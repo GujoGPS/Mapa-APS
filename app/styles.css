@@ -1,16 +1,80 @@
+/* ==========================================================================
+   TOKENS — Mapa
+   Cores extraidas por amostragem de public/brand/mapa-logo.png.
+   Tema unico e escuro (decisao de produto). O verde-agua do tema anterior foi
+   removido de proposito: era a cor que mais pesava e puxava o app para o
+   registro clinico que nao queremos.
+   ========================================================================== */
 :root {
-  color-scheme: light dark;
-  --bg: #f4f7f6;
-  --surface: rgba(255, 255, 255, 0.82);
-  --text: #10201d;
-  --muted: #5a6b67;
-  --line: rgba(15, 95, 82, 0.14);
-  --brand: #0f5f52;
-  --brand-2: #3c8e7c;
-  --warning: #b36b17;
-  --shadow: 0 18px 50px rgba(13, 52, 45, 0.08);
-  /* Ambar das janelas da marca: serve ao pulso da abertura ate a paleta unica entrar. */
-  --glow: #f2a93b;
+  color-scheme: dark;
+
+  /* --- superficies: a noite e um degrau, nao cinco --- */
+  --noite: #081028;
+  --noite-alta: #0d1731;
+  --noite-mais-alta: #131f42;
+  --vidro: rgba(19, 31, 66, .72);
+
+  /* --- texto --- */
+  --creme: #f4e4d0;              /* a propria cor do "Mapa" da marca  15.1:1 */
+  --creme-medio: #b9bed6;
+  --creme-fraco: #6d769a;
+
+  /* --- acao: creme com tinta escura. O dourado nunca e botao primario. --- */
+  --primario: #f4e4d0;
+  --primario-tinta: #081028;
+
+  /* --- sinais --- */
+  --luz: #f0e4a2;                /* luz das janelas: ativo, vivo, em atencao */
+  --luz-suave: rgba(240, 228, 162, .16);
+  --seguro: #8ac6b4;             /* copa das arvores: confirmado, salvo */
+  --seguro-suave: rgba(138, 198, 180, .16);
+  --info: #5a9ce4;               /* arco de conexao */
+  --info-suave: rgba(90, 156, 228, .16);
+  /* terracota derivado da familia quente: matiz 10 graus, 41 graus longe do
+     dourado. Nao e vermelho de alarme. Sempre acompanhado de icone e rotulo,
+     porque so a cor nao sobrevive a luz forte de sol. */
+  --erro: #de735e;
+  --erro-suave: rgba(222, 115, 94, .16);
+
+  --linha: rgba(146, 178, 255, .16);
+  --linha-forte: rgba(146, 178, 255, .32);
+  --foco: #f0e4a2;
+
+  /* --- espaco: escala de 4. Antes eram 25 valores soltos --- */
+  --e-1: .25rem;  --e-2: .5rem;   --e-3: .75rem;  --e-4: 1rem;
+  --e-5: 1.5rem;  --e-6: 2rem;    --e-7: 3rem;    --e-8: 4rem;
+
+  /* --- raio: tres passos + circulo --- */
+  --r-1: .6rem; --r-2: 1rem; --r-3: 1.4rem; --r-cheio: 999px;
+
+  /* --- tipografia: cinco tamanhos --- */
+  --t-micro: .72rem; --t-2: .8rem; --t-1: .9375rem; --t-0: 1.0625rem;
+  --t-1g: 1.375rem; --t-2g: 1.75rem;
+
+  /* --- sombra --- */
+  --sombra: 0 18px 48px rgba(2, 6, 20, .55);
+  --sombra-alta: 0 28px 70px rgba(2, 6, 20, .7);
+
+  /* --- movimento --- */
+  --v-rapido: 140ms;
+  --v-medio: 240ms;
+  --v-lento: 420ms;
+  --curva: cubic-bezier(.2, .7, .3, 1);
+  --curva-entrada: cubic-bezier(.16, 1, .3, 1);
+
+  /* --- alvo de toque: piso unico, respeitado por tudo --- */
+  --toque: 44px;
+
+  /* === legado: apelidos para as telas ainda nao migradas === */
+  --bg: var(--noite);
+  --surface: var(--vidro);
+  --text: var(--creme);
+  --muted: var(--creme-medio);
+  --brand: var(--seguro);
+  --brand-2: var(--info);
+  --warning: var(--luz);
+  --shadow: var(--sombra);
+  --glow: var(--luz);
 }
 
 * { box-sizing: border-box; }
@@ -59,18 +123,7 @@ footer { padding: 1.5rem .25rem; color: var(--muted); font-size: .84rem; text-al
   @keyframes rise { from { opacity: 0; transform: translateY(8px); } }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #071512;
-    --surface: rgba(12, 31, 27, .84);
-    --text: #edf8f5;
-    --muted: #a6bbb5;
-    --line: rgba(137, 213, 195, .16);
-    --brand: #78cfba;
-    --brand-2: #b7e8dc;
-    --shadow: 0 24px 60px rgba(0, 0, 0, .25);
-  }
-}
+
 
 
 .storage-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .65rem; margin-top: 1rem; }
@@ -543,4 +596,27 @@ button.secondary { color: var(--text); background: rgba(15,95,82,.08); }
 
 @media (prefers-reduced-motion: reduce) {
   .splash-pulse { animation: none !important; opacity: .5; }
+}
+
+/* ==========================================================================
+   MOVIMENTO E ALVO DE TOQUE — regras transversais do sistema
+   ========================================================================== */
+
+/* Nada anima sem ser pedido: movimento entra pela classe .anima */
+.anima { transition: transform var(--v-medio) var(--curva), background-color var(--v-medio) var(--curva), border-color var(--v-medio) var(--curva), color var(--v-medio) var(--curva), box-shadow var(--v-medio) var(--curva); }
+
+/* Foco sempre visivel: dourado nao e exclusivo de estado ativo quando o foco
+   aparece, e o anel carrega forma propria (contorno duplo) para se distinguir
+   sob luz forte. */
+:focus-visible { outline: 2px solid var(--foco); outline-offset: 2px; border-radius: var(--r-1); }
+:focus:not(:focus-visible) { outline: none; }
+
+/* Quem prefere menos movimento: sem transicao, sem pulso, sem autoplay. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
