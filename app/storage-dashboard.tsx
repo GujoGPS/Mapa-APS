@@ -31,7 +31,7 @@ export function StorageDashboard() {
   async function testWrite() {
     setBusy(true);
     try {
-      const receipt = await saveRecordVerified(createEnvelope("demo-integrity-check", "system-check", { synthetic: true, note: "Marco 1" }));
+      const receipt = await saveRecordVerified(createEnvelope("demo-integrity-check", "system-check", { synthetic: true, note: "verificacao de integridade" }));
       setMessage(receipt.verified ? `Gravação confirmada às ${new Date(receipt.savedAt).toLocaleTimeString("pt-BR")}.` : "A gravação não foi confirmada.");
     } catch (error) { setMessage(error instanceof Error ? error.message : "Falha desconhecida."); }
     setBusy(false);
@@ -56,6 +56,7 @@ export function StorageDashboard() {
     <section className="card" aria-labelledby="storage-title">
       <p className="eyebrow">Fundação local-first</p>
       <h2 id="storage-title">Estado do dispositivo</h2>
+      <p className="fine-print">Este aparelho guarda os dados no próprio navegador, sem servidor. A persistência mostra se o navegador vai manter as fichas depois que você fechar o app; uso e quota dizem quanto espaço já foi ocupado e quanto ainda existe. Nada sai daqui a não ser por um backup que você mesmo gera.</p>
       <div className="storage-grid">
         <div><span>Persistência</span><strong>{status.persistence}</strong></div>
         <div><span>Uso estimado</span><strong>{formatBytes(status.usage)}</strong></div>

@@ -162,7 +162,12 @@ footer { padding: 1.5rem .25rem; color: var(--muted); font-size: .84rem; text-al
 .assessment-editor { margin-top: 1rem; padding: 1rem; border: 2px solid var(--brand); border-radius: 1.2rem; background: var(--bg); }
 .assessment-progress { display: grid; gap: .2rem; margin: 1rem 0; padding: .8rem; border-radius: 1rem; background: rgba(15,95,82,.08); }
 .assessment-progress span { color: var(--muted); font-size: .82rem; }
-.assessment-section-tabs { display: flex; gap: .4rem; overflow-x: auto; padding-bottom: .75rem; }
+.assessment-section-tabs { display: flex; gap: .4rem; overflow-x: auto; padding-bottom: .75rem; align-items: stretch; }
+.assessment-section-tabs button { display: grid; gap: .15rem; min-width: 11rem; max-width: 16rem; padding: .7rem .8rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); color: inherit; text-align: left; }
+.assessment-section-tabs button.active { border-color: var(--brand); }
+.assessment-section-tabs .assessment-tab-title { font-weight: 800; line-height: 1.2; }
+.assessment-section-tabs small { color: var(--muted); font-size: .74rem; }
+.assessment-section-tabs .assessment-tab-missing { color: var(--warning); }
 .assessment-section-tabs button { flex: 0 0 auto; max-width: 16rem; padding: .55rem .7rem; border: 0; border-radius: .8rem; color: var(--muted); background: rgba(15,95,82,.06); font-size: .78rem; font-weight: 750; }
 .assessment-section-tabs button.active { color: var(--brand); background: rgba(15,95,82,.15); }
 .assessment-question-list, .assessment-missing-source, .assessment-review { margin-top: .8rem; padding: .9rem; border: 1px solid var(--line); border-radius: 1rem; }
@@ -438,3 +443,6 @@ button.secondary { color: var(--text); background: rgba(15,95,82,.08); }
 .history-family-list strong, .history-family-list span { display: block; }
 .history-family-list span { color: var(--muted); font-size: .82rem; }
 .history-panel .link-group { margin-top: .8rem; }
+.first-assessment-offer { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; margin: .6rem 0 0; padding: .9rem 1rem; border: 1px solid var(--brand); border-radius: 1.2rem; background: var(--surface); }
+.first-assessment-offer strong { font-size: .74rem; text-transform: uppercase; letter-spacing: .08em; color: var(--brand); }
+.first-assessment-offer span { flex: 1 1 14rem; font-size: .85rem; color: var(--muted); }

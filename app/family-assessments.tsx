@@ -11,8 +11,20 @@ import {
 import { peopleInFamily } from "@/src/domain/selectors";
 import { AssessmentViews } from "./assessment-views";
 
-interface Props { family: Family; people: Person[]; memberships: FamilyMembership[]; applications: InstrumentApplication[]; demoActive: boolean; onSaved: () => Promise<void>; }
+interface Props { family: Family; people: Person[]; memberships: FamilyMembership[]; applications: InstrumentApplication[]; demoActive: boolean; onSaved: () => Promise<void>; startForPersonId?: string | undefined; onStartHandled?: (() => void) | undefined; }
 const statusLabels: Record<InstrumentApplication["status"], string> = { "not-started": "Não iniciada", draft: "Rascunho", "in-review": "Em revisão", completed: "Concluída", rectified: "Retificada", archived: "Arquivada" };
+function sectionPreview(section: SectionDefinition, application: InstrumentApplication): string {
+  if (section.status === "source-missing") return "Bloco ainda não digitalizado: preenchimento indisponível temporariamente.";
+  const perguntas = section.questions ?? [];
+  const respondidas = perguntas.filter((q) => application.answers[q.id]?.status === "answered").length;
+  const naoAplicaveis = perguntas.filter((q) => application.answers[q.id]?.applicabilityState === "not-applicable").length;
+  const pendentes = perguntas.length - respondidas - naoAplicaveis;
+  const partes = [`${respondidas} de ${perguntas.length} preenchidos`];
+  if (naoAplicaveis) partes.push(`${naoAplicaveis} não se aplicam`);
+  partes.push(pendentes ? `${pendentes} pendentes` : "sem pendências");
+  return partes.join(" · ");
+}
+
 function assessmentKindLabel(application: InstrumentApplication): string {
   if (application.rectifiesApplicationId) return "Retificação de avaliação anterior";
   if (application.completedAt) return "Primeira avaliação desta pessoa";
@@ -67,7 +79,7 @@ function firstBlockingQuestion(application: InstrumentApplication, validation: R
   return adultDcntEsfDefinition.questions.find((question) => validation.errors.some((error) => error.startsWith(`${question.id}:`)) || validation.missing?.some((missing) => missing.startsWith(question.id)) || (question.required && !application.answers[question.id] && questionApplicable(application, question)));
 }
 
-export function FamilyAssessmentsPanel({ family, people, memberships, applications, demoActive, onSaved }: Props) {
+export function FamilyAssessmentsPanel({ family, people, memberships, applications, demoActive, onSaved, startForPersonId, onStartHandled }: Props) {
   const familyPeople = useMemo(() => peopleInFamily(people, memberships, family.id), [people, memberships, family.id]);
   const [personId, setPersonId] = useState(""); const [activeApplicationId, setActiveApplicationId] = useState<string>();
   const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
@@ -77,6 +89,14 @@ export function FamilyAssessmentsPanel({ family, people, memberships, applicatio
   const activeApplications = personApplications.filter((item) => item.status !== "archived");
   const selectedPerson = familyPeople.find((person) => person.id === personId);
   useEffect(() => setActiveApplicationId(undefined), [personId]);
+  // Atalho de primeira avaliacao: consome o pedido, seleciona a pessoa e ja abre a ficha.
+  useEffect(() => {
+    if (!startForPersonId || !familyPeople.some((item) => item.id === startForPersonId)) return;
+    setPersonId(startForPersonId);
+    const action = async () => { const item = await createApplication({ familyId: family.id, personId: startForPersonId, assessmentDate: new Date().toISOString().slice(0, 10) }); await onSaved(); setActiveApplicationId(item.applicationId); onStartHandled?.(); };
+    if (editorControls.state === "dirty" || editorControls.state === "save-error") setPendingAction(() => { void action(); });
+    else void action();
+  }, [startForPersonId]);
   function guarded(action: () => void) {
     if (editorControls.state === "dirty" || editorControls.state === "save-error") setPendingAction(() => action);
     else action();
@@ -155,7 +175,15 @@ function AssessmentEditor({ application: initial, onSaved, onClose, onRequestAct
     {demoActive && <p className="scope-callout">Aplicação demonstrativa: desaparece ao sair da demonstração e não entra no backup normal.</p>}
     <p className="assessment-save-status">{editState === "dirty" ? "Alterações não salvas" : editState === "saving" ? "Salvando…" : editState === "save-error" ? `Erro ao salvar: ${message}` : `Salvo em ${new Date(lastSaved).toLocaleString("pt-BR")}`}</p>
     <div className="assessment-progress"><strong>Conclusão dos campos disponíveis nesta versão</strong><span>{sectionProgress.filter((item) => !["source-missing", "not-applicable"].includes(item.status)).filter((item) => item.status === "structurally-complete").length}/{sectionProgress.filter((item) => item.status !== "source-missing").length} blocos incorporados</span><div className="assessment-section-statuses">{sectionProgress.map(({ section: item, status }) => <span key={item.id} data-status={status}>{item.printedBlockNumber ? `Bloco ${item.printedBlockNumber}` : "Cabeçalho"}: {statusLabel(status)}</span>)}</div></div>
-    <div className="assessment-section-tabs" role="tablist">{adultDcntEsfDefinition.sections.map((item) => <button role="tab" aria-selected={item.id === section?.id} key={item.id} className={item.id === section?.id ? "active" : ""} onClick={() => setSectionId(item.id)}>{item.printedBlockNumber ? `Bloco ${item.printedBlockNumber}` : "Cabeçalho"} · {item.title}</button>)}</div>
+    <div className="assessment-section-tabs" role="tablist" aria-label="Blocos do formulário">{adultDcntEsfDefinition.sections.map((item) => {
+      const ausente = item.status === "source-missing";
+      return <button role="tab" aria-selected={item.id === section?.id} key={item.id} className={item.id === section?.id ? "active" : ""} onClick={() => setSectionId(item.id)}>
+        <span className="assessment-tab-title">{item.title}</span>
+        <small>{item.printedBlockNumber ? `Bloco ${item.printedBlockNumber}` : "Cabeçalho"}</small>
+        <small className="assessment-tab-preview">{sectionPreview(item, application)}</small>
+        {ausente && <small className="assessment-tab-missing">Fonte ausente — bloco ainda não foi digitalizado</small>}
+      </button>;
+    })}</div>
     <div className="assessment-autosave" role="status" aria-live="polite" aria-label="Salvamento automático" data-state={editState}>{editState === "dirty" ? "Alterações não salvas — salvando automaticamente…" : editState === "saving" ? "Salvando automaticamente…" : editState === "save-error" ? `Falha ao salvar: ${message}` : `Salvo automaticamente em ${new Date(lastSaved).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`}</div>
     {section && <AssessmentSection section={section} application={application} editable={editable} onAnswer={setAnswer} onWaistCriterion={setWaistCriterion} onApplicabilityOverride={setApplicabilityOverride} results={results} firstError={firstError} firstBlocking={firstBlockingQuestion(application, structural)} registerField={(id, element) => { if (element) fieldRefs.current.set(id, element); else fieldRefs.current.delete(id); }} />}
     <StructuralReview application={application} results={results} validation={structural} />
