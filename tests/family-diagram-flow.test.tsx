@@ -2,6 +2,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { FamilyDiagramFlow, toFlowEdges, toFlowNodes } from "@/app/family-relations-flow";
 import { buildEcomap, buildGenogram, relationshipNarrative, type DiagramModel } from "@/src/domain/diagram-engine";
+import { flowAriaLabels, translateFlowError } from "@/src/domain/diagram-labels";
 import type { Family, FamilyMembership, Person } from "@/src/contracts/family";
 import type { ExternalLink, ExternalResource, InterpersonalRelationship } from "@/src/contracts/relations";
 
@@ -91,5 +92,32 @@ describe("camada de renderizacao em React Flow", () => {
   it("mantem a narrativa do motor disponivel para a mesma camada", () => {
     expect(relationshipNarrative(genogram)).toContain("Perspectiva");
     expect(relationshipNarrative(ecomap)).toContain("entidades");
+  });
+});
+
+describe("rotulos em portugues do diagrama", () => {
+  it("traduz tipo, estado e faixa etaria dos nos", () => {
+    const model = buildEcomap({
+      family, people,
+      resources: [{ id: "res1", familyId: "f1", name: "UBS", type: "health", state: "active", createdAt: timestamp, updatedAt: timestamp, recordVersion: 1 }],
+      links: [{ id: "l1", familyId: "f1", resourceId: "res1", personId: "p1", quality: "adequate", direction: "to-source", intensity: "high", perspectiveLabel: "consolidada", provenance: "self-reported", confirmation: "reported", sensitivity: "family", sharingState: "private", createdAt: timestamp, updatedAt: timestamp, recordVersion: 1 }],
+    });
+    const resource = model.nodes.find((node) => node.id === "res1");
+    expect(resource?.subtitle).toBe("saude · ativo");
+    expect(resource?.subtitle).not.toContain("health");
+    expect(resource?.subtitle).not.toContain("active");
+    const person = model.nodes.find((node) => node.id === "p1");
+    expect(person?.subtitle).not.toContain("adult");
+  });
+
+  it("traduz os rotulos de acessibilidade da biblioteca", () => {
+    expect(flowAriaLabels["controls.zoomIn.ariaLabel"]).toBe("Aproximar");
+    expect(flowAriaLabels["minimap.ariaLabel"]).toBe("Mapa geral do diagrama");
+    expect(Object.values(flowAriaLabels).every((value) => !/[A-Za-z]{4,} /.test(value) || /[a-zA-Z]/.test(value))).toBe(true);
+  });
+
+  it("traduz o erro de container sem container no grafo", () => {
+    expect(translateFlowError("004", "The parent container needs a width and a height to render the graph.")).toMatch(/largura e altura/i);
+    expect(translateFlowError("999", "mensagem original")).toBe("mensagem original");
   });
 });

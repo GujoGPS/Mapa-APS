@@ -19,6 +19,7 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { qualityStyle, type DiagramEdge, type DiagramModel, type DiagramNode } from "@/src/domain/diagram-engine";
+import { flowAriaLabels } from "@/src/domain/diagram-labels";
 
 /**
  * Traducao de formato, nada mais: quem decide quem se relaciona com quem, quais nos existem e
@@ -32,6 +33,8 @@ export interface FamilyFlowProps {
   selectedNodeId?: string;
   /** Permite exportar o desenho sem conhecer a estrutura interna do React Flow. */
   containerRef?: RefObject<HTMLDivElement | null>;
+  /** Aviso da biblioteca; quem recebe decide como mostrar na interface. */
+  onFlowError?: (code: string, message: string) => void;
 }
 
 export interface FamilyNodeData extends Record<string, unknown> {
@@ -128,7 +131,7 @@ function FamilyEdge({ id, data, sourceX, sourceY, targetX, targetY, sourcePositi
 const nodeTypes = { familyNode: FamilyNode };
 const edgeTypes = { familyEdge: FamilyEdge };
 
-function FamilyDiagram({ model, onSelectNode, selectedNodeId, containerRef }: FamilyFlowProps) {
+function FamilyDiagram({ model, onSelectNode, selectedNodeId, containerRef, onFlowError }: FamilyFlowProps) {
   const nodes = useMemo(() => toFlowNodes(model, selectedNodeId), [model, selectedNodeId]);
   const edges = useMemo(() => toFlowEdges(model), [model]);
   const onNodeClick = useCallback((_: unknown, node: Node) => { onSelectNode?.(node.id); }, [onSelectNode]);
@@ -150,6 +153,8 @@ function FamilyDiagram({ model, onSelectNode, selectedNodeId, containerRef }: Fa
         nodesConnectable={false}
         elementsSelectable
         fitView
+        ariaLabelConfig={{ ...flowAriaLabels }}
+        {...(onFlowError ? { onError: onFlowError } : {})}
         aria-label={`${model.kind === "genogram" ? "Genograma" : "Ecomapa"} da família`}
       >
         <Background />
