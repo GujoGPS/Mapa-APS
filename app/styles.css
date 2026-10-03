@@ -939,3 +939,30 @@ button.secondary { color: var(--text); background: var(--tinte-1); }
 .link-row strong { display: block; color: var(--creme); font-size: var(--t-1); }
 .link-row span, .link-row small { display: block; color: var(--creme-medio); font-size: var(--t-2); }
 .link-closed summary { min-height: var(--toque); color: var(--creme-medio); font-weight: 700; }
+
+/* ==========================================================================
+   REDE DE SEGURANCA
+   166 controles em 13 arquivos estavam sem className: pintavam com o cinza do
+   navegador e ficavam com 27px de altura. Reescrever 166 call sites e arriscado;
+   entao todo controle sem classe volta a entrar no sistema por aqui.
+
+   :where() tem especificidade zero de proposito: qualquer regra de componente
+   continua valendo, e so o que nao tem estilo proprio e recuperado.
+   ========================================================================== */
+:where(button:not([class])) {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--e-2);
+  min-height: var(--toque); padding: 0 var(--e-4);
+  border: 1px solid var(--linha); border-radius: var(--r-2);
+  background: var(--noite); color: var(--creme); font: inherit; font-weight: 600; cursor: pointer;
+  transition: border-color var(--v-medio) var(--curva), background-color var(--v-medio) var(--curva), transform var(--v-rapido) var(--curva);
+}
+:where(button:not([class])):hover { border-color: var(--linha-forte); background: var(--noite-alta); }
+:where(button:not([class])):active { transform: scale(.97); }
+:where(button:not([class])):disabled { opacity: .5; cursor: not-allowed; }
+:where(button:not([class])):focus-visible { outline: 2px solid var(--foco); outline-offset: 2px; }
+:where(a:not([class])) { color: var(--info); }
+:where(input:not([class]), select:not([class]), textarea:not([class])) {
+  min-height: var(--toque); padding: 0 var(--e-3);
+  border: 1px solid var(--linha); border-radius: var(--r-2);
+  background: var(--noite); color: var(--creme);
+}
