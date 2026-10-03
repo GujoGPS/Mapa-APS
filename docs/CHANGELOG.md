@@ -20,6 +20,12 @@
   intacto como fonte de verdade, teste de renderizacao e teste de paridade do painel;
 - exportacao de diagrama em vetor preservada via `html-to-image` sobre o viewport do fluxo.
 
+- clique em um nó abre a pessoa selecionada;
+- legenda das cores por qualidade de vínculo, gerada a partir da mesma fonte que pinta as arestas;
+- reenquadramento automático ao trocar de família, perspectiva ou camada;
+- posição de nó arrastada guardada como sobreposição do desenho do motor, com volta ao original;
+- exportação do SVG agora enquadra todos os nós, e não apenas a fatia visível.
+
 ### Corrigido
 
 - `summary.services` ace selections múltiplas, como na ficha impressa;
