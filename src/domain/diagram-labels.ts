@@ -62,3 +62,13 @@ export function translateFlowError(code: string, message: string): string {
   if (code === "002") return "Falta um tipo de no reconhecido; um no foi desenhado com o formato padrao.";
   return message;
 }
+
+export const qualityLegend: { quality: string; label: string }[] = [
+  { quality: "strong", label: "forte" },
+  { quality: "adequate", label: "adequado" },
+  { quality: "weak", label: "fraco" },
+  { quality: "conflict", label: "conflituoso" },
+  { quality: "ruptured", label: "rompido" },
+  { quality: "divergent", label: "divergente" },
+  { quality: "unknown", label: "desconhecido" },
+];

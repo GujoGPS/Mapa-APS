@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, type RefObject } from "react";
+import { useCallback, useEffect, useMemo, type RefObject } from "react";
 import {
   Background,
   Controls,
@@ -12,14 +12,16 @@ import {
   BaseEdge,
   getSmoothStepPath,
   MarkerType,
+  Panel,
   type Edge,
   type EdgeProps,
   type Node,
   type NodeProps,
+  useReactFlow,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { qualityStyle, type DiagramEdge, type DiagramModel, type DiagramNode } from "@/src/domain/diagram-engine";
-import { flowAriaLabels } from "@/src/domain/diagram-labels";
+import { flowAriaLabels, qualityLegend } from "@/src/domain/diagram-labels";
 
 /**
  * Traducao de formato, nada mais: quem decide quem se relaciona com quem, quais nos existem e
@@ -35,6 +37,8 @@ export interface FamilyFlowProps {
   containerRef?: RefObject<HTMLDivElement | null>;
   /** Aviso da biblioteca; quem recebe decide como mostrar na interface. */
   onFlowError?: (code: string, message: string) => void;
+  /** Legenda das cores de vinculo; so aparece quando o diagrama tem vinculos. */
+  showLegend?: boolean;
 }
 
 export interface FamilyNodeData extends Record<string, unknown> {
@@ -131,10 +135,30 @@ function FamilyEdge({ id, data, sourceX, sourceY, targetX, targetY, sourcePositi
 const nodeTypes = { familyNode: FamilyNode };
 const edgeTypes = { familyEdge: FamilyEdge };
 
-function FamilyDiagram({ model, onSelectNode, selectedNodeId, containerRef, onFlowError }: FamilyFlowProps) {
+function RelationshipLegend() {
+  return (
+    <Panel position="top-right" className="flow-legend">
+      <strong>Qualidade do vinculo</strong>
+      <ul>
+        {qualityLegend.map((item) => (
+          <li key={item.quality}>
+            <span className="flow-legend-line" style={qualityStyle(item.quality as never)} aria-hidden="true" />
+            <span>{item.label}</span>
+          </li>
+        ))}
+      </ul>
+    </Panel>
+  );
+}
+
+function FamilyDiagram({ model, onSelectNode, selectedNodeId, containerRef, onFlowError, showLegend }: FamilyFlowProps) {
   const nodes = useMemo(() => toFlowNodes(model, selectedNodeId), [model, selectedNodeId]);
   const edges = useMemo(() => toFlowEdges(model), [model]);
   const onNodeClick = useCallback((_: unknown, node: Node) => { onSelectNode?.(node.id); }, [onSelectNode]);
+  const { fitView } = useReactFlow();
+  // Trocar de familia, perspectiva ou camada precisa reenquadrar; senao a visao anterior fica.
+  const signature = `${model.kind}|${model.perspectiveLabel}|${model.nodes.map((node) => node.id).join(",")}|${model.edges.length}`;
+  useEffect(() => { fitView({ padding: 0.2, duration: 300 }); }, [signature, fitView]);
 
   return (
     <div
@@ -160,6 +184,7 @@ function FamilyDiagram({ model, onSelectNode, selectedNodeId, containerRef, onFl
         <Background />
         <MiniMap pannable zoomable />
         <Controls />
+        {showLegend && model.edges.length > 0 && <RelationshipLegend />}
       </ReactFlow>
     </div>
   );

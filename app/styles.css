@@ -399,3 +399,8 @@ button.secondary { color: var(--text); background: rgba(15,95,82,.08); }
 .flow-node-subtitle { display: block; color: var(--muted); font-size: .7rem; }
 .flow-edge-label { font-size: 10px; fill: var(--muted); text-anchor: middle; }
 .react-flow__edge-path { stroke-linecap: round; }
+.flow-legend { padding: .55rem .7rem; border: 1px solid var(--line); border-radius: .8rem; background: var(--surface); color: var(--muted); font-size: .72rem; box-shadow: var(--shadow); }
+.flow-legend strong { display: block; margin-bottom: .35rem; color: var(--text); font-size: .75rem; }
+.flow-legend ul { margin: 0; padding: 0; list-style: none; }
+.flow-legend li { display: flex; align-items: center; gap: .45rem; padding: .12rem 0; }
+.flow-legend-line { display: inline-block; width: 22px; border-top-width: 3px; border-top-style: solid; }

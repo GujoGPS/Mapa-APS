@@ -42,6 +42,12 @@ async function waitForDiagram() {
   return within(container);
 }
 
+/** fireEvent precisa do elemento, nao do objeto de consultas. */
+async function diagramElement() {
+  const queries = await waitForDiagram();
+  return queries.getByText("Ana").closest("[data-testid='family-diagram-flow']") as HTMLElement;
+}
+
 describe("painel de relacoes com camada React Flow", () => {
   it("desenha o genograma com os rotulos esperados", async () => {
     renderPanel();
@@ -90,5 +96,31 @@ describe("painel de relacoes com camada React Flow", () => {
     expect(screen.getByLabelText(/Perspectiva/)).toBeTruthy();
     expect(screen.getByLabelText(/Camada/)).toBeTruthy();
     await waitFor(() => expect(screen.getByRole("button", { name: "Exportar SVG" })).toBeTruthy());
+  });
+});
+
+describe("interacoes do diagrama", () => {
+  it("mostra a legenda das qualidades de vinculo quando ha vinculos", async () => {
+    renderPanel();
+    await waitForDiagram();
+    expect(screen.getByText("Qualidade do vinculo")).toBeTruthy();
+    for (const label of ["forte", "conflituoso", "rompido", "divergente"]) {
+      expect(screen.getByText(label)).toBeTruthy();
+    }
+  });
+
+  it("esconde a legenda quando o grafo nao tem vinculos", async () => {
+    render(<FamilyRelations family={family} people={people} memberships={memberships} relationships={[]} resources={resources} links={[]} onSaved={async () => undefined} />);
+    await waitFor(() => expect(screen.getByTestId("family-diagram-flow")).toBeTruthy());
+    await waitFor(() => expect(within(screen.getByTestId("family-diagram-flow")).getByText("Ana")).toBeTruthy());
+    expect(screen.queryByText("Qualidade do vinculo")).toBeNull();
+  });
+
+  it("avisa a quem seleciona pessoa ao clicar num no", async () => {
+    const onSelectPerson = vi.fn();
+    render(<FamilyRelations family={family} people={people} memberships={memberships} relationships={relationships} resources={resources} links={links} onSaved={async () => undefined} onSelectPerson={onSelectPerson} />);
+    const diagram = await diagramElement();
+    fireEvent.click(within(diagram).getByText("Ana"));
+    expect(onSelectPerson).toHaveBeenCalledWith("p1");
   });
 });
