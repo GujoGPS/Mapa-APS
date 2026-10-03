@@ -23,7 +23,6 @@ function application(personId: string, applicationId: string, answerText: string
     instrumentVersion: "local-esf-2026-page-28-v1",
     assessmentDate: "2026-01-01",
     status: "draft",
-    kind: "initial",
     createdAt: timestamp,
     updatedAt: timestamp,
     answers: {

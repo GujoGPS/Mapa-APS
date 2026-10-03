@@ -8,7 +8,6 @@ export type InstrumentOrigin =
 export type EditorialStatus = "draft-local" | "pending-preceptor-validation" | "active-local";
 export type SectionStatus = "available" | "source-missing" | "title-only-in-source";
 export type AssessmentStatus = "not-started" | "draft" | "in-review" | "completed" | "rectified" | "archived";
-export type AssessmentKind = "initial" | "reassessment" | "rectification";
 export type AnswerType =
   | "short-text"
   | "long-text"
@@ -177,7 +176,6 @@ export interface InstrumentApplication {
   instrumentVersion: string;
   assessmentDate: string;
   status: AssessmentStatus;
-  kind: AssessmentKind;
   createdAt: string;
   updatedAt: string;
   answers: Record<string, InstrumentAnswer>;

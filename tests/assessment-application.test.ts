@@ -116,7 +116,7 @@ describe("aplicações individuais ESF", () => {
     const legacy = envelope("legacy-application", ENTITY_TYPES.instrumentApplication, {
       applicationId: "legacy-application", familyId: "family-1", personId: "person-1",
       instrumentId: "adult-dcnt-esf", instrumentVersion: "local-esf-2026-page-28-v1",
-      assessmentDate: "2026-01-01", status: "draft", kind: "initial", createdAt: date, updatedAt: date, responses: {},
+      assessmentDate: "2026-01-01", status: "draft", createdAt: date, updatedAt: date, responses: {},
     });
     const backup = await createSyntheticBackup({
       records: [...state.records.values(), legacy],

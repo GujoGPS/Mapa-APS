@@ -37,7 +37,6 @@ function application(answers: Record<string, InstrumentAnswer>, overrides: Parti
     instrumentVersion: adultDcntEsfDefinition.version,
     assessmentDate: "2026-04-01",
     status: "completed",
-    kind: "initial",
     createdAt: date,
     updatedAt: date,
     answers,

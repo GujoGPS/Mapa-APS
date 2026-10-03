@@ -7,7 +7,7 @@ vi.mock("@/src/clinical/assessments", async () => {
   return {
     ...actual,
     createApplication: vi.fn(async ({ familyId, personId, assessmentDate }: { familyId: string; personId: string; assessmentDate: string }) => ({
-      applicationId: "app-atalho", familyId, personId, assessmentDate, status: "draft", kind: "initial",
+      applicationId: "app-atalho", familyId, personId, assessmentDate, status: "draft",
       instrumentId: "adult-dcnt-esf", instrumentVersion: "v1", createdAt: "2026-01-01T00:00:00.000Z", updatedAt: "2026-01-01T00:00:00.000Z",
       answers: {}, applicabilityOverrides: {}, provenance: { origin: "digital-adaptation", sourceNote: "teste" },
       visibility: { scope: "individual", clinicalVisibility: "academic-private", personVisibility: "shareable-with-person", familyVisibility: "non-exportable", reviewRequired: true, projectionStrategy: "clinical-academic" },

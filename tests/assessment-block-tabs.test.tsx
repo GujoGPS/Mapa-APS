@@ -15,7 +15,7 @@ const membros: FamilyMembership[] = [
 function draft(answers: Record<string, unknown> = {}): InstrumentApplication {
   return {
     applicationId: "app-1", familyId: family.id, personId: person.id, instrumentId: "adult-dcnt-esf",
-    instrumentVersion: adultDcntEsfDefinition.version, assessmentDate: "2026-01-01", status: "draft", kind: "initial",
+    instrumentVersion: adultDcntEsfDefinition.version, assessmentDate: "2026-01-01", status: "draft",
     createdAt: t, updatedAt: t, answers, applicabilityOverrides: {},
     provenance: { origin: "digital-adaptation", sourceNote: "teste" },
     visibility: { scope: "individual", clinicalVisibility: "academic-private", personVisibility: "shareable-with-person", familyVisibility: "non-exportable", reviewRequired: true, projectionStrategy: "clinical-academic" },

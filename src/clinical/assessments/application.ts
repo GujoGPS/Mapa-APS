@@ -17,6 +17,7 @@ import {
 } from "./types";
 import { calculateBmi, calculateBloodPressureMean, classifyBmi, classifyWaistCircumference, deriveAdultAgeBand } from "./calculations";
 import { listFactsForApplication, persistApplicationFacts, supersedeFactsOfApplication } from "./fact-repository";
+import { stripLegacyKind } from "./migration";
 import { persistProposal, proposalsForApplication } from "./proposals";
 import {
   validateApplicationAnswers,
@@ -109,7 +110,6 @@ export async function createApplication(input: {
   familyId: string;
   personId: string;
   assessmentDate: string;
-  kind?: "initial" | "reassessment";
   instrument?: InstrumentDefinition;
 }): Promise<InstrumentApplication> {
   const definition = input.instrument ?? adultDcntEsfDefinition;
@@ -126,7 +126,6 @@ export async function createApplication(input: {
     personId: input.personId,
     assessmentDate: input.assessmentDate,
     status: "draft",
-    kind: input.kind ?? "initial",
     answers: {},
     applicabilityOverrides: {},
     createdAt: timestamp,
@@ -148,7 +147,7 @@ export async function listApplicationsByPerson(personId: string, instrumentId?: 
   const records = await getAllValues<StoredEnvelope<InstrumentApplication>>(STORES.records);
   return records
     .filter((record) => record.entityType === APPLICATION_ENTITY_TYPE && record.payload.personId === personId && (!instrumentId || record.payload.instrumentId === instrumentId))
-    .map((record) => record.payload)
+    .map((record) => stripLegacyKind(record.payload))
     .sort((left, right) => right.assessmentDate.localeCompare(left.assessmentDate) || right.updatedAt.localeCompare(left.updatedAt));
 }
 
@@ -235,7 +234,6 @@ export async function createRectification(applicationId: string): Promise<Instru
     ...withoutCompletion,
     applicationId: `assessment_${crypto.randomUUID()}`,
     status: "draft",
-    kind: "rectification",
     answers: structuredClone(original.answers),
     applicabilityOverrides: structuredClone(original.applicabilityOverrides),
     createdAt: timestamp,

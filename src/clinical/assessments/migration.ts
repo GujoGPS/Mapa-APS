@@ -4,12 +4,30 @@ import type { BackupPayload } from "@/src/backup/types";
 import type { CareFact, InstrumentApplication } from "./types";
 import { CARE_FACT_VERSION } from "./facts";
 
+/**
+ * Remove o `kind` de registros ja gravados sem reescrever o banco.
+ *
+ * Nao ha gancho de migracao de dados no IndexedDB, e subir a versao do schema para reescrever
+ * tudo seria desproporcional a um campo que ninguem le. Como nada mais consulta `kind`, o
+ * suficiente e nuncaialize-lo na leitura; a migracao completa continua valendo na restauracao
+ * de backup, que reescreve o payload e o checksum.
+ */
+export function stripLegacyKind<T extends object>(payload: T): T {
+  if (!("kind" in payload)) return payload;
+  const { kind: _kind, ...rest } = payload as T & { kind?: unknown };
+  return rest as T;
+}
+
+/** Aplicacao como existia antes da remocao de `kind`. */
+type LegacyApplicationPayload = Partial<InstrumentApplication> & { responses?: Record<string, unknown>; kind?: string };
+
 const APPLICATION_TYPE = "instrument-application";
 const CARE_FACT_TYPE = "care-fact";
 
-export function migrateApplicationPayload(payload: Partial<InstrumentApplication> & { responses?: Record<string, unknown> }): InstrumentApplication {
+export function migrateApplicationPayload(payload: LegacyApplicationPayload): InstrumentApplication {
   const answers = payload.answers ?? {};
-  const { responses: _responses, ...rest } = payload;
+  // kind foi removido do dominio: escolha de "nova"/"longitudinal" nunca teve regra associada.
+  const { responses: _responses, kind: _kind, ...rest } = payload;
   return {
     ...rest,
     answers,

@@ -34,7 +34,7 @@ function vinculo(extra: Partial<InterpersonalRelationship> = {}): InterpersonalR
 function app(extra: Partial<InstrumentApplication>): InstrumentApplication {
   return {
     applicationId: "app-base", familyId: "f1", personId: "p1", instrumentId: "adult-dcnt-esf",
-    instrumentVersion: "v1", assessmentDate: "2026-01-01", status: "completed", kind: "initial",
+    instrumentVersion: "v1", assessmentDate: "2026-01-01", status: "completed",
     createdAt: t, updatedAt: t, answers: {}, applicabilityOverrides: {},
     provenance: { origin: "digital-adaptation", sourceNote: "teste" },
     visibility: { scope: "individual", clinicalVisibility: "academic-private", personVisibility: "shareable-with-person", familyVisibility: "non-exportable", reviewRequired: true, projectionStrategy: "clinical-academic" },

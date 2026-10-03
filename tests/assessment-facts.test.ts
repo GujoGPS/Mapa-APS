@@ -31,7 +31,6 @@ function application(answers: Record<string, InstrumentAnswer>, overrides: Parti
     instrumentVersion: adultDcntEsfDefinition.version,
     assessmentDate: "2026-03-10",
     status: "draft",
-    kind: "initial",
     createdAt: date,
     updatedAt: date,
     answers,
@@ -149,7 +148,7 @@ describe("fatos clínicos derivados da aplicação ESF", () => {
 
   it("descreve mudança longitudinal entre duas aplicações da mesma pessoa", () => {
     const before = deriveCareFacts(application({ "physical.weight": answer("physical.weight", 80), "health.chronic-disease-follow-up-exams": answer("health.chronic-disease-follow-up-exams", "yes") }, { status: "completed" })).facts;
-    const after = deriveCareFacts(application({ "physical.weight": answer("physical.weight", 76), "health.chronic-disease-follow-up-exams": answer("health.chronic-disease-follow-up-exams", "no"), "header.birth-date": answer("header.birth-date", "1980-05-10") }, { applicationId: "assessment-9", assessmentDate: "2026-09-10", status: "completed", revisionNumber: 2, kind: "reassessment" })).facts;
+    const after = deriveCareFacts(application({ "physical.weight": answer("physical.weight", 76), "health.chronic-disease-follow-up-exams": answer("health.chronic-disease-follow-up-exams", "no"), "header.birth-date": answer("header.birth-date", "1980-05-10") }, { applicationId: "assessment-9", assessmentDate: "2026-09-10", status: "completed", revisionNumber: 2 })).facts;
 
     const changes = longitudinalChanges(before, after);
     expect(changes.find((item) => item.topic === "physical.weight")?.changeType).toBe("changed");

@@ -32,7 +32,6 @@ function draft(): InstrumentApplication {
     instrumentVersion: adultDcntEsfDefinition.version,
     assessmentDate: "2026-01-01",
     status: "draft",
-    kind: "initial",
     createdAt: timestamp,
     updatedAt: timestamp,
     answers: {},

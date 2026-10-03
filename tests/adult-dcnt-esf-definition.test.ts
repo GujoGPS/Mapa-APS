@@ -86,7 +86,6 @@ describe("definição versionada da avaliação adulta DCNT ESF", () => {
       instrumentVersion: adultDcntEsfDefinition.version,
       assessmentDate: "2026-09-28",
       status: "draft",
-      kind: "initial",
       createdAt: "2026-09-28T00:00:00.000Z",
       updatedAt: "2026-09-28T00:00:00.000Z",
       answers: {},
@@ -117,7 +116,7 @@ describe("definição versionada da avaliação adulta DCNT ESF", () => {
     expect(byId("health.diagnosed-chronic-conditions")?.visibility.familyVisibility).toBe("non-exportable");
     const first = {
       applicationId: "application-1", familyId: "family-1", personId: "person-1", instrumentId: "adult-dcnt-esf", instrumentVersion: "v1",
-      assessmentDate: "2026-01-01", status: "completed", kind: "initial", createdAt: "2026-01-01", updatedAt: "2026-01-01",
+      assessmentDate: "2026-01-01", status: "completed", createdAt: "2026-01-01", updatedAt: "2026-01-01",
       answers: {}, applicabilityOverrides: {}, provenance: { origin: "digital-adaptation", sourceNote: "test" },
       visibility: { scope: "individual", clinicalVisibility: "academic-private", personVisibility: "shareable-with-person", familyVisibility: "non-exportable", reviewRequired: true, projectionStrategy: "clinical-academic" },
       dataOrigin: "normal", schemaVersion: 1, revisionNumber: 1,

@@ -19,7 +19,7 @@ function application(applicationId: string, assessmentDate: string, answers: Rec
   return {
     applicationId, familyId: "family-1", personId: "person-1",
     instrumentId: adultDcntEsfDefinition.id, instrumentVersion: adultDcntEsfDefinition.version,
-    assessmentDate, status: "completed", kind: "initial", createdAt: timestamp, updatedAt: timestamp,
+    assessmentDate, status: "completed", createdAt: timestamp, updatedAt: timestamp,
     answers, applicabilityOverrides: {},
     provenance: { origin: "printed-local-form", sourceNote: "Ficha impressa." },
     visibility: { scope: "individual", clinicalVisibility: "academic-private", personVisibility: "shareable-with-person", familyVisibility: "non-exportable", reviewRequired: true, projectionStrategy: "clinical-academic" },
@@ -49,7 +49,7 @@ describe("projeções das avaliações", () => {
 
   it("compara duas aplicações da mesma pessoa e aponta o que mudou", async () => {
     const older = application("app-1", "2026-01-01", { "physical.weight": measured(80) });
-    const newer = application("app-2", "2026-07-01", { "physical.weight": measured(76) }, { kind: "reassessment", revisionNumber: 2 });
+    const newer = application("app-2", "2026-07-01", { "physical.weight": measured(76) }, { revisionNumber: 2 });
     storeFacts([...deriveCareFacts(older).facts, ...deriveCareFacts(newer).facts]);
 
     render(<AssessmentViews personId="person-1" personLabel="Pessoa Um" applications={[older, newer]} />);
