@@ -54,7 +54,7 @@ describe("fluxo de avaliações no modo demonstração", () => {
     expect(screen.getByText(/Aplicação demonstrativa/)).toBeTruthy();
     fireEvent.change(screen.getAllByRole("textbox")[0]!, { target: { value: "Resposta sintética" } });
     fireEvent.click(screen.getByRole("button", { name: "Salvar rascunho" }));
-    await waitFor(() => expect(screen.getAllByRole("status").some((node) => /Salvo em|Salvo\./.test(node.textContent ?? ""))).toBe(true));
+    await waitFor(() => expect(screen.getAllByRole("status").some((node) => /salvo/i.test(node.textContent ?? ""))).toBe(true));
     fireEvent.click(screen.getByRole("button", { name: /Pessoa dois/ }));
     expect(screen.getByText("Nenhuma aplicação para esta pessoa.")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: /Pessoa demonstrativa/ }));

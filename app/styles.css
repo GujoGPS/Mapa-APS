@@ -427,3 +427,8 @@ button.secondary { color: var(--text); background: rgba(15,95,82,.08); }
 .link-row span, .link-row small { display: block; color: var(--muted); font-size: .82rem; }
 .link-row small { font-size: .75rem; }
 .link-closed summary { cursor: pointer; color: var(--muted); font-weight: 800; }
+.assessment-autosave { margin: -.4rem 0 .9rem; font-size: .82rem; font-weight: 700; }
+.assessment-autosave[data-state="saved"] { color: var(--muted); }
+.assessment-autosave[data-state="dirty"] { color: var(--brand); }
+.assessment-autosave[data-state="saving"] { color: var(--muted); }
+.assessment-autosave[data-state="save-error"] { color: var(--warning); }
