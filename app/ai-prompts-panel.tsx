@@ -106,11 +106,17 @@ export function AiPromptsPanel({ families, people, memberships, relationships }:
 
     {!familia && <p className="fine-print">Escolha uma família para montar o prompt.</p>}
 
-    {familia && resultado && resultado.excluded.length > 0 && <div className="prompt-excluded" role="status">
-      <h4>Retirado deste prompt</h4>
-      <p>Estes registros não entram no texto, mas o restante do caso segue normalmente.</p>
-      <ul>{resultado.excluded.map((item) => <li key={`${item.reason}-${item.detail}`}><strong>{item.detail}</strong> — {item.reason}</li>)}</ul>
+    {familia && resultado && resultado.privacy.length > 0 && <div className="prompt-excluded prompt-privacy" role="status">
+      <h4>Dado da pessoa retirado por privacidade</h4>
+      <p>Não entra no texto por decisão de exportação. O restante do caso segue normalmente.</p>
+      <ul>{resultado.privacy.map((item) => <li key={`${item.reason}-${item.detail}`}><strong>{item.detail}</strong> — {item.reason}</li>)}</ul>
     </div>}
+
+    {familia && resultado && resultado.gaps.length > 0 && <details className="prompt-excluded prompt-gaps">
+      <summary>Lacunas de preenchimento ({resultado.gaps.length})</summary>
+      <p>São campos que a ficha não cobre ou ainda não foram preenchidos — não é restrição sobre a pessoa.</p>
+      <ul>{resultado.gaps.map((item) => <li key={item.detail}><strong>{item.detail}</strong></li>)}</ul>
+    </details>}
 
     {familia && resultado && <>
       <pre className="prompt-text">{resultado.text}</pre>

@@ -65,6 +65,37 @@ describe("prompt monta mesmo com restricao parcial", () => {
   });
 });
 
+describe("separacao entre privacidade e lacuna de preenchimento", () => {
+  it("classifica retirada de dado de pessoa como privacidade", () => {
+    const r = buildPrompt(entrada({ facts: [fato({ topic: "segredo", familyVisibility: "hidden", derivationType: "measured", category: "measurement" })] }));
+    expect(r.privacy.map((e) => e.detail)).toContain("segredo");
+    expect(r.gaps).toHaveLength(0);
+  });
+
+  it("classifica limite do instrumento como lacuna, nao como privacidade", () => {
+    const r = buildPrompt(entrada({ facts: [fato({ topic: "bloco-3-sem-fonte", factType: "source-limitation", category: "source-limitation", familyVisibility: "hidden" })] }));
+    expect(r.gaps.map((e) => e.detail)).toContain("bloco-3-sem-fonte");
+    expect(r.privacy).toHaveLength(0);
+  });
+
+  it("classifica dado ausente do formulário como lacuna", () => {
+    const r = buildPrompt(entrada({ facts: [fato({ topic: "rastreamento-pendente", factType: "missing-information", category: "missing-data", familyVisibility: "hidden" })] }));
+    expect(r.gaps).toHaveLength(1);
+    expect(r.privacy).toHaveLength(0);
+  });
+
+  it("classifica vinculo privado como privacidade", () => {
+    const r = buildPrompt(entrada({ nonExportableLinkLabels: ["segredo familiar"] }));
+    expect(r.privacy).toHaveLength(1);
+    expect(r.gaps).toHaveLength(0);
+  });
+
+  it("mantém o total somando os dois grupos", () => {
+    const r = buildPrompt(entrada({ facts: [fato({ topic: "privado", familyVisibility: "hidden" }), fato({ factId: "cf2", topic: "faltando", factType: "missing-information", familyVisibility: "hidden" })] }));
+    expect(r.privacy.length + r.gaps.length).toBe(2);
+  });
+});
+
 describe("retirada de identificadores", () => {
   it("nunca inclui nome", () => {
     const r = buildPrompt(entrada());

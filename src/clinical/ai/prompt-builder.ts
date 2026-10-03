@@ -13,6 +13,22 @@ export interface Exclusion {
   detail: string;
 }
 
+/**
+ * A retirada separa o que é da pessoa do que é do instrumento.
+ *
+ * "Dado de pessoa retirado por privacidade" e "lacuna de preenchimento" são coisas diferentes
+ * para quem lê o aviso: a primeira é uma decisão sobre a pessoa, a segunda é apenas um campo que
+ * a ficha não cobre. Juntar as duas transformava um aviso útil em lista de ruído.
+ */
+export interface PromptBuild {
+  text: string;
+  /** Dado da pessoa que não sai por privacidade ou restrição de exportação. */
+  privacy: Exclusion[];
+  /** Lacuna do instrumento ou campo não preenchido: não é decisão sobre a pessoa. */
+  gaps: Exclusion[];
+  excluded: Exclusion[];
+}
+
 export interface PromptInput {
   kind: PromptKind;
   family: Family;
@@ -21,11 +37,6 @@ export interface PromptInput {
   facts: CareFact[];
   nonExportablePersonIds?: string[] | undefined;
   nonExportableLinkLabels?: string[] | undefined;
-}
-
-export interface PromptBuild {
-  text: string;
-  excluded: Exclusion[];
 }
 
 const INSTRUCOES: Record<PromptKind, string> = {
@@ -77,16 +88,25 @@ function idadeDe(facts: CareFact[], personId: string): number | undefined {
  * e informada em `excluded`. Identificadores (CPF, nome, data de nascimento, endereco) passam
  * pelo higienizador, que e a única passagem de dado de saude para fora do app.
  */
+/** Lacuna do formulário ou limite da fonte: não é dado da pessoa. */
+function ehLacunaDeInstrumento(fact: CareFact): boolean {
+  return fact.factType === "source-limitation"
+    || fact.factType === "missing-information"
+    || fact.category === "source-limitation"
+    || fact.category === "missing-data";
+}
+
 export function buildPrompt(input: PromptInput): PromptBuild {
-  const excluded: Exclusion[] = [];
+  const privacy: Exclusion[] = [];
+  const gaps: Exclusion[] = [];
   const bloqueados = new Set(input.nonExportablePersonIds ?? []);
 
   for (const personId of bloqueados) {
     const pessoa = input.members.find((item) => item.person.id === personId)?.person ?? input.person;
-    excluded.push({ reason: "Registro marcado como não exportável", detail: pessoa ? pseudonimo(pessoa) : personId });
+    privacy.push({ reason: "Registro marcado como não exportável", detail: pessoa ? pseudonimo(pessoa) : personId });
   }
   for (const label of input.nonExportableLinkLabels ?? []) {
-    excluded.push({ reason: "Vínculo familiar marcado como não exportável", detail: label });
+    privacy.push({ reason: "Vínculo familiar marcado como não exportável", detail: label });
   }
 
   const membros = input.members.filter((m) => !bloqueados.has(m.person.id));
@@ -96,11 +116,12 @@ export function buildPrompt(input: PromptInput): PromptBuild {
   for (const fact of input.facts) {
     if (!pessoasVisiveis.has(fact.personId)) continue;
     if (fact.sourceQuestionIds?.some((id) => PERGUNTAS_IDENTIFICADOR.has(id))) {
-      excluded.push({ reason: "Identificador", detail: fact.topic });
+      privacy.push({ reason: "Identificador", detail: fact.topic });
       continue;
     }
     if (fact.familyVisibility === "hidden" || fact.clinicalVisibility === "hidden" || fact.clinicalVisibility === "private-note") {
-      excluded.push({ reason: "Dado marcado como não exportável", detail: fact.topic });
+      const alvo = ehLacunaDeInstrumento(fact) ? gaps : privacy;
+      alvo.push({ reason: ehLacunaDeInstrumento(fact) ? "Lacuna do instrumento ou campo não preenchido" : "Dado marcado como não exportável", detail: fact.topic });
       continue;
     }
     fatos.push(fact);
@@ -137,5 +158,5 @@ export function buildPrompt(input: PromptInput): PromptBuild {
   linhas.push("");
   linhas.push(INSTRUCOES[input.kind]);
 
-  return { text: higienizar(linhas.join("\n")), excluded };
+  return { text: higienizar(linhas.join("\n")), privacy, gaps, excluded: [...privacy, ...gaps] };
 }

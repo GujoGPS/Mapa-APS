@@ -89,11 +89,16 @@ describe("montagem de prompt para IA externa", () => {
     await waitFor(() => expect(screen.getByText(/FAMÍLIA: F-001/)).toBeTruthy());
   });
 
-  it("retira o dado restrito e ainda monta o prompt", async () => {
-    vi.mocked(listFactsForFamily).mockResolvedValue([fato({ factId: "cf-x", topic: "segredo", familyVisibility: "hidden" }), fato({ factId: "cf-ok", topic: "peso" })] as never);
+  it("separa privacidade de lacuna e ainda monta o prompt", async () => {
+    vi.mocked(listFactsForFamily).mockResolvedValue([
+      fato({ factId: "cf-x", topic: "segredo", familyVisibility: "hidden" }),
+      fato({ factId: "cf-g", topic: "bloco-3-sem-fonte", factType: "source-limitation", category: "source-limitation", familyVisibility: "hidden" }),
+      fato({ factId: "cf-ok", topic: "peso" }),
+    ] as never);
     render(<AiPromptsPanel {...props()} />);
     await escolherFamilia();
-    expect(screen.getByText(/Retirado deste prompt/)).toBeTruthy();
+    expect(screen.getByText(/Dado da pessoa retirado por privacidade/)).toBeTruthy();
+    expect(screen.getByText(/Lacunas de preenchimento/)).toBeTruthy();
     expect(screen.getByRole("button", { name: /Copiar prompt/ })).toBeTruthy();
     expect(screen.getByText(/peso: 76 kg/)).toBeTruthy();
   });
@@ -102,7 +107,7 @@ describe("montagem de prompt para IA externa", () => {
     const privado = [{ relationshipId: "r1", familyId: "f1", sharingState: "private", formalType: "segredo", provenance: "self-reported", confirmation: "reported", sensitivity: "family" }] as unknown as InterpersonalRelationship[];
     render(<AiPromptsPanel {...props(privado)} />);
     await escolherFamilia();
-    expect(screen.getByText(/Retirado deste prompt/)).toBeTruthy();
+    expect(screen.getByText(/Dado da pessoa retirado por privacidade/)).toBeTruthy();
     expect(screen.getByRole("button", { name: /Copiar prompt/ })).toBeTruthy();
   });
 
