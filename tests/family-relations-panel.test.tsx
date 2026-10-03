@@ -74,7 +74,7 @@ describe("painel de relacoes com camada React Flow", () => {
   it("mantem a aba de narrativa com a saida do motor de dominio", async () => {
     renderPanel();
     await waitForDiagram();
-    fireEvent.click(screen.getByRole("button", { name: "Narrativa" }));
+    fireEvent.click(screen.getByRole("tab", { name: "Narrativa" }));
     const narratives = await screen.findAllByText(/Mapa familiar\./);
     expect(narratives.length).toBeGreaterThan(0);
     expect(narratives[0]!.textContent).toContain("Perspectiva");
@@ -84,7 +84,7 @@ describe("painel de relacoes com camada React Flow", () => {
   it("mantem a aba de prompt e a deteccao de identificadores", async () => {
     renderPanel();
     await waitForDiagram();
-    fireEvent.click(screen.getByRole("button", { name: "Prompt IA" }));
+    fireEvent.click(screen.getByRole("tab", { name: "Prompt IA" }));
     expect(await screen.findByText(/Nenhum identificador direto \u00f3bvio detectado/)).toBeTruthy();
     expect(screen.getByText(/N\u00e3o inventar pessoas/)).toBeTruthy();
   });
@@ -143,5 +143,41 @@ describe("interacoes do diagrama", () => {
     const diagram = await diagramElement();
     fireEvent.click(within(diagram).getByText("Ana"));
     expect(onSelectPerson).toHaveBeenCalledWith("p1");
+  });
+});
+
+describe("revisao de vinculos", () => {
+  it("lista os vinculos existentes com botao de editar e excluir", async () => {
+    renderPanel();
+    fireEvent.click(screen.getByRole("tab", { name: /Vínculos e recursos/ }));
+    expect(screen.getByText("Ana → Bruno")).toBeTruthy();
+    expect(screen.getByText(/mãe e filha/)).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Editar" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Excluir" })).toBeTruthy();
+  });
+
+  it("abre edicao com os dados do vinculo e exige motivo", async () => {
+    renderPanel();
+    fireEvent.click(screen.getByRole("tab", { name: /Vínculos e recursos/ }));
+    fireEvent.click(screen.getByRole("button", { name: "Editar" }));
+    const dialog = await screen.findByRole("dialog", { name: /Editar vínculo/ });
+    expect(within(dialog).getByDisplayValue("mãe e filha")).toBeTruthy();
+    expect(within(dialog).getByLabelText(/Motivo da alteração/)).toBeTruthy();
+  });
+
+  it("pede confirmacao e motivo antes de excluir", async () => {
+    renderPanel();
+    fireEvent.click(screen.getByRole("tab", { name: /Vínculos e recursos/ }));
+    fireEvent.click(screen.getByRole("button", { name: "Excluir" }));
+    const dialog = await screen.findByRole("alertdialog", { name: /Confirmar exclusão/ });
+    expect(within(dialog).getByText("Ana → Bruno")).toBeTruthy();
+    expect(within(dialog).getByRole("button", { name: "Confirmar exclusão" })).toBeTruthy();
+  });
+
+  it("mantem as quatro abas por tarefa", async () => {
+    renderPanel();
+    for (const name of ["Diagrama", "Vínculos e recursos", "Narrativa", "Prompt IA"]) {
+      expect(screen.getByRole("tab", { name: new RegExp(name) })).toBeTruthy();
+    }
   });
 });
