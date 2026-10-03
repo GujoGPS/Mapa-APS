@@ -446,7 +446,11 @@ button.secondary { color: var(--text); background: rgba(15,95,82,.08); }
 .first-assessment-offer { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; margin: .6rem 0 0; padding: .9rem 1rem; border: 1px solid var(--brand); border-radius: 1.2rem; background: var(--surface); }
 .first-assessment-offer strong { font-size: .74rem; text-transform: uppercase; letter-spacing: .08em; color: var(--brand); }
 .first-assessment-offer span { flex: 1 1 14rem; font-size: .85rem; color: var(--muted); }
-.prompt-item { margin-top: .8rem; padding-top: .8rem; border-top: 1px solid var(--line); }
-.prompt-when { margin: 0 0 .5rem; font-size: .82rem; color: var(--muted); }
+.prompt-form { display: grid; gap: .7rem; margin: 1rem 0; }
+.prompt-form select { display: block; width: 100%; margin-top: .3rem; padding: .6rem .7rem; border: 1px solid var(--line); border-radius: .9rem; background: var(--bg); color: inherit; font: inherit; }
+.prompt-check { display: flex; align-items: center; gap: .5rem; }
+.prompt-blocked { margin-top: .8rem; padding: .9rem 1rem; border: 1px solid var(--warning); border-radius: 1.2rem; }
+.prompt-blocked h4 { margin: 0 0 .4rem; }
+.prompt-blocked ul { margin: .4rem 0 0; padding-left: 1.1rem; font-size: .85rem; }
 .prompt-text { margin: 0; padding: .85rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--bg); font: inherit; font-size: .85rem; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; }
 .ai-prompts .link-group { margin-top: 1rem; }

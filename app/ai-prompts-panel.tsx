@@ -1,81 +1,72 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { buildPrompt, type PromptInput, type PromptKind } from "@/src/clinical/ai/prompt-builder";
+import { listFactsForFamily } from "@/src/clinical/assessments/fact-repository";
+import type { CareFact } from "@/src/clinical/assessments/types";
+import type { Family, FamilyMembership, Person } from "@/src/contracts/family";
+import type { InterpersonalRelationship } from "@/src/contracts/relations";
 
-interface PromptItem {
-  id: string;
-  quando: string;
-  texto: string;
-}
-
-interface PromptGroup {
-  id: string;
-  titulo: string;
-  resumo: string;
-  itens: PromptItem[];
-}
-
-const GRUPOS: PromptGroup[] = [
-  {
-    id: "caso",
-    titulo: "Discussão de caso",
-    resumo: "Segunda opinião sobre um caso clínico, com rigor de discussão entre colegas.",
-    itens: [
-      {
-        id: "caso-clinico",
-        quando: "Quando quiser discutir um caso com a IA como faria com um colega de medicina.",
-        texto: `CASO: [cole aqui os dados já anonimizados da família/pessoa]. Preciso discutir este caso clínico com você: [descreva o que precisa — segunda opinião, abordagem terapêutica, dúvida específica]. Trate como discussão entre colegas de medicina, com rigor técnico completo, sem hedging desnecessário.`,
-      },
-    ],
-  },
-  {
-    id: "literatura",
-    titulo: "Pesquisa de literatura",
-    resumo: "Para saber o que a evidência atual diz, e se ainda vale.",
-    itens: [
-      {
-        id: "busca-literatura",
-        quando: "Antes de afirmar que algo é consenso, ou para montar uma pergunta de pesquisa.",
-        texto: `Preciso de literatura médica atualizada sobre: [tema]. Para cada fonte que você trouxer, informe o ano de publicação, se é estudo isolado, revisão sistemática ou consenso de sociedade médica, e se o achado ainda é considerado válido hoje ou foi superado por evidência mais recente.`,
-      },
-    ],
-  },
-  {
-    id: "ecomapa",
-    titulo: "Embelezar e explicar ecomapa",
-    resumo: "Transforma nós e vínculos em texto corrido, organizado por força de vínculo.",
-    itens: [
-      {
-        id: "texto-ecomapa",
-        quando: "Na hora de apresentar a rede a um preceptor, quando o desenho não se explica sozinho.",
-        texto: `ECOMAPA: [cole aqui a estrutura do ecomapa/genograma já anonimizada — nós e vínculos]. Reorganize isso em um texto corrido claro, organizado por força de vínculo (forte, fragilizado, rompido, conflituoso), adequado para apresentação a um preceptor.`,
-      },
-    ],
-  },
-  {
-    id: "trauma",
-    titulo: "Treino de descrição traumatológica",
-    resumo: "Revisão da sua escrita clínica, sem virar perícia.",
-    itens: [
-      {
-        id: "revisao-descricao",
-        quando: "Depois de escrever a descrição de um atendimento, para conferir clareza e sequência.",
-        texto: `TRAUMA: Vou te mandar uma descrição de achados de um atendimento/acidente que escrevi. Quero que você avalie só a MINHA descrição — clareza, terminologia, sequência, achados ao exame. Não faça reconstrução pericial (causa, dinâmica do acidente, culpa, estimativa de tempo/velocidade). Aponte o que está faltando para um registro clínico completo, sem inventar dado que eu não dei. Aqui está minha descrição: [cole aqui]`,
-      },
-    ],
-  },
+const CATEGORIAS: { id: PromptKind; titulo: string }[] = [
+  { id: "caso", titulo: "Discussão de caso" },
+  { id: "literatura", titulo: "Pesquisa de literatura" },
+  { id: "ecomapa", titulo: "Embelezar e explicar ecomapa" },
+  { id: "trauma", titulo: "Treino de descrição traumatológica" },
 ];
 
-export function AiPromptsPanel() {
-  const [copiado, setCopiado] = useState<string>();
+export function AiPromptsPanel({ families, people, memberships, relationships }: {
+  families: Family[];
+  people: Person[];
+  memberships: FamilyMembership[];
+  relationships: InterpersonalRelationship[];
+}) {
+  const [kind, setKind] = useState<PromptKind>("caso");
+  const [familyId, setFamilyId] = useState<string>();
+  const [personId, setPersonId] = useState<string>();
+  const [incluirPessoas, setIncluirPessoas] = useState(true);
+  const [copiado, setCopiado] = useState(false);
+  const [facts, setFacts] = useState<CareFact[]>([]);
 
-  async function copiar(id: string, texto: string) {
+  // CareFacts vivem no repositório, não no estado do app: precisam ser lidos por família escolhida.
+  useEffect(() => {
+    let ativo = true;
+    if (!familyId) { setFacts([]); return; }
+    void listFactsForFamily(familyId).then((lista) => { if (ativo) setFacts(lista); }).catch(() => { if (ativo) setFacts([]); });
+    return () => { ativo = false; };
+  }, [familyId]);
+
+  const familia = families.find((item) => item.id === familyId);
+  const membros = useMemo(
+    () => memberships.filter((m) => m.familyId === familyId).map((m) => ({ person: people.find((p) => p.id === m.personId)!, roleLabel: m.roleLabel })).filter((m) => Boolean(m.person)),
+    [memberships, people, familyId],
+  );
+  const pessoa = people.find((item) => item.id === personId);
+
+  const entrada: PromptInput | undefined = useMemo(() => {
+    if (!familia) return undefined;
+    const doCaso = facts.filter((fact) => fact.familyId === familia.id && (pessoa ? fact.personId === pessoa.id : true));
+    const naoExportaveis = facts.filter((fact) => doCaso.includes(fact) && fact.familyVisibility === "hidden").map((fact) => fact.personId);
+    return {
+      kind,
+      family: familia,
+      person: pessoa,
+      members: incluirPessoas ? membros : pessoa ? [{ person: pessoa, roleLabel: undefined }] : [],
+      facts: doCaso,
+      nonExportablePersonIds: [...new Set(naoExportaveis)],
+      nonExportableLinkLabels: relationships.filter((r) => r.familyId === familia.id && (r.sharingState === "private" || r.sharingState === "blocked")).map((r) => r.formalType),
+    };
+  }, [familia, pessoa, membros, facts, kind, incluirPessoas, relationships]);
+
+  const resultado = entrada ? buildPrompt(entrada) : undefined;
+
+  async function copiar() {
+    if (!resultado || resultado.blocked) return;
     try {
-      await navigator.clipboard.writeText(texto);
-      setCopiado(id);
-      window.setTimeout(() => setCopiado((atual) => (atual === id ? undefined : atual)), 2200);
+      await navigator.clipboard.writeText(resultado.text);
+      setCopiado(true);
+      window.setTimeout(() => setCopiado(false), 2200);
     } catch {
-      setCopiado(undefined);
+      setCopiado(false);
     }
   }
 
@@ -83,21 +74,51 @@ export function AiPromptsPanel() {
     <div className="section-head">
       <div>
         <p className="eyebrow">Mais</p>
-        <h2 id="ai-prompts-title">Prompts para IA externa</h2>
+        <h2 id="ai-prompts-title">Montar prompt para IA externa</h2>
       </div>
     </div>
-    <p className="fine-print">O Mapa não envia nada para nenhuma inteligência artificial. Estes textos são para copiar e colar onde você quiser — cole sempre dados anonimizados.</p>
+    <p className="fine-print">O Mapa não envia nada para nenhuma inteligência artificial. Escolha o caso e o que entra; o prompt sai preenchido com os códigos das pessoas e os dados clínicos já derivados, sem nomes. Nada sai daqui a não ser por um botão de copiar.</p>
 
-    {GRUPOS.map((grupo) => <section className="link-group" key={grupo.id} aria-label={grupo.titulo}>
-      <h4>{grupo.titulo}</h4>
-      <p className="fine-print">{grupo.resumo}</p>
-      {grupo.itens.map((item) => <div className="prompt-item" key={item.id}>
-        <p className="prompt-when">{item.quando}</p>
-        <pre className="prompt-text">{item.texto}</pre>
-        <div className="action-row">
-          <button onClick={() => void copiar(item.id, item.texto)}>{copiado === item.id ? "Copiado" : "Copiar"}</button>
-        </div>
-      </div>)}
-    </section>)}
+    <div className="prompt-form">
+      <label>Tipo de conversa
+        <select value={kind} onChange={(event) => setKind(event.target.value as PromptKind)}>
+          {CATEGORIAS.map((item) => <option key={item.id} value={item.id}>{item.titulo}</option>)}
+        </select>
+      </label>
+
+      <label>Família
+        <select value={familyId ?? ""} onChange={(event) => { setFamilyId(event.target.value || undefined); setPersonId(undefined); }}>
+          <option value="">Selecione a família</option>
+          {families.map((item) => <option key={item.id} value={item.id}>{item.code}</option>)}
+        </select>
+      </label>
+
+      {familia && <label>Pessoa
+        <select value={personId ?? ""} onChange={(event) => setPersonId(event.target.value || undefined)}>
+          <option value="">Família inteira</option>
+          {membros.map(({ person }) => <option key={person.id} value={person.id}>{person.code}</option>)}
+        </select>
+      </label>}
+
+      {familia && membros.length > 1 && <label className="prompt-check">
+        <input type="checkbox" checked={incluirPessoas} onChange={(event) => setIncluirPessoas(event.target.checked)} />
+        Incluir os outros integrantes da família
+      </label>}
+    </div>
+
+    {!familia && <p className="fine-print">Escolha uma família para montar o prompt.</p>}
+
+    {familia && resultado?.blocked && <div className="prompt-blocked" role="alert">
+      <h4>Prompt travado para este caso</h4>
+      <p>Há registro marcado como não exportável. Nada foi montado.</p>
+      <ul>{resultado.reasons.map((motivo) => <li key={motivo}>{motivo}</li>)}</ul>
+    </div>}
+
+    {familia && resultado && !resultado.blocked && <>
+      <pre className="prompt-text">{resultado.text}</pre>
+      <div className="action-row">
+        <button onClick={() => void copiar()}>{copiado ? "Copiado" : "Copiar prompt"}</button>
+      </div>
+    </>}
   </section>;
 }
