@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { FamilyDiagramFlow, toFlowEdges, toFlowNodes } from "@/app/family-relations-flow";
 import { buildEcomap, buildGenogram, relationshipNarrative, type DiagramModel } from "@/src/domain/diagram-engine";
@@ -69,6 +69,23 @@ describe("camada de renderizacao em React Flow", () => {
     expect(screen.getAllByTestId("flow-node-person").length).toBeGreaterThan(0);
     expect(screen.getAllByTestId("flow-node-resource")).toHaveLength(1);
     expect(screen.getAllByTestId("flow-node-family")).toHaveLength(1);
+  });
+
+  it("prepara as arestas com tipo, traço e seta coerentes com o vinculo", () => {
+    // O jsdom nao mede os handles, entao o React Flow nao desenha o path das arestas aqui.
+    // O que se verifica aqui e o contrato traduzido; o desenho e conferido no navegador.
+    const [edge] = toFlowEdges(genogram);
+    expect(edge?.type).toBe("familyEdge");
+    expect(edge?.style?.stroke).toBeTruthy();
+    expect(Number(edge?.style?.strokeWidth)).toBeGreaterThan(0);
+    expect(edge?.data?.quality).toBe("strong");
+    expect(edge?.markerEnd).toBeUndefined();
+
+    const directed = toFlowEdges({
+      ...genogram,
+      edges: [{ ...genogram.edges[0]!, direction: "from-source" }],
+    });
+    expect(directed[0]?.markerEnd).toBeDefined();
   });
 
   it("mantem a narrativa do motor disponivel para a mesma camada", () => {

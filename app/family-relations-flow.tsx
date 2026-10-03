@@ -9,7 +9,9 @@ import {
   Position,
   ReactFlow,
   ReactFlowProvider,
+  BaseEdge,
   getSmoothStepPath,
+  MarkerType,
   type Edge,
   type EdgeProps,
   type Node,
@@ -83,6 +85,7 @@ export function toFlowEdges(model: DiagramModel): Edge[] {
         source: edge.sourceId,
         target: edge.targetId,
         type: "familyEdge",
+        ...(edge.direction === "mutual" || edge.direction === "none" ? {} : { markerEnd: { type: MarkerType.ArrowClosed } }),
         style: {
           stroke: style.stroke,
           strokeWidth: style.width,
@@ -110,13 +113,14 @@ function FamilyNode({ data, selected }: NodeProps<Node<FamilyNodeData>>) {
   );
 }
 
-function FamilyEdge({ data, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition }: EdgeProps) {
+function FamilyEdge({ id, data, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, style, markerEnd }: EdgeProps) {
   const value = data as FamilyEdgeData;
   const [path, labelX, labelY] = getSmoothStepPath({ sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition });
   return (
     <>
-      <path d={path} fill="none" />
-      <text className="flow-edge-label" x={labelX} y={labelY - 4}>{value.label}</text>
+      {/* BaseEdge aplica o estilo recebido da aresta, incluindo a cor por qualidade de vinculo. */}
+      <BaseEdge id={id} path={path} {...(style ? { style } : {})} {...(markerEnd ? { markerEnd } : {})} />
+      <text className="flow-edge-label" x={labelX} y={labelY - 6}>{value.label}</text>
     </>
   );
 }
