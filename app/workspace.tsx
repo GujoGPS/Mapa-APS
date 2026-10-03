@@ -3,6 +3,7 @@
 import {AiPromptsPanel} from "./ai-prompts-panel";
 import {UbsPanel} from "./ubs-panel";
 import {SplashScreen} from "./splash-screen";
+import { useToast } from "./toast";
 import {MoreMenu, type MoreSection} from "./more-menu";
 import {HistoryPanel} from "./history-panel";
 import {Sheet} from "./sheet";
@@ -34,7 +35,7 @@ export function Workspace() {
   const [composer, setComposer] = useState<Composer>(null);
   const [selectedFamilyId, setSelectedFamilyId] = useState<string>();
   const [selectedPersonId, setSelectedPersonId] = useState<string>();
-  const [message, setMessage] = useState("Pronto.");
+  const { avise } = useToast();
   const [primeiraAvaliacao, setPrimeiraAvaliacao] = useState<string>();
   const [startEvaluationFor, setStartEvaluationFor] = useState<string>();
   const activeSemester = data.semesters.find((semester) => semester.state === "active");
@@ -50,7 +51,7 @@ export function Workspace() {
     const family = composer === "family-edit" && selectedFamily ? updateFamily(selectedFamily, input) : createFamily(input);
     await saveEntity(ENTITY_TYPES.family, family);
     if (composer !== "family-edit" && activeSemester) await saveEntity(ENTITY_TYPES.semesterFamily, linkFamilyToSemester({ semesterId: activeSemester.id, familyId: family.id }));
-    await refresh(); setSelectedFamilyId(family.id); setComposer(null); setMessage(composer === "family-edit" ? "Família atualizada; sua origem foi preservada." : "Família salva e verificada no dispositivo.");
+    await refresh(); setSelectedFamilyId(family.id); setComposer(null); avise(composer === "family-edit" ? "Família atualizada; sua origem foi preservada." : "Família salva e verificada no dispositivo.");
   }
 
   async function submitPerson(event: FormEvent<HTMLFormElement>) {
@@ -59,7 +60,7 @@ export function Workspace() {
     const input = { code: String(form.get("code")), displayName: String(form.get("displayName") || ""), lifeStage: String(form.get("lifeStage")) as "child" | "adolescent" | "adult" | "older-adult" | "unknown" };
     if (composer === "person-edit" && selectedPerson) {
       await saveEntity(ENTITY_TYPES.person, updatePerson(selectedPerson, input));
-      await refresh(); setComposer(null); setMessage("Pessoa atualizada; identidade, vitalidade e origem foram preservadas.");
+      await refresh(); setComposer(null); avise("Pessoa atualizada; identidade, vitalidade e origem foram preservadas.");
       return;
     }
     const person = createPerson(input);
@@ -67,7 +68,7 @@ export function Workspace() {
     await saveEntity(ENTITY_TYPES.person, person); await saveEntity(ENTITY_TYPES.membership, membership);
     await refresh(); setComposer(null);
     setSelectedPersonId(person.id); setPrimeiraAvaliacao(person.id);
-    setMessage(`Pessoa ${person.displayName || person.code} salva na família. Você pode iniciar a primeira avaliação (ESF) agora ou seguir depois.`);
+    avise(`Pessoa ${person.displayName || person.code} salva na família. Você pode iniciar a primeira avaliação (ESF) agora ou seguir depois.`);
   }
 
   async function submitEncounter(event: FormEvent<HTMLFormElement>) {
@@ -77,13 +78,13 @@ export function Workspace() {
     await saveEntity(ENTITY_TYPES.encounter, encounter);
     const pendingTitle = String(form.get("pending") || "").trim();
     if (pendingTitle) await saveEntity(ENTITY_TYPES.pending, createPending({ title: pendingTitle, ...(familyId ? { familyId } : {}), encounterId: encounter.id, ...(activeSemester ? { semesterId: activeSemester.id } : {}) }));
-    await refresh(); setComposer(null); setMessage("Encontro salvo e timeline atualizada.");
+    await refresh(); setComposer(null); avise("Encontro salvo e timeline atualizada.");
   }
 
   async function submitSemester(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); const form = new FormData(event.currentTarget);
     const semester = createSemester({ code: String(form.get("code")), label: String(form.get("label")), expectedFamilyCount: Number(form.get("expectedFamilyCount") || 2) });
-    await saveEntity(ENTITY_TYPES.semester, semester); await refresh(); setComposer(null); setMessage("Jornada criada. O número de famílias é uma expectativa, não um limite.");
+    await saveEntity(ENTITY_TYPES.semester, semester); await refresh(); setComposer(null); avise("Jornada criada. O número de famílias é uma expectativa, não um limite.");
   }
 
   if (loading) return <SplashScreen />;
@@ -98,7 +99,6 @@ export function Workspace() {
           </span>
         : <span className="local-badge">Local</span>}</header>
       {error && <p className="error-banner" role="alert">{error}</p>}
-      <p className="system-message" role="status" aria-live="polite">{message}</p>
       {primeiraAvaliacao && <p className="first-assessment-offer"><strong>Atalho</strong><span>Ir direto para a ficha ESF desta pessoa, sem navegar pela lista.</span><button onClick={() => { setTab("care"); setStartEvaluationFor(primeiraAvaliacao); setPrimeiraAvaliacao(undefined); }}>Iniciar primeira avaliação (ESF)</button></p>}
 
       {tab === "home" && <>

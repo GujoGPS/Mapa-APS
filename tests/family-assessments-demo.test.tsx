@@ -3,6 +3,7 @@ import React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { DemoModePanel } from "@/app/demo-mode-panel";
 import { FamilyAssessmentsPanel } from "@/app/family-assessments";
+import { ToastProvider } from "@/app/toast";
 import type { Family, FamilyMembership, Person } from "@/src/contracts/family";
 import type { InstrumentApplication } from "@/src/clinical/assessments";
 
@@ -44,7 +45,7 @@ describe("fluxo de avaliações no modo demonstração", () => {
   beforeEach(() => { state.active = false; state.applications = []; });
 
   it("entra, cria, salva, isola, restaura e remove aplicação sintética", async () => {
-    render(<DemoFlow />);
+    render(<ToastProvider><DemoFlow /></ToastProvider>);
     fireEvent.click(screen.getByRole("button", { name: "Entrar no modo demonstração" }));
     fireEvent.click(screen.getByRole("button", { name: "Confirmar entrada" }));
     await waitFor(() => expect(screen.getByText("Demonstração ativa. Os dados normais estão isolados e podem ser restaurados ao sair.")).toBeTruthy());

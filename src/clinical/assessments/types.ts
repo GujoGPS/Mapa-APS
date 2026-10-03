@@ -199,6 +199,8 @@ export interface InstrumentApplication {
   rectifiesApplicationId?: string;
   privateNotes?: string;
   waistCriterion?: "male-local-rule" | "female-local-rule" | "not-selected" | undefined;
+  /** Status anterior ao arquivamento, para devolver a avaliação ao ponto certo. */
+  archivedFrom?: AssessmentStatus;
 }
 
 export interface ApplicabilityOverride {

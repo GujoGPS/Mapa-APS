@@ -1,10 +1,12 @@
 "use client";
 
 import { Botao } from "./ui";
+import { useToast } from "./toast";
 import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import type { Family, FamilyMembership, Person } from "@/src/contracts/family";
 import {
-  adultDcntEsfDefinition, archiveApplication, automaticApplicabilityState, completeApplication, createAnswer, createApplication,
+  adultDcntEsfDefinition, archiveApplication,
+  unarchiveApplication, automaticApplicabilityState, completeApplication, createAnswer, createApplication,
   createRectification, deriveApplicationResults, questionApplicable, returnApplicationToDraft, submitForReview,
   updateDraftApplication, type ApplicabilityOverride, type InstrumentAnswer, type InstrumentApplication,
   type QuestionDefinition, type SectionDefinition, validateApplicationAnswers,
@@ -85,10 +87,16 @@ export function FamilyAssessmentsPanel({ family, people, memberships, applicatio
   const familyPeople = useMemo(() => peopleInFamily(people, memberships, family.id), [people, memberships, family.id]);
   const [personId, setPersonId] = useState(""); const [activeApplicationId, setActiveApplicationId] = useState<string>();
   const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
+  // Arquivadas saem da lista de quem esta em atendimento e ganham aba propria, com o nome da pessoa.
+  const { avise } = useToast();
+  const [verArquivadas, setVerArquivadas] = useState(false);
+  const quantasArquivadas = applications.filter((item) => item.familyId === family.id && item.status === "archived").length;
+  const temArquivadas = quantasArquivadas > 0;
   const [editorControls, setEditorControls] = useState<{ state: "saved" | "dirty" | "saving" | "save-error"; save: () => Promise<boolean>; discard: () => void }>({ state: "saved", save: async () => true, discard: () => undefined });
   const personApplications = applications.filter((item) => item.familyId === family.id && item.personId === personId);
   // Arquivados saem da lista ativa e passam a viver em Mais → Histórico.
   const activeApplications = personApplications.filter((item) => item.status !== "archived");
+  const arquivadasDaPessoa = personApplications.filter((item) => item.status === "archived");
   const selectedPerson = familyPeople.find((person) => person.id === personId);
   useEffect(() => setActiveApplicationId(undefined), [personId]);
   // Atalho de primeira avaliacao: consome o pedido, seleciona a pessoa e ja abre a ficha.
@@ -103,17 +111,42 @@ export function FamilyAssessmentsPanel({ family, people, memberships, applicatio
     if (editorControls.state === "dirty" || editorControls.state === "save-error") setPendingAction(() => action);
     else action();
   }
+  async function desarquivar(item: InstrumentApplication) {
+    try {
+      await unarchiveApplication(item.applicationId);
+      await onSaved();
+      avise(`Avaliação de ${item.assessmentDate} voltou para "Em andamento".`, "sucesso");
+    } catch {
+      avise("Não foi possível desarquivar esta avaliação.", "erro");
+    }
+  }
+
   async function start() { if (!personId) return; const action = async () => { const item = await createApplication({ familyId: family.id, personId, assessmentDate: new Date().toISOString().slice(0, 10) }); await onSaved(); setActiveApplicationId(item.applicationId); }; if (editorControls.state === "dirty" || editorControls.state === "save-error") setPendingAction(() => { void action(); }); else await action(); }
   async function rectify(item: InstrumentApplication) { const action = async () => { const next = await createRectification(item.applicationId); await onSaved(); setActiveApplicationId(next.applicationId); }; if (editorControls.state === "dirty" || editorControls.state === "save-error") setPendingAction(() => { void action(); }); else await action(); }
   return <section className="assessments-panel" aria-labelledby={`assessments-${family.id}`}>
     <div className="section-head"><div><p className="eyebrow">Família · Avaliações</p><h2 id={`assessments-${family.id}`}>Avaliações</h2></div><span className="clinical-status">Pessoa é o sujeito clínico</span></div>
     <p className="fine-print">A visão familiar mostra somente status e datas. Respostas aparecem após seleção explícita de uma pessoa.</p>
-    <div className="assessment-member-list">{familyPeople.map((person) => { const items = applications.filter((item) => item.familyId === family.id && item.personId === person.id); const latest = [...items].sort((a, b) => b.assessmentDate.localeCompare(a.assessmentDate))[0]; return <button className={person.id === personId ? "assessment-member selected" : "assessment-member"} key={person.id} onClick={() => guarded(() => setPersonId(person.id))}><strong>{person.displayName || person.code}</strong><span>{latest ? `${statusLabels[latest.status]} · ${latest.assessmentDate}` : "Avaliação não iniciada"}</span><small>{items.length} aplicação(ões)</small></button>; })}</div>
+    <div className="assessment-archive-tabs" role="tablist" aria-label="Avaliações por situação">
+      <button role="tab" type="button" aria-selected={!verArquivadas} className={!verArquivadas ? "active" : ""} onClick={() => setVerArquivadas(false)}>
+        Em andamento
+      </button>
+      <button role="tab" type="button" aria-selected={verArquivadas} className={verArquivadas ? "active" : ""} onClick={() => setVerArquivadas(true)}>
+        Arquivadas{temArquivadas ? ` (${quantasArquivadas})` : ""}
+      </button>
+    </div>
+    <div className="assessment-member-list">{familyPeople.map((person) => { const items = applications.filter((item) => item.familyId === family.id && item.personId === person.id && (verArquivadas ? item.status === "archived" : item.status !== "archived")); const latest = [...items].sort((a, b) => b.assessmentDate.localeCompare(a.assessmentDate))[0]; return <button className={person.id === personId ? "assessment-member selected" : "assessment-member"} key={person.id} onClick={() => guarded(() => setPersonId(person.id))}><strong>{person.displayName || person.code}</strong><span>{latest ? `${verArquivadas ? "Arquivada" : statusLabels[latest.status]} · ${latest.assessmentDate}` : (verArquivadas ? "Nada arquivado" : "Avaliação não iniciada")}</span><small>{items.length} {items.length === 1 ? "aplicação" : "aplicações"}</small></button>; })}</div>
     {selectedPerson && <div className="assessment-person-area" key={selectedPerson.id}>
       <div className="assessment-person-header"><div><p className="eyebrow">Pessoa selecionada</p><h3>{selectedPerson.displayName || selectedPerson.code}</h3><small>Família {family.code} · {adultDcntEsfDefinition.version}</small></div><div className="action-row"><button onClick={() => void start()}>Nova aplicação</button></div></div>
       <AssessmentViews personId={selectedPerson.id} personLabel={selectedPerson.displayName || selectedPerson.code} applications={personApplications} />
-      <div className="assessment-history">{activeApplications.length ? activeApplications.map((item) => <AssessmentHistoryCard key={item.applicationId} application={item} personLabel={selectedPerson.displayName || selectedPerson.code} onOpen={() => guarded(() => setActiveApplicationId(item.applicationId))} onRectify={() => void rectify(item)} />) : <p className="fine-print">Nenhuma aplicação ativa para esta pessoa. Rascunhos arquivados ficam em Mais → Histórico.</p>}</div>
-      {applications.find((item) => item.applicationId === activeApplicationId) && <AssessmentEditor key={activeApplicationId} application={applications.find((item) => item.applicationId === activeApplicationId)!} onSaved={onSaved} onClose={() => guarded(() => setActiveApplicationId(undefined))} onRequestAction={(action) => guarded(() => { void action(); })} onEditStateChange={setEditorControls} demoActive={demoActive} />}
+      <div className="assessment-history">{activeApplications.length ? activeApplications.map((item) => <AssessmentHistoryCard key={item.applicationId} application={item} personLabel={selectedPerson.displayName || selectedPerson.code} onOpen={() => guarded(() => setActiveApplicationId(item.applicationId))} onRectify={() => void rectify(item)} />) : <p className="fine-print">Nenhuma aplicação ativa para esta pessoa.</p>}</div>
+      {arquivadasDaPessoa.length > 0 && <div className="assessment-archived-block">
+        <p className="fine-print">Arquivadas — continuam salvas e podem voltar a qualquer momento.</p>
+        {arquivadasDaPessoa.map((item) => <div className="assessment-archived-row" key={item.applicationId}>
+          <div><strong>{selectedPerson.displayName || selectedPerson.code}</strong><span>{statusLabels[item.status]} · {item.assessmentDate}</span></div>
+          <button type="button" onClick={() => void desarquivar(item)}>Desarquivar</button>
+        </div>)}
+      </div>}
+      {applications.find((item) => item.applicationId === activeApplicationId) && <AssessmentEditor key={activeApplicationId} application={applications.find((item) => item.applicationId === activeApplicationId)!} onSaved={onSaved} onClose={() => guarded(() => setActiveApplicationId(undefined))} onRequestAction={(action) => guarded(() => { void action(); })} onEditStateChange={setEditorControls} avise={avise} demoActive={demoActive} />}
     </div>}
     {pendingAction && <div className="assessment-confirm" role="dialog" aria-modal="true" aria-labelledby="unsaved-title"><h4 id="unsaved-title">Há alterações não salvas</h4><p>Escolha como continuar sem descartar dados silenciosamente.</p><div className="action-row"><button onClick={() => { const action = pendingAction; void editorControls.save().then((ok) => { if (ok) { setPendingAction(null); action(); } }); }}>Salvar e continuar</button><button onClick={() => setPendingAction(null)}>Continuar editando</button><button onClick={() => { editorControls.discard(); const action = pendingAction; setPendingAction(null); action(); }}>Descartar alterações locais</button></div></div>}
   </section>;
@@ -123,7 +156,7 @@ function AssessmentHistoryCard({ application, personLabel, onOpen, onRectify }: 
   return <article className="assessment-history-card"><div><strong>{statusLabels[application.status]}</strong><span>{personLabel} · {application.assessmentDate} · revisão {application.revisionNumber}</span><small>{assessmentKindLabel(application)}</small>{application.rectifiesApplicationId && <small>Retifica a aplicação {application.rectifiesApplicationId}</small>}</div><div className="action-row"><button onClick={onOpen}>{application.status === "draft" ? "Continuar" : "Visualizar"}</button>{(application.status === "completed" || application.status === "rectified") && <button onClick={onRectify}>Iniciar retificação</button>}</div></article>;
 }
 
-function AssessmentEditor({ application: initial, onSaved, onClose, onRequestAction, onEditStateChange, demoActive }: { application: InstrumentApplication; onSaved: () => Promise<void>; onClose: () => void; onRequestAction: (action: () => Promise<void>) => void; onEditStateChange: (controls: { state: "saved" | "dirty" | "saving" | "save-error"; save: () => Promise<boolean>; discard: () => void }) => void; demoActive: boolean }) {
+function AssessmentEditor({ application: initial, onSaved, onClose, onRequestAction, onEditStateChange, demoActive, avise }: { application: InstrumentApplication; onSaved: () => Promise<void>; onClose: () => void; onRequestAction: (action: () => Promise<void>) => void; onEditStateChange: (controls: { state: "saved" | "dirty" | "saving" | "save-error"; save: () => Promise<boolean>; discard: () => void }) => void; demoActive: boolean; avise: (texto: string, tom?: "info" | "sucesso" | "atencao" | "erro") => void }) {
   const [application, setApplication] = useState(initial); const [sectionId, setSectionId] = useState(adultDcntEsfDefinition.sections[0]?.id ?? ""); const [editState, setEditState] = useState<"saved" | "dirty" | "saving" | "save-error">("saved"); const [message, setMessage] = useState(""); const [lastSaved, setLastSaved] = useState(initial.updatedAt); const firstError = useRef<HTMLDivElement>(null); const fieldRefs = useRef(new Map<string, HTMLElement>());
   useEffect(() => { setApplication(initial); setEditState("saved"); setLastSaved(initial.updatedAt); }, [initial]);
   useEffect(() => { onEditStateChange({ state: editState, save, discard: () => { setApplication(initial); setEditState("saved"); } }); }, [editState, initial, onEditStateChange]);
@@ -199,7 +232,7 @@ function AssessmentEditor({ application: initial, onSaved, onClose, onRequestAct
     <div className="assessment-autosave" role="status" aria-live="polite" aria-label="Salvamento automático" data-state={editState}>{editState === "dirty" ? "Alterações não salvas — salvando automaticamente…" : editState === "saving" ? "Salvando automaticamente…" : editState === "save-error" ? `Falha ao salvar: ${message}` : `Salvo automaticamente em ${new Date(lastSaved).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`}</div>
     {section && <AssessmentSection section={section} application={application} editable={editable} onAnswer={setAnswer} onWaistCriterion={setWaistCriterion} onApplicabilityOverride={setApplicabilityOverride} results={results} firstError={firstError} firstBlocking={firstBlockingQuestion(application, structural)} registerField={(id, element) => { if (element) fieldRefs.current.set(id, element); else fieldRefs.current.delete(id); }} />}
     <StructuralReview application={application} results={results} validation={structural} />
-    <div className="action-row"><button disabled={!editable || editState !== "dirty"} onClick={() => void save()}>Salvar rascunho</button>{application.status === "draft" && <><button disabled={!editable} onClick={() => void review()}>Enviar para revisão</button><button onClick={() => onRequestAction(async () => { await archiveApplication(application.applicationId); await onSaved(); })}>Arquivar</button></>}{application.status === "in-review" && <><button onClick={() => onRequestAction(async () => { await returnApplicationToDraft(application.applicationId); await onSaved(); })}>Devolver para rascunho</button><button onClick={() => void complete()}>Concluir</button><button onClick={() => onRequestAction(async () => { await archiveApplication(application.applicationId); await onSaved(); })}>Arquivar</button></>}{(application.status === "completed" || application.status === "rectified") && <button onClick={() => onRequestAction(async () => { await archiveApplication(application.applicationId); await onSaved(); })}>Arquivar</button>}</div>
+    <div className="action-row"><button disabled={!editable || editState !== "dirty"} onClick={() => void save()}>Salvar rascunho</button>{application.status === "draft" && <><button disabled={!editable} onClick={() => void review()}>Enviar para revisão</button><button onClick={() => onRequestAction(async () => { await archiveApplication(application.applicationId); await onSaved(); avise("Avaliação arquivada. Ela continua salva — dá para trazer de volta na aba Arquivadas.", "sucesso"); })}>Arquivar</button></>}{application.status === "in-review" && <><button onClick={() => onRequestAction(async () => { await returnApplicationToDraft(application.applicationId); await onSaved(); })}>Devolver para rascunho</button><button onClick={() => void complete()}>Concluir</button><button onClick={() => onRequestAction(async () => { await archiveApplication(application.applicationId); await onSaved(); })}>Arquivar</button></>}{(application.status === "completed" || application.status === "rectified") && <button onClick={() => onRequestAction(async () => { await archiveApplication(application.applicationId); await onSaved(); })}>Arquivar</button>}</div>
     {message && <p ref={firstError} tabIndex={-1} className="fine-print">{message}</p>}
   </section>;
 }

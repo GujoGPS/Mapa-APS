@@ -998,3 +998,81 @@ button.secondary { color: var(--text); background: var(--tinte-1); }
 }
 /* Toda linha de status cede espaco: um rotulo longo nao pode esticar a coluna. */
 .assessment-section-statuses > span { min-width: 0; }
+
+/* ==========================================================================
+   TOASTS — aviso passageiro, no canto, acima da barra de navegacao
+   ========================================================================== */
+.toasts {
+  position: fixed; z-index: 90; left: var(--e-3); right: var(--e-3);
+  bottom: calc(5.6rem + env(safe-area-inset-bottom));
+  display: grid; gap: var(--e-2); pointer-events: none;
+}
+.toast {
+  display: flex; align-items: center; gap: var(--e-3);
+  padding: var(--e-3) var(--e-4);
+  border: 1px solid var(--linha-forte); border-left-width: 3px;
+  border-radius: var(--r-2); background: var(--noite-alta); box-shadow: var(--sombra-alta);
+  color: var(--creme); font-size: var(--t-1); line-height: 1.45;
+  pointer-events: auto;
+  animation: toast-entra var(--v-medio) var(--curva-entrada) both;
+}
+.toast-glifo {
+  flex: 0 0 auto; display: grid; place-items: center;
+  width: 1.4rem; height: 1.4rem; border-radius: var(--r-cheio);
+  font-size: var(--t-2); font-weight: 700;
+}
+.toast-texto { min-width: 0; flex: 1; }
+.toast-fechar {
+  flex: 0 0 auto; width: var(--toque); height: var(--toque);
+  border: 0; border-radius: var(--r-1); background: transparent;
+  color: var(--creme-medio); font-size: var(--t-1); cursor: pointer;
+}
+.toast-fechar:hover { color: var(--creme); background: var(--noite); }
+.toast-fechar:focus-visible { outline: 2px solid var(--foco); outline-offset: 2px; }
+
+.toast-info { border-left-color: var(--info); }
+.toast-info .toast-glifo { background: var(--info-suave); color: var(--info); }
+.toast-sucesso { border-left-color: var(--seguro); }
+.toast-sucesso .toast-glifo { background: var(--seguro-suave); color: var(--seguro); }
+/* Atencao usa a luz; erro usa o terracota. Sao 41 graus de matiz de distancia. */
+.toast-atencao { border-left-color: var(--luz); }
+.toast-atencao .toast-glifo { background: var(--luz-suave); color: var(--luz); }
+.toast-erro { border-left-color: var(--erro); }
+.toast-erro .toast-glifo { background: var(--erro-suave); color: var(--erro); }
+
+@keyframes toast-entra {
+  from { opacity: 0; transform: translateY(.75rem); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) { .toast { animation: none; } }
+
+/* ==========================================================================
+   AVALIACOES — abas "Em andamento / Arquivadas" e a lista de arquivadas
+   ========================================================================== */
+.assessment-archive-tabs { display: flex; gap: var(--e-1); margin: var(--e-3) 0; border-bottom: 1px solid var(--linha); }
+.assessment-archive-tabs button {
+  min-height: var(--toque); padding: 0 var(--e-4);
+  border: 0; border-radius: var(--r-1) var(--r-1) 0 0;
+  background: transparent; color: var(--creme-medio); font-weight: 700; cursor: pointer;
+  position: relative;
+  transition: color var(--v-medio) var(--curva);
+}
+.assessment-archive-tabs button.active { color: var(--luz); }
+.assessment-archive-tabs button.active::after {
+  content: ""; position: absolute; left: var(--e-2); right: var(--e-2); bottom: -1px; height: 2px;
+  background: var(--luz); border-radius: 2px; box-shadow: 0 0 var(--e-3) var(--luz);
+}
+
+.assessment-archived-block { margin-top: var(--e-4); padding-top: var(--e-3); border-top: 1px solid var(--linha); }
+.assessment-archived-row {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--e-3);
+  padding: var(--e-3) 0;
+}
+.assessment-archived-row > div { display: grid; gap: .1rem; min-width: 0; }
+.assessment-archived-row strong { color: var(--creme); font-size: var(--t-1); }
+.assessment-archived-row span { color: var(--creme-medio); font-size: var(--t-2); }
+.assessment-archived-row button {
+  flex: 0 0 auto; min-height: var(--toque); padding: 0 var(--e-3);
+  border: 1px solid var(--seguro); border-radius: var(--r-2);
+  background: var(--seguro-suave); color: var(--seguro); font-weight: 700; cursor: pointer;
+}

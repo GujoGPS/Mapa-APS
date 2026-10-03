@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import "./styles.css";
 import { ClientBootstrap } from "./client-bootstrap";
 import { SecurityGate } from "./security-gate";
+import { ToastProvider } from "./toast";
 
 export const metadata: Metadata = {
   title: "Mapa | Clínica, família e território",
@@ -30,7 +31,9 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
     <html lang="pt-BR">
       <body suppressHydrationWarning>
         <ClientBootstrap />
-        <SecurityGate>{children}</SecurityGate>
+        <SecurityGate>
+          <ToastProvider>{children}</ToastProvider>
+        </SecurityGate>
       </body>
     </html>
   );

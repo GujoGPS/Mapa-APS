@@ -101,7 +101,8 @@ export function transitionApplicationStatus(current: AssessmentStatus, next: Ass
     "in-review": ["draft", "completed"],
     completed: ["rectified", "archived"],
     rectified: ["archived"],
-    archived: [],
+    // Sem volta, arquivar vira exclusão disfarçada: o registro some das listas e não há como trazê-lo de volta.
+    archived: ["draft", "completed", "rectified"],
   };
   return transitions[current].includes(next);
 }
@@ -220,7 +221,22 @@ export async function archiveApplication(applicationId: string): Promise<Instrum
   const current = await getApplication(applicationId);
   if (!current) throw new Error("Aplicação inexistente.");
   if (!transitionApplicationStatus(current.status, "archived")) throw new Error(`Transição inválida: ${current.status} → archived`);
-  return persist({ ...current, status: "archived", updatedAt: now(), revisionNumber: current.revisionNumber + 1 }, current);
+  return persist({ ...current, status: "archived", archivedFrom: current.status, updatedAt: now(), revisionNumber: current.revisionNumber + 1 }, current);
+}
+
+/**
+ * Desfaz o arquivamento. Guardado de qual status veio, para devolver a avaliação ao ponto
+ * certo — um rascunho arquivado volta como rascunho, uma concluída volta como concluída.
+ */
+export async function unarchiveApplication(applicationId: string): Promise<InstrumentApplication> {
+  const current = await getApplication(applicationId);
+  if (!current) throw new Error("Aplicação inexistente.");
+  if (!current.archivedFrom) throw new Error("Esta avaliação não tem arquivamento para desfazer.");
+  const destino = current.archivedFrom;
+  if (!transitionApplicationStatus("archived", destino)) throw new Error(`Transição inválida: archived → ${destino}`);
+  // exactOptionalPropertyTypes: a chave precisa sair do objeto, nao receber undefined.
+  const { archivedFrom: _descartado, ...resto } = current;
+  return persist({ ...resto, status: destino, updatedAt: now(), revisionNumber: current.revisionNumber + 1 }, current);
 }
 
 export async function createRectification(applicationId: string): Promise<InstrumentApplication> {

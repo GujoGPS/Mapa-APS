@@ -1,6 +1,7 @@
 "use client";
 
 import {Sheet} from "./sheet";
+import { useToast } from "./toast";
 import { useState } from "react";
 import type { Family } from "@/src/contracts/family";
 import { isSyntheticDemoFamily, type DemoSessionSnapshot } from "@/src/contracts/demo";
@@ -17,7 +18,7 @@ type Confirmation = "enter" | "remove" | null;
 export function DemoModePanel({ session, families, onChanged }: Props) {
   const [confirmation, setConfirmation] = useState<Confirmation>(null);
   const [busy, setBusy] = useState(false);
-  const [message, setMessage] = useState("");
+  const { avise } = useToast();
   const syntheticFamilyCount = families.filter(isSyntheticDemoFamily).length;
 
   async function enter() {
@@ -25,9 +26,9 @@ export function DemoModePanel({ session, families, onChanged }: Props) {
     try {
       await enterDemoMode();
       await onChanged();
-      setMessage("Demonstração ativa. Os dados normais estão isolados e podem ser restaurados ao sair.");
+      avise("Demonstração ativa. Os dados normais estão isolados e podem ser restaurados ao sair.");
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Não foi possível entrar na demonstração.");
+      avise(error instanceof Error ? error.message : "Não foi possível entrar na demonstração.");
     } finally {
       setBusy(false);
       setConfirmation(null);
@@ -39,9 +40,9 @@ export function DemoModePanel({ session, families, onChanged }: Props) {
     try {
       await exitDemoMode();
       await onChanged();
-      setMessage("Modo demonstração encerrado; estado anterior restaurado.");
+      avise("Modo demonstração encerrado; estado anterior restaurado.");
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Não foi possível restaurar o estado anterior.");
+      avise(error instanceof Error ? error.message : "Não foi possível restaurar o estado anterior.");
     } finally {
       setBusy(false);
     }
@@ -52,9 +53,9 @@ export function DemoModePanel({ session, families, onChanged }: Props) {
     try {
       const count = await removeDemoData();
       await onChanged();
-      setMessage(count ? `${count} registro(s) sintético(s) removido(s). Os dados normais foram preservados.` : "Nenhum registro sintético identificado para remoção.");
+      avise(count ? `${count} registro(s) sintético(s) removido(s). Os dados normais foram preservados.` : "Nenhum registro sintético identificado para remoção.");
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Não foi possível remover os dados sintéticos.");
+      avise(error instanceof Error ? error.message : "Não foi possível remover os dados sintéticos.");
     } finally {
       setBusy(false);
       setConfirmation(null);
@@ -85,7 +86,6 @@ export function DemoModePanel({ session, families, onChanged }: Props) {
           </div>
         </>
       )}
-      <p className="system-message" role="status" aria-live="polite">{message}</p>
       {confirmation && (
         <Sheet open onClose={() => setConfirmation(null)} labelledBy="demo-confirm-title">
           <p className="eyebrow">Confirmação</p>

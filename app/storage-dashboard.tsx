@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useToast } from "./toast";
 import { serializeBackup } from "@/src/backup/service";
 import { createEnvelope, saveRecordVerified } from "@/src/storage/repository";
 import { readStorageStatus, requestPersistentStorage, type StorageStatus } from "@/src/storage/status";
@@ -22,16 +23,16 @@ function formatPercent(ratio?: number): string {
 
 export function StorageDashboard() {
   const [status, setStatus] = useState<StorageStatus>({ persistence: "unsupported" });
-  const [message, setMessage] = useState("Verificando armazenamento local...");
+  const { avise } = useToast();
   const [busy, setBusy] = useState(false);
 
-  useEffect(() => { void readStorageStatus().then((next) => { setStatus(next); setMessage("Armazenamento verificado."); }); }, []);
+  useEffect(() => { void readStorageStatus().then((next) => { setStatus(next); avise("Armazenamento verificado."); }); }, []);
 
   async function persist() {
     setBusy(true);
     const next = await requestPersistentStorage();
     setStatus(next);
-    setMessage(next.persistence === "persistent" ? "Armazenamento persistente concedido." : "O navegador manteve o modo de melhor esforço. Faça backups frequentes.");
+    avise(next.persistence === "persistent" ? "Armazenamento persistente concedido." : "O navegador manteve o modo de melhor esforço. Faça backups frequentes.");
     setBusy(false);
   }
 
@@ -39,8 +40,8 @@ export function StorageDashboard() {
     setBusy(true);
     try {
       const receipt = await saveRecordVerified(createEnvelope("demo-integrity-check", "system-check", { synthetic: true, note: "verificacao de integridade" }));
-      setMessage(receipt.verified ? `Gravação confirmada às ${new Date(receipt.savedAt).toLocaleTimeString("pt-BR")}.` : "A gravação não foi confirmada.");
-    } catch (error) { setMessage(error instanceof Error ? error.message : "Falha desconhecida."); }
+      avise(receipt.verified ? `Gravação confirmada às ${new Date(receipt.savedAt).toLocaleTimeString("pt-BR")}.` : "A gravação não foi confirmada.");
+    } catch (error) { avise(error instanceof Error ? error.message : "Falha desconhecida."); }
     setBusy(false);
   }
 
@@ -54,8 +55,8 @@ export function StorageDashboard() {
       anchor.download = `mapa-backup-${new Date().toISOString().slice(0, 10)}.json`;
       anchor.click();
       URL.revokeObjectURL(url);
-      setMessage("Backup preparado com os seus dados; registros de demonstração nunca entram.");
-    } catch (error) { setMessage(error instanceof Error ? error.message : "Falha ao gerar backup."); }
+      avise("Backup preparado com os seus dados; registros de demonstração nunca entram.");
+    } catch (error) { avise(error instanceof Error ? error.message : "Falha ao gerar backup."); }
     setBusy(false);
   }
 
@@ -69,8 +70,6 @@ export function StorageDashboard() {
         <div><span>Dados guardados</span><strong>{formatBytes(status.usage)}</strong></div>
         <div><span>Espaço usado do navegador</span><strong>{formatPercent(status.usageRatio)}</strong></div>
       </div>
-      <p className="system-message" role="status" aria-live="polite">{message}</p>
-      
       <div className="action-row">
         <button type="button" disabled={busy} onClick={persist}>Solicitar persistência</button>
         <button type="button" disabled={busy} onClick={testWrite}>Testar gravação</button>
