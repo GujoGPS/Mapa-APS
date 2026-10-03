@@ -48,9 +48,17 @@ describe("tokens do design system", () => {
     // que tenha a letra no nome (.system-message, .aviso-glifo) e reprovar tudo por engano.
     const regra = /([^{}]+)\{([^}]*?(?:min-)?height:\s*([\d.]+)rem[^}]*)\}/g;
     const alvoFinal = (sel: string) => sel.split(/\s*[>+~,]\s*/).pop()?.trim() ?? "";
+    // Classes tambem sao alvos: .close-button, .aba, .btn. So checar por tag deixava o botao
+    // de fechar a folha em 38px passar sem que ninguem percebesse.
+    const nomeDeAlvo = /(?:btn|botao|aba|tab|close|fechar|chip|pill|toggle|action|nav-item|item-acao)/i;
     const eAlvo = (sel: string) => {
       const alvo = alvoFinal(sel);
-      return /^(a|button|summary|select)\b/.test(alvo) || /\[role=(tab|checkbox|switch)\]/.test(alvo);
+      const classes = [...alvo.matchAll(/\.([\w-]+)/g)].map((m) => m[1] ?? "");
+      return (
+        /^(a|button|summary|select)\b/.test(alvo) ||
+        /\[role=(tab|checkbox|switch)\]/.test(alvo) ||
+        classes.some((c) => nomeDeAlvo.test(c))
+      );
     };
     const abaixo = [...css.matchAll(regra)]
       .filter((m) => eAlvo(m[1] ?? "") && Number(m[3] ?? 0) * 16 < 44)

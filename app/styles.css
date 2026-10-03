@@ -92,9 +92,9 @@ button, input, textarea, select { font: inherit; }
 .hero h1 { margin: 0; font-size: clamp(2.5rem, 12vw, 4.8rem); line-height: .88; letter-spacing: -.065em; }
 .signature { margin: .6rem 0 0; color: var(--muted); font-size: 1.05rem; }
 .eyebrow { margin: 0 0 .6rem; color: var(--brand); font-size: .76rem; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
-.card { margin-top: 1rem; padding: 1.35rem; border: 1px solid var(--line); border-radius: 1.65rem; background: var(--surface); box-shadow: var(--shadow); backdrop-filter: blur(18px); }
+.card { margin-top: var(--e-4); padding: var(--e-4); border: 1px solid var(--linha); border-radius: var(--r-3); background: var(--noite-alta); box-shadow: var(--sombra); backdrop-filter: blur(18px); }
 .lead { display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: start; }
-.card h2 { margin: 0; max-width: 18ch; font-size: clamp(1.4rem, 5vw, 2.1rem); letter-spacing: -.035em; }
+.card h2 { margin: 0; max-width: 20ch; font-size: var(--t-1g); letter-spacing: -.02em; line-height: 1.25; }
 .card p:not(.eyebrow) { color: var(--muted); line-height: 1.6; }
 .milestone { display: inline-flex; padding: .45rem .75rem; border-radius: 999px; background: rgba(15, 95, 82, .1); color: var(--brand); font-weight: 750; white-space: nowrap; }
 .status-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: .75rem; margin-top: 1rem; }
@@ -182,7 +182,7 @@ footer { padding: 1.5rem .25rem; color: var(--muted); font-size: .84rem; text-al
 .sheet-backdrop { position: fixed; z-index: 50; inset: 0; display: grid; align-items: end; background: rgba(1,10,8,.46); }
 .sheet { position: relative; width: min(100%, 42rem); max-height: 92dvh; overflow: auto; margin: 0 auto; padding: 1rem 1rem calc(1.3rem + env(safe-area-inset-bottom)); border-radius: 1.6rem 1.6rem 0 0; background: var(--bg); box-shadow: 0 -20px 60px rgba(0,0,0,.2); }
 .sheet-handle { width: 3rem; height: .3rem; margin: .1rem auto 1rem; border-radius: 1rem; background: var(--line); }
-.close-button { position: absolute; right: 1rem; top: .75rem; width: 2.4rem; height: 2.4rem; border: 0; border-radius: 999px; color: var(--text); background: rgba(15,95,82,.08); font-size: 1.5rem; }
+.close-button { position: absolute; right: 1rem; top: .75rem; width: 2.4rem; min-height: var(--toque);  border: 0; border-radius: 999px; color: var(--text); background: rgba(15,95,82,.08); font-size: 1.5rem; }
 .form-stack { display: grid; gap: .9rem; }
 .form-stack h2 { margin: 0; font-size: 1.8rem; letter-spacing: -.04em; }
 .form-stack label, .form-stack fieldset { display: grid; gap: .4rem; color: var(--muted); font-size: .86rem; font-weight: 700; }
@@ -385,7 +385,7 @@ footer { padding: 1.5rem .25rem; color: var(--muted); font-size: .84rem; text-al
 .journey-section article small { color:var(--muted); }
 .close-panel>h2 { margin-top:0; }
 .close-panel article { display:grid; gap:.5rem; padding:.7rem 0; border-bottom:1px solid var(--line); }
-.close-panel select { min-height:2.7rem; padding:.5rem; border:1px solid var(--line); border-radius:.8rem; color:var(--text); background:var(--surface); }
+.close-panel select { min-height: var(--toque);  padding:.5rem; border:1px solid var(--line); border-radius:.8rem; color:var(--text); background:var(--surface); }
 .primary-close { width:100%; min-height:3rem; margin-top:1rem; border:0; border-radius:1rem; color:var(--bg); background:var(--brand); font-weight:850; }
 .primary-close:disabled { opacity:.45; }
 @media(min-width:44rem){.trajectory-grid{grid-template-columns:repeat(2,1fr)}}
@@ -485,20 +485,15 @@ button.secondary { color: var(--text); background: rgba(15,95,82,.08); }
    `:where()` tem especificidade zero de propósito: qualquer regra de componente continua valendo,
    e só os campos que não tinham estilo próprio deixam de cair no cinza do navegador. */
 :where(input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]):not([type="search"]), select, textarea) {
-  min-height: 2.8rem;
-  padding: .6rem .75rem;
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-  background: var(--surface);
-  color: var(--text);
-  box-shadow: inset 0 1px 2px rgba(7, 21, 18, .03);
+  min-height: var(--toque);
+  padding: 0 var(--e-3);
+  border: 1px solid var(--linha);
+  border-radius: var(--r-2);
+  background: var(--noite);
+  color: var(--creme);
 }
-:where(input, select, textarea)::placeholder { color: var(--muted); opacity: .75; }
-:where(input, select, textarea):focus-visible {
-  outline: 2px solid var(--brand);
-  outline-offset: 1px;
-  border-color: var(--brand);
-}
+:where(input, select, textarea)::placeholder { color: var(--creme-fraco); }
+:where(input, select, textarea):focus-visible { border-color: var(--foco); }
 :where(select) { cursor: pointer; }
 :where(textarea) { resize: vertical; line-height: 1.5; }
 
@@ -701,3 +696,27 @@ button.secondary { color: var(--text); background: rgba(15,95,82,.08); }
   color: var(--luz); background: var(--luz-suave);
   cursor: help;
 }
+
+/* --- cartao --- */
+.cartao {
+  padding: var(--e-4); border: 1px solid var(--linha);
+  border-radius: var(--r-3); background: var(--noite-alta); box-shadow: var(--sombra);
+}
+.cartao-topo { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--e-3); margin-bottom: var(--e-3); }
+.cartao-titulo { margin: 0; font-size: var(--t-1g); letter-spacing: -.02em; line-height: 1.25; }
+.cartao-acao { flex: 0 0 auto; display: flex; gap: var(--e-2); }
+
+/* --- campo --- */
+.campo { display: flex; flex-direction: column; gap: var(--e-2); margin-bottom: var(--e-4); }
+.campo-rotulo { font-size: var(--t-2); font-weight: 700; color: var(--creme-medio); }
+.campo-dica { margin: 0; font-size: var(--t-micro); color: var(--creme-fraco); }
+.campo-erro { margin: 0; font-size: var(--t-micro); color: var(--erro); font-weight: 600; }
+/* Erro ganha forma (borda + anel), nao so tinta: sob sol forte a cor sozinha nao segura. */
+.campo-com-erro :where(input, select, textarea) { border-color: var(--erro); box-shadow: 0 0 0 3px var(--erro-suave); }
+
+/* --- sheet: folha inferior na noite --- */
+.sheet-backdrop { background: rgba(2, 6, 20, .62); }
+.sheet { border-top: 1px solid var(--linha-forte); background: var(--noite-alta); box-shadow: var(--sombra-alta); }
+.sheet-handle { background: var(--linha-forte); }
+.close-button { min-height: var(--toque); min-width: var(--toque); border-radius: var(--r-2); color: var(--creme-medio); border: 1px solid var(--linha); background: transparent; cursor: pointer; }
+.close-button:hover { color: var(--creme); border-color: var(--linha-forte); }
