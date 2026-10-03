@@ -46,6 +46,10 @@ export interface FamilyEdgeData extends Record<string, unknown> {
   perspective: string;
 }
 
+/** Altura do container do diagrama em pixels. O React Flow mede este elemento; um valor em
+ *  px nao depende de um pai com altura resolvida, ao contrario de porcentagem. */
+export const FLOW_HEIGHT_PX = 520;
+
 const kindClass: Record<DiagramNode["kind"], string> = {
   person: "person",
   family: "family",
@@ -126,7 +130,12 @@ function FamilyDiagram({ model, onSelectNode, selectedNodeId, containerRef }: Fa
   const onNodeClick = useCallback((_: unknown, node: Node) => { onSelectNode?.(node.id); }, [onSelectNode]);
 
   return (
-    <div className="family-diagram family-diagram-flow" data-testid="family-diagram-flow" ref={containerRef}>
+    <div
+      className="family-diagram family-diagram-flow"
+      data-testid="family-diagram-flow"
+      ref={containerRef}
+      style={{ height: FLOW_HEIGHT_PX, width: "100%" }}
+    >
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -137,8 +146,6 @@ function FamilyDiagram({ model, onSelectNode, selectedNodeId, containerRef }: Fa
         nodesConnectable={false}
         elementsSelectable
         fitView
-        style={{ width: "100%", height: "100%" }}
-        proOptions={{ hideAttribution: true }}
         aria-label={`${model.kind === "genogram" ? "Genograma" : "Ecomapa"} da família`}
       >
         <Background />
