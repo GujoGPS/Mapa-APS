@@ -371,7 +371,25 @@ button.secondary { color: var(--text); background: rgba(15,95,82,.08); }
 /* O React Flow mede o proprio elemento .react-flow para dimensionar o grafo. A biblioteca aplica
    width/height 100% nele, mas isso so resolve se o pai tiver altura; a regra abaixo trava o
    contrato no CSS do aplicativo, independente da ordem de carregamento das folhas. */
-.family-diagram-flow .react-flow { width: 100%; height: 100%; }
+.family-diagram-flow .react-flow {
+  width: 100%;
+  height: 100%;
+  /* Controles, minimapa e atribuicao usam as variaveis --xy-*, cujos padroes da biblioteca sao de
+     tema claro. Aqui elas passam a seguir os tokens do aplicativo, que ja mudam com o tema. */
+  --xy-controls-button-background-color-default: var(--surface);
+  --xy-controls-button-background-color-hover-default: color-mix(in srgb, var(--brand) 22%, var(--surface));
+  --xy-controls-button-color-default: var(--text);
+  --xy-controls-button-color-hover-default: var(--brand);
+  --xy-controls-button-border-color-default: var(--line);
+  --xy-controls-box-shadow-default: var(--shadow);
+  --xy-minimap-background-color-default: var(--surface);
+  --xy-minimap-mask-background-color-default: color-mix(in srgb, var(--bg) 55%, transparent);
+  --xy-minimap-mask-stroke-color-default: transparent;
+  --xy-minimap-node-background-color-default: color-mix(in srgb, var(--brand) 38%, transparent);
+  --xy-minimap-node-stroke-color-default: var(--brand);
+  --xy-attribution-background-color-default: transparent;
+}
+.family-diagram-flow .react-flow__attribution { color: var(--muted); }
 .flow-node { min-width: 116px; padding: .5rem .7rem; border: 2px solid var(--line); border-radius: .9rem; background: var(--surface); text-align: center; box-shadow: var(--shadow); }
 .flow-node.person { border-radius: .6rem; }
 .flow-node.family { border-color: var(--brand); }
