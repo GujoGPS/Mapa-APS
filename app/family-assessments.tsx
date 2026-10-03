@@ -1,5 +1,6 @@
 "use client";
 
+import { Botao } from "./ui";
 import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import type { Family, FamilyMembership, Person } from "@/src/contracts/family";
 import {
@@ -171,7 +172,7 @@ function AssessmentEditor({ application: initial, onSaved, onClose, onRequestAct
   async function complete() { if (!structural.valid) { const first = firstBlockingQuestion(application, structural); if (first) { setSectionId(first.sectionId); window.setTimeout(() => fieldRefs.current.get(first.id)?.focus(), 0); } firstError.current?.focus(); setMessage(`Há ${structural.errors.length + (structural.missing?.length ?? 0)} pendência(s) impeditiva(s).`); return; } const next = await completeApplication(application.applicationId); setApplication(next); await onSaved(); setMessage("Aplicação concluída e preservada como registro imutável."); }
   const close = () => { if (editState === "dirty" || editState === "save-error") onClose(); else onClose(); };
   return <section className="assessment-editor" aria-labelledby={`assessment-editor-${application.applicationId}`}>
-    <div className="assessment-editor-header"><div><p className="eyebrow">Pessoa {application.personId}</p><h3 id={`assessment-editor-${application.applicationId}`}>{adultDcntEsfDefinition.title}</h3><small>{adultDcntEsfDefinition.version} · {statusLabels[application.status]} · {application.assessmentDate}</small></div><button onClick={close}>Fechar ficha</button></div>
+    <div className="assessment-editor-header"><div><p className="eyebrow">Pessoa {application.personId}</p><h3 id={`assessment-editor-${application.applicationId}`}>{adultDcntEsfDefinition.title}</h3><small>{adultDcntEsfDefinition.version} · {statusLabels[application.status]} · {application.assessmentDate}</small></div><Botao variante="secundario" onClick={close}>Fechar ficha</Botao></div>
     {demoActive && <p className="scope-callout">Aplicação demonstrativa: desaparece ao sair da demonstração e não entra no backup normal.</p>}
     <p className="assessment-save-status">{editState === "dirty" ? "Alterações não salvas" : editState === "saving" ? "Salvando…" : editState === "save-error" ? `Erro ao salvar: ${message}` : `Salvo em ${new Date(lastSaved).toLocaleString("pt-BR")}`}</p>
     <div className="assessment-progress"><strong>Conclusão dos campos disponíveis nesta versão</strong><span>{sectionProgress.filter((item) => !["source-missing", "not-applicable"].includes(item.status)).filter((item) => item.status === "structurally-complete").length}/{sectionProgress.filter((item) => item.status !== "source-missing").length} blocos incorporados</span><div className="assessment-section-statuses">{sectionProgress.map(({ section: item, status }) => <span key={item.id} data-status={status}>{item.printedBlockNumber ? `Bloco ${item.printedBlockNumber}` : "Cabeçalho"}: {statusLabel(status)}</span>)}</div></div>
