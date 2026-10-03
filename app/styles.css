@@ -479,3 +479,11 @@ button.secondary { color: var(--text); background: rgba(15,95,82,.08); }
 .prompt-excluded ul { margin: .4rem 0 0; padding-left: 1.1rem; font-size: .85rem; }
 .prompt-text { margin: 0; padding: .85rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--bg); font: inherit; font-size: .85rem; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; }
 .ai-prompts .link-group { margin-top: 1rem; }
+.ubs-panel .link-group { margin-top: 1rem; }
+.ubs-panel h3 { margin: 0 0 .5rem; font-size: 1rem; }
+.ubs-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: .35rem .9rem; margin: 0; padding: 0; list-style: none; }
+.ubs-list li { padding: .45rem 0; border-bottom: 1px solid var(--line); }
+.ubs-list strong { display: block; font-size: .92rem; }
+.ubs-list small { display: block; color: var(--muted); font-size: .78rem; }
+.ubs-link { display: inline-block; margin-top: .5rem; padding: .6rem .9rem; border: 1px solid var(--brand); border-radius: .9rem; color: var(--brand); font-weight: 800; text-decoration: none; }
+.ubs-link:hover { background: rgba(15, 95, 82, .08); }

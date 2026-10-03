@@ -8,6 +8,7 @@ export const clinicalSources:ClinicalSource[]=[
  {id:"ms-pcdt-obesidade-2024",title:"PCDT de Sobrepeso e Obesidade em Adultos",organization:"Ministério da Saúde / Conitec",kind:"pcdt",publishedAt:"2020-11-11",updatedAt:"2024-07-08",url:"https://www.gov.br/saude/pt-br/assuntos/pcdt/s/sobrepeso-e-obesidade-em-adultos/view",status:"current"},
  {id:"ms-linhas-cuidado-2026",title:"Plataforma Linhas de Cuidado",organization:"Ministério da Saúde",kind:"line-of-care",publishedAt:"2022-12-07",updatedAt:"2026-03-04",url:"https://www.gov.br/saude/pt-br/composicao/saps/ecv/linhas-de-cuidado/plataforma-linhas-de-cuidado",status:"current"},
  {id:"anvisa-bulario-2026",title:"Bulário Eletrônico",organization:"Anvisa",kind:"regulatory",publishedAt:"2020-10-05",updatedAt:"2026-05-17",url:"https://www.gov.br/anvisa/pt-br/sistemas/bulario-eletronico",status:"current"},
- {id:"ms-rename-2024",title:"Relação Nacional de Medicamentos Essenciais 2024",organization:"Ministério da Saúde",kind:"rename",publishedAt:"2024-01-01",updatedAt:"2025-04-12",url:"https://www.gov.br/saude/pt-br/composicao/sectics/rename",status:"current"}
-];
+ {id:"ms-rename-2024",title:"Relação Nacional de Medicamentos Essenciais 2024",organization:"Ministério da Saúde",kind:"rename",publishedAt:"2024-01-01",updatedAt:"2025-04-12",url:"https://www.gov.br/saude/pt-br/composicao/sectics/rename",status:"current"},
+ {id:"pm-canoas-estoque-aberto",title:"Estoque Aberto — medicamentos da rede municipal",organization:"Prefeitura Municipal de Canoas",kind:"official-reference",publishedAt:"2026-10-03",url:"https://www.canoas.rs.gov.br/servicos/estoqueaberto/",status:"current",notes:"Consulta pública de disponibilidade e quantidade por farmácia municipal. Retirada presencial exige cadastro e documento."},
+]
 export const sourceById=(id:string)=>clinicalSources.find((source)=>source.id===id);
