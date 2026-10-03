@@ -89,21 +89,21 @@ describe("montagem de prompt para IA externa", () => {
     await waitFor(() => expect(screen.getByText(/FAMÍLIA: F-001/)).toBeTruthy());
   });
 
-  it("trava a geração quando há dado clínico não exportável", async () => {
-    vi.mocked(listFactsForFamily).mockResolvedValue([fato({ familyVisibility: "hidden" })] as never);
+  it("retira o dado restrito e ainda monta o prompt", async () => {
+    vi.mocked(listFactsForFamily).mockResolvedValue([fato({ factId: "cf-x", topic: "segredo", familyVisibility: "hidden" }), fato({ factId: "cf-ok", topic: "peso" })] as never);
     render(<AiPromptsPanel {...props()} />);
-    fireEvent.change(screen.getByLabelText(/Família/), { target: { value: "f1" } });
-    await waitFor(() => expect(screen.getByRole("alert")).toBeTruthy());
-    expect(screen.getByText(/Prompt travado para este caso/)).toBeTruthy();
-    expect(screen.queryByRole("button", { name: /Copiar prompt/ })).toBeNull();
+    await escolherFamilia();
+    expect(screen.getByText(/Retirado deste prompt/)).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Copiar prompt/ })).toBeTruthy();
+    expect(screen.getByText(/peso: 76 kg/)).toBeTruthy();
   });
 
-  it("trava quando o vínculo familiar não é exportável", async () => {
+  it("avisa quando o vínculo familiar não é exportável, sem travar", async () => {
     const privado = [{ relationshipId: "r1", familyId: "f1", sharingState: "private", formalType: "segredo", provenance: "self-reported", confirmation: "reported", sensitivity: "family" }] as unknown as InterpersonalRelationship[];
     render(<AiPromptsPanel {...props(privado)} />);
-    fireEvent.change(screen.getByLabelText(/Família/), { target: { value: "f1" } });
-    await waitFor(() => expect(screen.getByRole("alert")).toBeTruthy());
-    expect(screen.queryByRole("button", { name: /Copiar prompt/ })).toBeNull();
+    await escolherFamilia();
+    expect(screen.getByText(/Retirado deste prompt/)).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Copiar prompt/ })).toBeTruthy();
   });
 
   it("copia o prompt sanitizado", async () => {

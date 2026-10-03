@@ -8,6 +8,11 @@ export interface PromptMember {
   roleLabel?: string | undefined;
 }
 
+export interface Exclusion {
+  reason: string;
+  detail: string;
+}
+
 export interface PromptInput {
   kind: PromptKind;
   family: Family;
@@ -18,9 +23,10 @@ export interface PromptInput {
   nonExportableLinkLabels?: string[] | undefined;
 }
 
-export type PromptBuild =
-  | { blocked: true; reasons: string[]; text: "" }
-  | { blocked: false; reasons: string[]; text: string };
+export interface PromptBuild {
+  text: string;
+  excluded: Exclusion[];
+}
 
 const INSTRUCOES: Record<PromptKind, string> = {
   caso: "Preciso discutir este caso clínico com você: [descreva o que precisa — segunda opinião, abordagem terapêutica, dúvida específica]. Trate como discussão entre colegas de medicina, com rigor técnico completo, sem hedging desnecessário.",
@@ -29,83 +35,106 @@ const INSTRUCOES: Record<PromptKind, string> = {
   trauma: "Quero que você avalie só a MINHA descrição — clareza, terminologia, sequência, achados ao exame. Não faça reconstrução pericial (causa, dinâmica do acidente, culpa, estimativa de tempo/velocidade). Aponte o que está faltando para um registro clínico completo, sem inventar dado que eu não dei.",
 };
 
-/**
- * Rotulo sempre estrutural: o codigo que o proprio app gera (F-001, P-001-A).
- * Nome e qualquer texto livre jamais entram no prompt.
- */
+/** Perguntas cujo conteudo e identificador por definicao: nunca viram texto de prompt. */
+const PERGUNTAS_IDENTIFICADOR = new Set(["header.cpf", "header.person-name"]);
+
+/** Padroes de dado pessoal que podem aparecer colados em texto livre derivado. */
+const PADRAO_CPF = /\d{3}\.?\d{3}\.?\d{3}-?\d{2}/g;
+const PADRAO_DATA_BR = /\b\d{2}\/\d{2}\/\d{4}\b/g;
+const PADRAO_DATA_ISO = /\b\d{4}-\d{2}-\d{2}\b/g;
+const PADRAO_CEP = /\b\d{5}-?\d{3}\b/g;
+const PADRAO_LOGRADOURO = /\b(rua|avenida|av\.|travessa|praça|rodovia|estrada|rua)\s+[^,;\n]{3,60}/gi;
+
 function pseudonimo(person: Person): string {
   return person.code;
 }
 
-/**
- * Idade lida do CareFact "age", que ja vem derivado pelo proprio dominio.
- * A data de nascimento nunca e lida aqui: nao ha caminho por onde ela atravesse o prompt.
- */
+function formatar(valor: unknown): string {
+  return valor !== null && typeof valor === "object" ? JSON.stringify(valor) : String(valor);
+}
+
+/** Remove identificadores colados em texto livre. Dado clínico legitimo permanece intacto. */
+function higienizar(texto: string): string {
+  return texto
+    .replace(PADRAO_CPF, "[identificador removido]")
+    .replace(PADRAO_DATA_BR, "[data removida]")
+    .replace(PADRAO_DATA_ISO, "[data removida]")
+    .replace(PADRAO_CEP, "[cep removido]")
+    .replace(PADRAO_LOGRADOURO, "[endereço removida]");
+}
+
 function idadeDe(facts: CareFact[], personId: string): number | undefined {
   const fato = facts.find((item) => item.personId === personId && item.topic === "age" && typeof item.value === "number");
   return typeof fato?.value === "number" ? fato.value : undefined;
 }
 
-function formatar(valor: unknown): string {
-  if (valor !== null && typeof valor === "object") return JSON.stringify(valor);
-  return String(valor);
-}
-
 /**
  * Monta o prompt a partir de CareFacts ja derivados.
  *
- * O bloqueio e a regra, nao o aviso: qualquer registro marcado como nao exportavel impede a
- * geracao, em vez de gerar e confiar numa confirmacao posterior. O pseudonymizado acontece
- * aqui, e nao na tela: e o unico ponto por onde o dado de saude passa.
+ * Restricao nao bloqueia o prompt inteiro: o registro marcado como nao exportavel e retirado e o
+ * resto segue. O que sai nunca chega ao texto — a exclusão acontece aqui, antes da montagem, e
+ * e informada em `excluded`. Identificadores (CPF, nome, data de nascimento, endereco) passam
+ * pelo higienizador, que e a única passagem de dado de saude para fora do app.
  */
 export function buildPrompt(input: PromptInput): PromptBuild {
-  const reasons: string[] = [];
+  const excluded: Exclusion[] = [];
+  const bloqueados = new Set(input.nonExportablePersonIds ?? []);
 
-  for (const personId of input.nonExportablePersonIds ?? []) {
+  for (const personId of bloqueados) {
     const pessoa = input.members.find((item) => item.person.id === personId)?.person ?? input.person;
-    reasons.push(`${pessoa ? pseudonimo(pessoa) : personId} tem registro marcado como não exportável.`);
+    excluded.push({ reason: "Registro marcado como não exportável", detail: pessoa ? pseudonimo(pessoa) : personId });
   }
-
   for (const label of input.nonExportableLinkLabels ?? []) {
-    reasons.push(`O vínculo familiar marcado como não exportável impede o envio.`);
+    excluded.push({ reason: "Vínculo familiar marcado como não exportável", detail: label });
   }
 
+  const membros = input.members.filter((m) => !bloqueados.has(m.person.id));
+  const pessoasVisiveis = new Set(membros.map((m) => m.person.id));
+
+  const fatos: CareFact[] = [];
   for (const fact of input.facts) {
-    if (fact.familyVisibility === "hidden") reasons.push(`Há dado clínico marcado como não exportável (${fact.category}).`);
-    else if (fact.clinicalVisibility === "private-note" || fact.clinicalVisibility === "hidden") reasons.push(`Há nota clínica privada que não pode ser exportada (${fact.category}).`);
+    if (!pessoasVisiveis.has(fact.personId)) continue;
+    if (fact.sourceQuestionIds?.some((id) => PERGUNTAS_IDENTIFICADOR.has(id))) {
+      excluded.push({ reason: "Identificador", detail: fact.topic });
+      continue;
+    }
+    if (fact.familyVisibility === "hidden" || fact.clinicalVisibility === "hidden" || fact.clinicalVisibility === "private-note") {
+      excluded.push({ reason: "Dado marcado como não exportável", detail: fact.topic });
+      continue;
+    }
+    fatos.push(fact);
   }
-
-  if (reasons.length > 0) return { blocked: true, reasons, text: "" };
 
   const linhas: string[] = [];
   linhas.push(`FAMÍLIA: ${input.family.code}`);
 
-  for (const membro of input.members) {
-    const idade = idadeDe(input.facts, membro.person.id);
+  for (const membro of membros) {
+    const idade = idadeDe(fatos, membro.person.id);
     const partes = [pseudonimo(membro.person)];
     if (idade !== undefined) partes.push(`${idade} anos`);
     if (membro.roleLabel) partes.push(membro.roleLabel);
     linhas.push(`- ${partes.join(" · ")}`);
   }
 
-  if (input.person) {
-    const idade = idadeDe(input.facts, input.person.id);
+  if (input.person && pessoasVisiveis.has(input.person.id)) {
+    const idade = idadeDe(fatos, input.person.id);
     linhas.push(`Pessoa selecionada: ${pseudonimo(input.person)}${idade !== undefined ? ` · ${idade} anos` : ""}`);
   }
 
-  const clinicos = input.facts.filter((fact) => fact.subjectScope === "individual" && fact.topic !== "age" && fact.value !== undefined && fact.value !== null && fact.value !== "");
+  const clinicos = fatos.filter((fact) => fact.subjectScope === "individual" && fact.topic !== "age" && fact.value !== undefined && fact.value !== null && fact.value !== "");
   if (clinicos.length) {
     linhas.push("");
     linhas.push("DADOS CLÍNICOS DERIVADOS (proveniência e revisão preservadas):");
     for (const fact of clinicos) {
-      const dono = input.members.find((m) => m.person.id === fact.personId)?.person;
+      const dono = membros.find((m) => m.person.id === fact.personId)?.person;
       const unidade = fact.unit ? ` ${fact.unit}` : "";
-      linhas.push(`- ${dono ? pseudonimo(dono) : "FATO"} · ${fact.topic}: ${formatar(fact.value)}${unidade} [derivado-de: ${fact.derivationType}; revisão: ${fact.reviewStatus}]`);
+      const valor = higienizar(formatar(fact.value));
+      linhas.push(`- ${dono ? pseudonimo(dono) : "FATO"} · ${fact.topic}: ${valor}${unidade} [derivado-de: ${fact.derivationType}; revisão: ${fact.reviewStatus}]`);
     }
   }
 
   linhas.push("");
   linhas.push(INSTRUCOES[input.kind]);
 
-  return { blocked: false, reasons: [], text: linhas.join("\n") };
+  return { text: higienizar(linhas.join("\n")), excluded };
 }

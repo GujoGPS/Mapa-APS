@@ -45,14 +45,12 @@ export function AiPromptsPanel({ families, people, memberships, relationships }:
   const entrada: PromptInput | undefined = useMemo(() => {
     if (!familia) return undefined;
     const doCaso = facts.filter((fact) => fact.familyId === familia.id && (pessoa ? fact.personId === pessoa.id : true));
-    const naoExportaveis = facts.filter((fact) => doCaso.includes(fact) && fact.familyVisibility === "hidden").map((fact) => fact.personId);
     return {
       kind,
       family: familia,
       person: pessoa,
       members: incluirPessoas ? membros : pessoa ? [{ person: pessoa, roleLabel: undefined }] : [],
       facts: doCaso,
-      nonExportablePersonIds: [...new Set(naoExportaveis)],
       nonExportableLinkLabels: relationships.filter((r) => r.familyId === familia.id && (r.sharingState === "private" || r.sharingState === "blocked")).map((r) => r.formalType),
     };
   }, [familia, pessoa, membros, facts, kind, incluirPessoas, relationships]);
@@ -60,7 +58,7 @@ export function AiPromptsPanel({ families, people, memberships, relationships }:
   const resultado = entrada ? buildPrompt(entrada) : undefined;
 
   async function copiar() {
-    if (!resultado || resultado.blocked) return;
+    if (!resultado) return;
     try {
       await navigator.clipboard.writeText(resultado.text);
       setCopiado(true);
@@ -108,13 +106,13 @@ export function AiPromptsPanel({ families, people, memberships, relationships }:
 
     {!familia && <p className="fine-print">Escolha uma família para montar o prompt.</p>}
 
-    {familia && resultado?.blocked && <div className="prompt-blocked" role="alert">
-      <h4>Prompt travado para este caso</h4>
-      <p>Há registro marcado como não exportável. Nada foi montado.</p>
-      <ul>{resultado.reasons.map((motivo) => <li key={motivo}>{motivo}</li>)}</ul>
+    {familia && resultado && resultado.excluded.length > 0 && <div className="prompt-excluded" role="status">
+      <h4>Retirado deste prompt</h4>
+      <p>Estes registros não entram no texto, mas o restante do caso segue normalmente.</p>
+      <ul>{resultado.excluded.map((item) => <li key={`${item.reason}-${item.detail}`}><strong>{item.detail}</strong> — {item.reason}</li>)}</ul>
     </div>}
 
-    {familia && resultado && !resultado.blocked && <>
+    {familia && resultado && <>
       <pre className="prompt-text">{resultado.text}</pre>
       <div className="action-row">
         <button onClick={() => void copiar()}>{copiado ? "Copiado" : "Copiar prompt"}</button>

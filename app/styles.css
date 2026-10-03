@@ -449,8 +449,8 @@ button.secondary { color: var(--text); background: rgba(15,95,82,.08); }
 .prompt-form { display: grid; gap: .7rem; margin: 1rem 0; }
 .prompt-form select { display: block; width: 100%; margin-top: .3rem; padding: .6rem .7rem; border: 1px solid var(--line); border-radius: .9rem; background: var(--bg); color: inherit; font: inherit; }
 .prompt-check { display: flex; align-items: center; gap: .5rem; }
-.prompt-blocked { margin-top: .8rem; padding: .9rem 1rem; border: 1px solid var(--warning); border-radius: 1.2rem; }
-.prompt-blocked h4 { margin: 0 0 .4rem; }
-.prompt-blocked ul { margin: .4rem 0 0; padding-left: 1.1rem; font-size: .85rem; }
+.prompt-excluded { margin-top: .8rem; padding: .9rem 1rem; border: 1px solid var(--warning); border-radius: 1.2rem; }
+.prompt-excluded h4 { margin: 0 0 .4rem; }
+.prompt-excluded ul { margin: .4rem 0 0; padding-left: 1.1rem; font-size: .85rem; }
 .prompt-text { margin: 0; padding: .85rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--bg); font: inherit; font-size: .85rem; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; }
 .ai-prompts .link-group { margin-top: 1rem; }

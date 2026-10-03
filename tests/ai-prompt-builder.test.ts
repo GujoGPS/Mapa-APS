@@ -6,10 +6,7 @@ import type { Family, Person } from "@/src/contracts/family";
 const t = "2026-01-01T00:00:00.000Z";
 const familia: Family = { id: "f1", code: "F-001", state: "active", createdAt: t, updatedAt: t, recordVersion: 1 };
 const ana: Person = { id: "p1", code: "P-001-A", displayName: "Ana Souza", vitalStatus: "alive", createdAt: t, updatedAt: t, recordVersion: 1 };
-
-function idade(anos: number): CareFact {
-  return fato({ factId: "cf-idade", topic: "age", factType: "calculated", derivationType: "calculated", value: anos });
-}
+const bruno: Person = { id: "p2", code: "P-001-B", displayName: "Bruno Lima", vitalStatus: "alive", createdAt: t, updatedAt: t, recordVersion: 1 };
 
 function fato(extra: Partial<CareFact> = {}): CareFact {
   return {
@@ -30,72 +27,77 @@ function entrada(extra: Partial<PromptInput> = {}): PromptInput {
     kind: "caso",
     family: familia,
     person: ana,
-    members: [{ person: ana, roleLabel: "mãe" }],
-    facts: [fato(), idade(46)],
+    members: [{ person: ana, roleLabel: "mãe" }, { person: bruno, roleLabel: "filho" }],
+    facts: [fato({ factId: "cf-idade", topic: "age", value: 46, derivationType: "calculated" }), fato()],
     ...extra,
   };
 }
 
-describe("sanitizacao do prompt", () => {
-  it("usa o codigo estruturado da familia e da pessoa", () => {
-    const r = buildPrompt(entrada());
-    expect(r.blocked).toBe(false);
+describe("prompt monta mesmo com restricao parcial", () => {
+  it("nao trava: o texto e montado normalmente", () => {
+    const r = buildPrompt(entrada({ facts: [fato({ familyVisibility: "hidden" })] }));
+    expect(r.text).not.toBe("");
     expect(r.text).toContain("F-001");
-    expect(r.text).toContain("P-001-A");
   });
 
-  it("nunca inclui o nome da pessoa", () => {
-    const r = buildPrompt(entrada());
-    expect(r.text).not.toContain("Ana Souza");
-    expect(r.text).not.toContain("Ana");
-  });
-
-  it("nunca inclui a data de nascimento, apenas a idade", () => {
-    const r = buildPrompt(entrada());
-    expect(r.text).not.toMatch(/\d{4}-\d{2}-\d{2}/);
-    expect(r.text).toMatch(/46 anos/);
-  });
-
-  it("leva o dado clinico derivado dos CareFacts", () => {
-    const r = buildPrompt(entrada());
+  it("retira apenas o dado restrito e mantem os demais", () => {
+    const r = buildPrompt(entrada({ facts: [fato({ factId: "secreto", topic: "segredo", familyVisibility: "hidden" }), fato({ factId: "ok", topic: "peso" })] }));
     expect(r.text).toContain("peso");
-    expect(r.text).toContain("76");
+    expect(r.text).not.toContain("segredo");
   });
 
-  it("mantem proveniencia e revisao de cada fato", () => {
-    const r = buildPrompt(entrada());
-    expect(r.text).toMatch(/derived-from|derivado/i);
+  it("informa o que foi retirado e por que", () => {
+    const r = buildPrompt(entrada({ facts: [fato({ topic: "segredo", familyVisibility: "hidden" })] }));
+    expect(r.excluded.length).toBe(1);
+    expect(r.excluded[0]!.reason).toMatch(/não exportável/i);
+  });
+
+  it("retira a pessoa restrita da lista sem derrubar as outras", () => {
+    const r = buildPrompt(entrada({ nonExportablePersonIds: ["p1"] }));
+    expect(r.text).not.toContain("P-001-A");
+    expect(r.text).toContain("P-001-B");
+  });
+
+  it("retira vinculo restrito e segue", () => {
+    const r = buildPrompt(entrada({ nonExportableLinkLabels: ["segredo familiar"] }));
+    expect(r.text).toContain("F-001");
+    expect(r.excluded.length).toBe(1);
   });
 });
 
-describe("bloqueio por nao exportavel", () => {
-  it("bloqueia quando algum fato e non-exportable", () => {
-    const r = buildPrompt(entrada({ facts: [fato({ familyVisibility: "hidden" })] }));
-    expect(r.blocked).toBe(true);
-    expect(r.reasons?.join(" ")).toMatch(/não exportável/i);
+describe("retirada de identificadores", () => {
+  it("nunca inclui nome", () => {
+    const r = buildPrompt(entrada());
+    expect(r.text).not.toContain("Ana Souza");
+    expect(r.text).not.toContain("Bruno Lima");
   });
 
-  it("bloqueia nota clinica privada", () => {
-    const r = buildPrompt(entrada({ facts: [fato({ clinicalVisibility: "private-note" })] }));
-    expect(r.blocked).toBe(true);
+  it("nunca inclui CPF vindo de texto livre", () => {
+    const r = buildPrompt(entrada({ facts: [fato({ topic: "observacao", value: "Paciente CPF 123.456.789-00", derivationType: "reported" })] }));
+    expect(r.text).not.toMatch(/\d{3}\.\d{3}\.\d{3}-\d{2}/);
   });
 
-  it("bloqueia quando a pessoa esta marcada como nao exportavel", () => {
-    const r = buildPrompt(entrada({ nonExportablePersonIds: ["p1"] }));
-    expect(r.blocked).toBe(true);
-    expect(r.reasons?.join(" ")).toMatch(/P-001-A/);
+  it("nunca inclui data completa em texto livre", () => {
+    const r = buildPrompt(entrada({ facts: [fato({ topic: "observacao", value: "nascida em 04/03/1980", derivationType: "reported" })] }));
+    expect(r.text).not.toMatch(/\d{2}\/\d{2}\/\d{4}/);
+    expect(r.text).not.toMatch(/\d{4}-\d{2}-\d{2}/);
   });
 
-  it("bloqueia quando o vinculo familiar e nao exportavel", () => {
-    const r = buildPrompt(entrada({ nonExportableLinkLabels: ["segredo familiar"] }));
-    expect(r.blocked).toBe(true);
+  it("nunca inclui endereco em texto livre", () => {
+    const r = buildPrompt(entrada({ facts: [fato({ topic: "observacao", value: "mora na Rua das Flores, 120 - CEP 88000-000", derivationType: "reported" })] }));
+    expect(r.text).not.toMatch(/Rua das Flores/);
+    expect(r.text).not.toMatch(/\d{5}-\d{3}/);
   });
 
-  it("nao bloqueia caso limpo e explica por que quando bloqueia", () => {
-    const limpo = buildPrompt(entrada());
-    expect(limpo.blocked).toBe(false);
-    const travado = buildPrompt(entrada({ facts: [fato({ familyVisibility: "hidden" })] }));
-    expect(travado.reasons?.length).toBeGreaterThan(0);
-    expect(travado.text).toBe("");
+  it("retira fato derivado de pergunta de identificador", () => {
+    const r = buildPrompt(entrada({ facts: [fato({ topic: "cpf", sourceQuestionIds: ["header.cpf"], derivationType: "reported" })] }));
+    expect(r.text).not.toContain("cpf");
+    expect(r.excluded.length).toBe(1);
+  });
+
+  it("mantem o texto clinico legitimo intacto", () => {
+    const r = buildPrompt(entrada());
+    expect(r.text).toContain("peso");
+    expect(r.text).toContain("76 kg");
   });
 });
