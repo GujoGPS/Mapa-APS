@@ -1,5 +1,6 @@
 "use client";
 
+import {Sheet} from "./sheet";
 import { useState } from "react";
 import type { Family } from "@/src/contracts/family";
 import { isSyntheticDemoFamily } from "@/src/contracts/demo";
@@ -85,21 +86,19 @@ export function DemoModePanel({ active, families, onChanged }: Props) {
       )}
       <p className="system-message" role="status" aria-live="polite">{message}</p>
       {confirmation && (
-        <div className="sheet-backdrop" role="presentation">
-          <section className="sheet" role="dialog" aria-modal="true" aria-labelledby="demo-confirm-title">
-            <p className="eyebrow">Confirmação</p>
-            <h3 id="demo-confirm-title">{confirmation === "enter" ? "Entrar na demonstração isolada?" : "Remover registros sintéticos?"}</h3>
-            {confirmation === "enter" ? (
-              <p>O aplicativo guardará os registros normais e mostrará apenas famílias sintéticas. Alterações feitas durante a demonstração continuarão marcadas como sintéticas. Ao sair, o estado anterior será restaurado.</p>
-            ) : (
-              <p>{active ? "Esta ação apaga somente os registros sintéticos da sessão atual. A demonstração permanece ativa; use “Sair e restaurar estado anterior” para voltar aos dados normais." : "Esta ação remove somente registros identificados como parte da demonstração antiga. Famílias normais e seus dados não serão alterados."}</p>
-            )}
-            <div className="action-row">
-              <button type="button" disabled={busy} onClick={() => void (confirmation === "enter" ? enter() : remove())}>{confirmation === "enter" ? "Confirmar entrada" : "Confirmar remoção"}</button>
-              <button type="button" className="secondary" disabled={busy} onClick={() => setConfirmation(null)}>Cancelar</button>
-            </div>
-          </section>
-        </div>
+        <Sheet open onClose={() => setConfirmation(null)} labelledBy="demo-confirm-title">
+          <p className="eyebrow">Confirmação</p>
+          <h3 id="demo-confirm-title">{confirmation === "enter" ? "Entrar na demonstração isolada?" : "Remover registros sintéticos?"}</h3>
+          {confirmation === "enter" ? (
+            <p>O aplicativo guardará os registros normais e mostrará apenas famílias sintéticas. Alterações feitas durante a demonstração continuarão marcadas como sintéticas. Ao sair, o estado anterior será restaurado.</p>
+          ) : (
+            <p>Esta ação remove somente registros identificados como parte da demonstração antiga. Famílias normais e seus dados não serão alterados.</p>
+          )}
+          <div className="action-row">
+            <button type="button" disabled={busy} onClick={() => void (confirmation === "enter" ? enter() : remove())}>{confirmation === "enter" ? "Confirmar entrada" : "Confirmar remoção"}</button>
+            <button type="button" className="secondary" disabled={busy} onClick={() => setConfirmation(null)}>Cancelar</button>
+          </div>
+        </Sheet>
       )}
     </section>
   );

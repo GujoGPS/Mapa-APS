@@ -1,5 +1,6 @@
 "use client";
 
+import {Sheet} from "./sheet";
 import { type FormEvent, useMemo, useState } from "react";
 import type { EncounterKind } from "@/src/contracts/care";
 import { createEncounter, createFamily, createMembership, createPending, createPerson, createSemester, linkFamilyToSemester, updateFamily, updatePerson } from "@/src/domain/factories";
@@ -104,7 +105,7 @@ export function Workspace() {
 
       <nav className="bottom-nav" aria-label="Navegação principal">{(Object.keys(labels) as Tab[]).map((item) => <button key={item} className={tab===item?"active":""} onClick={() => setTab(item)}><span aria-hidden="true">{item === "home" ? "⌂" : item === "clinical" ? "+" : item === "care" ? "✦" : item === "journey" ? "◇" : "•••"}</span>{labels[item]}</button>)}</nav>
 
-      {composer && <div className="sheet-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setComposer(null); }}><section className="sheet" role="dialog" aria-modal="true" aria-labelledby="composer-title"><div className="sheet-handle" /><button className="close-button" onClick={() => setComposer(null)} aria-label="Fechar">×</button>{composer === "family" && <FamilyForm code={nextFamilyCode(data.families)} onSubmit={submitFamily} />}{composer === "family-edit" && selectedFamily && <FamilyForm code={selectedFamily.code} family={selectedFamily} onSubmit={submitFamily} />}{composer === "person" && selectedFamily && <PersonForm code={nextPersonCode(data.people, selectedFamily.code)} onSubmit={submitPerson} />}{composer === "person-edit" && selectedPerson && <PersonForm code={selectedPerson.code} person={selectedPerson} onSubmit={submitPerson} />}{composer === "encounter" && <EncounterForm families={data.families} people={data.people} memberships={data.memberships} onSubmit={submitEncounter} />}{composer === "semester" && <SemesterForm onSubmit={submitSemester} />}</section></div>}
+      {composer && <Sheet open onClose={() => setComposer(null)} labelledBy="composer-title" handle closeOnBackdrop>{composer === "family" && <FamilyForm code={nextFamilyCode(data.families)} onSubmit={submitFamily} />}{composer === "family-edit" && selectedFamily && <FamilyForm code={selectedFamily.code} family={selectedFamily} onSubmit={submitFamily} />}{composer === "person" && selectedFamily && <PersonForm code={nextPersonCode(data.people, selectedFamily.code)} onSubmit={submitPerson} />}{composer === "person-edit" && selectedPerson && <PersonForm code={selectedPerson.code} person={selectedPerson} onSubmit={submitPerson} />}{composer === "encounter" && <EncounterForm families={data.families} people={data.people} memberships={data.memberships} onSubmit={submitEncounter} />}{composer === "semester" && <SemesterForm onSubmit={submitSemester} />}</Sheet>}
     </main>
   );
 }
