@@ -93,8 +93,8 @@ export function HistoryPanel({ families, people, memberships, relationships, ext
           <div>
             <strong>{nome.get(a.personId) ?? a.personId} · {a.assessmentDate}</strong>
             <span>{statusRotulo[a.status]} · revisão {a.revisionNumber}</span>
-            {a.rectifiesApplicationId && <small>retifica a aplicação {a.rectifiesApplicationId}</small>}
-            {a.status === "archived" && (a.completedAt ? "Registro arquivado" : "Rascunho arquivado").split("|").map((rotulo) => <small key={rotulo}>{rotulo}</small>)}
+            {a.rectifiesApplicationId && <small>retifica a avaliação anterior desta pessoa</small>}
+            {a.status === "archived" && <small>{a.completedAt ? "Registro arquivado" : "Rascunho arquivado"}</small>}
           </div>
         </div>)}
       </section>

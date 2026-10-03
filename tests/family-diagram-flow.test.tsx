@@ -125,7 +125,7 @@ describe("rotulos em portugues do diagrama", () => {
     const adult = withStage.nodes.find((node) => node.id === "p1");
     const child = withStage.nodes.find((node) => node.id === "p2");
     expect(adult?.subtitle).toBe("adulta");
-    expect(child?.subtitle).toBe("crianca");
+    expect(child?.subtitle).toBe("Criança");
     // \b evita casar "adulta"; o vazamento real seria o valor cru em ingles.
     expect(withStage.nodes.map((node) => node.subtitle).join(" ")).not.toMatch(/\b(adult|child|adolescent|older-adult)\b/);
   });

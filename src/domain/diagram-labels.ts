@@ -27,13 +27,12 @@ export const resourceStateLabels: Record<ExternalResource["state"], string> = {
 };
 
 export const lifeStageLabels: Record<NonNullable<Person["lifeStage"]>, string> = {
-  child: "crianca",
-  adolescent: "adolescente",
+  child: "Criança",
+  adolescent: "Adolescente",
   adult: "adulta",
-  "older-adult": "pessoa idosa",
-  unknown: "faixa etaria nao informada",
+  "older-adult": "Pessoa idosa",
+  unknown: "Faixa etária não informada",
 };
-
 export function resourceSubtitle(resource: { type: ResourceType; state: ExternalResource["state"] }): string {
   return `${resourceTypeLabels[resource.type] ?? resource.type} · ${resourceStateLabels[resource.state] ?? resource.state}`;
 }

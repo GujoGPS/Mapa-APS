@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useToast } from "./toast";
+import { persistenceStateLabels, rotulo } from "@/src/domain/rotulos";
 import { serializeBackup } from "@/src/backup/service";
 import { createEnvelope, saveRecordVerified } from "@/src/storage/repository";
 import { readStorageStatus, requestPersistentStorage, type StorageStatus } from "@/src/storage/status";
@@ -66,7 +67,7 @@ export function StorageDashboard() {
       <h2 id="storage-title">Estado do dispositivo</h2>
       <p className="fine-print">Este aparelho guarda os dados no próprio navegador, sem servidor. A persistência mostra se o navegador vai manter as fichas depois que você fechar o app. O espaço usado é o total do navegador, não só do Mapa — por isso aparece em porcentagem: serve para você perceber quando estiver perto de encher, não para controlar nada. Nada sai daqui a não ser por um backup que você mesmo gera.</p>
       <div className="storage-grid">
-        <div><span>Persistência</span><strong>{status.persistence}</strong></div>
+        <div><span>Persistência</span><strong>{rotulo(persistenceStateLabels, status.persistence)}</strong></div>
         <div><span>Dados guardados</span><strong>{formatBytes(status.usage)}</strong></div>
         <div><span>Espaço usado do navegador</span><strong>{formatPercent(status.usageRatio)}</strong></div>
       </div>

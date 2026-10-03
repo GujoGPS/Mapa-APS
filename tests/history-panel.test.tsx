@@ -74,11 +74,14 @@ describe("Histórico por família", () => {
     expect(within(conexoes).getByText(/criado no primeiro encontro/)).toBeTruthy();
   });
 
-  it("mostra a cadeia da retificação dizendo qual aplicação substituiu qual", () => {
+  it("mostra que a avaliação retifica uma anterior, sem despejar identificador interno", () => {
     render(<HistoryPanel {...props()} />);
     fireEvent.click(screen.getByRole("button", { name: /F-1/ }));
     const prontuario = screen.getByRole("region", { name: "Prontuário" });
-    expect(within(prontuario).getByText(/retifica a aplicação app-1/)).toBeTruthy();
+    // A cadeia continua legível: a pessoa vê que uma avaliação retifica outra.
+    expect(within(prontuario).getByText(/retifica a avaliação anterior/)).toBeTruthy();
+    // E o id interno (UUID) não aparece mais para ninguém.
+    expect(prontuario.textContent).not.toMatch(/app-1|assessment_[0-9a-f-]{8}/);
     expect(within(prontuario).getAllByText(/Rascunho arquivado/).length).toBe(1);
   });
 

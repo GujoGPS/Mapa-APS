@@ -7,12 +7,12 @@
       "familyId": "family_demo_vila_serena",
       "code": "F-001",
       "nickname": "Vila Serena",
-      "focus": "cadeia de decisao clinica: ficha, derivacoes, propostas e retificacao",
+      "focus": "cadeia de decisão clínica: ficha, derivações, propostas e retificação",
       "demonstrates": [
         "CareFacts calculados",
         "propostas de servico",
         "aprovacao e rejeicao humana",
-        "retificacao de avaliacao"
+        "retificação de avaliação"
       ],
       "people": [
         {
@@ -93,7 +93,7 @@
       "plans": [
         {
           "person": "p_a_1",
-          "title": "Educacao em saude e ajuste de uso",
+          "title": "educação em saúde e ajuste de uso",
           "target": "dyad",
           "state": "agreed"
         }
@@ -136,7 +136,7 @@
             "p_a_1",
             "p_a_3"
           ],
-          "nextStep": "Discutir divergencia de uso de metformina"
+          "nextStep": "Discutir divergência de uso de metformina"
         }
       ],
       "pending": [
@@ -153,9 +153,9 @@
       "familyId": "family_demo_rio_doce",
       "code": "F-002",
       "nickname": "Rio Doce",
-      "focus": "rede, ruptura e vinculo nao exportavel",
+      "focus": "rede, ruptura e vínculo não exportável",
       "demonstrates": [
-        "espectro de qualidade de vinculo",
+        "espectro de qualidade de vínculo",
         "changeLog com motivo",
         "recurso externo no ecomapa",
         "bloqueio de exportacao"
@@ -213,14 +213,14 @@
       "screenings": [
         {
           "person": "p_b_2",
-          "title": "Rastreamento de saude mental",
+          "title": "Rastreamento de saúde mental",
           "state": "accepted"
         }
       ],
       "plans": [
         {
           "person": "p_b_2",
-          "title": "Articular escola e saude mental",
+          "title": "Articular escola e saúde mental",
           "target": "family",
           "state": "discussed"
         }
@@ -245,7 +245,7 @@
             {
               "at": "2026-05-06T14:00:00-03:00",
               "action": "edited",
-              "reason": "apos reuniao de caso, rompimento confirmado pela adolescente"
+              "reason": "apos reunião de caso, rompimento confirmado pela adolescente"
             }
           ]
         },
@@ -281,7 +281,7 @@
         },
         {
           "id": "res_b_3",
-          "name": "UBS de referencia",
+          "name": "UBS de referência",
           "type": "health",
           "state": "active"
         }
@@ -318,7 +318,7 @@
             "p_b_1",
             "p_b_2"
           ],
-          "nextStep": "Discutir vinculo rompido com a equipe"
+          "nextStep": "Discutir vínculo rompido com a equipe"
         }
       ],
       "pending": [
@@ -335,9 +335,9 @@
       "familyId": "family_demo_alto_da_serra",
       "code": "F-003",
       "nickname": "Alto da Serra",
-      "focus": "longitudinal, tres geracoes e multiprofissional",
+      "focus": "longitudinal, três gerações e multiprofissional",
       "demonstrates": [
-        "tres geracoes",
+        "três geracoes",
         "duas avaliacoes no tempo",
         "plano com alvo dyad",
         "semestre, snapshot e adendo"
@@ -372,7 +372,7 @@
       "conditions": [
         {
           "person": "p_c_1",
-          "label": "demencia em evolucao",
+          "label": "demência em evolução",
           "kind": "reported",
           "state": "investigating"
         },
@@ -394,7 +394,7 @@
       "screenings": [
         {
           "person": "p_c_1",
-          "title": "Rastreamento de demencia",
+          "title": "Rastreamento de demência",
           "state": "requested"
         },
         {
@@ -442,7 +442,7 @@
         {
           "kind": "family-meeting",
           "at": "2026-02-18T10:00:00-03:00",
-          "title": "Reuniao familiar com as tres geracoes",
+          "title": "reunião familiar com as três geracoes",
           "people": [
             "p_c_1",
             "p_c_2",
@@ -463,14 +463,14 @@
       ],
       "pending": [
         {
-          "title": "Encaminhar para avaliacao da sobrecarga da cuidadora",
+          "title": "Encaminhar para avaliação da sobrecarga da cuidadora",
           "kind": "referral",
           "priority": "attention",
           "person": "p_c_2"
         }
       ],
       "addendum": {
-        "title": "Correcao de data de atendimento",
+        "title": "correção de data de atendimento",
         "reason": "Registro de visita transcrito com data incorreta; corrigido sem alterar o original."
       }
     }
