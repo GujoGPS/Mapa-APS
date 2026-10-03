@@ -13,6 +13,12 @@ import { AssessmentViews } from "./assessment-views";
 
 interface Props { family: Family; people: Person[]; memberships: FamilyMembership[]; applications: InstrumentApplication[]; demoActive: boolean; onSaved: () => Promise<void>; }
 const statusLabels: Record<InstrumentApplication["status"], string> = { "not-started": "Não iniciada", draft: "Rascunho", "in-review": "Em revisão", completed: "Concluída", rectified: "Retificada", archived: "Arquivada" };
+function assessmentKindLabel(application: InstrumentApplication): string {
+  if (application.rectifiesApplicationId) return "Retificação de avaliação anterior";
+  if (application.completedAt) return "Primeira avaliação desta pessoa";
+  return "Avaliação em preenchimento";
+}
+
 /** Espera apos a ultima digitacao antes de gravar o rascunho sozinho. */
 const AUTOSAVE_DEBOUNCE_MS = 1500;
 const waistLabels = { "male-local-rule": "Critério local masculino", "female-local-rule": "Critério local feminino", "not-selected": "Critério não selecionado" };
@@ -67,30 +73,32 @@ export function FamilyAssessmentsPanel({ family, people, memberships, applicatio
   const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
   const [editorControls, setEditorControls] = useState<{ state: "saved" | "dirty" | "saving" | "save-error"; save: () => Promise<boolean>; discard: () => void }>({ state: "saved", save: async () => true, discard: () => undefined });
   const personApplications = applications.filter((item) => item.familyId === family.id && item.personId === personId);
+  // Arquivados saem da lista ativa e passam a viver em Mais → Histórico.
+  const activeApplications = personApplications.filter((item) => item.status !== "archived");
   const selectedPerson = familyPeople.find((person) => person.id === personId);
   useEffect(() => setActiveApplicationId(undefined), [personId]);
   function guarded(action: () => void) {
     if (editorControls.state === "dirty" || editorControls.state === "save-error") setPendingAction(() => action);
     else action();
   }
-  async function start(kind: "initial" | "reassessment" = "initial") { if (!personId) return; const action = async () => { const item = await createApplication({ familyId: family.id, personId, assessmentDate: new Date().toISOString().slice(0, 10), kind }); await onSaved(); setActiveApplicationId(item.applicationId); }; if (editorControls.state === "dirty" || editorControls.state === "save-error") setPendingAction(() => { void action(); }); else await action(); }
+  async function start() { if (!personId) return; const action = async () => { const item = await createApplication({ familyId: family.id, personId, assessmentDate: new Date().toISOString().slice(0, 10) }); await onSaved(); setActiveApplicationId(item.applicationId); }; if (editorControls.state === "dirty" || editorControls.state === "save-error") setPendingAction(() => { void action(); }); else await action(); }
   async function rectify(item: InstrumentApplication) { const action = async () => { const next = await createRectification(item.applicationId); await onSaved(); setActiveApplicationId(next.applicationId); }; if (editorControls.state === "dirty" || editorControls.state === "save-error") setPendingAction(() => { void action(); }); else await action(); }
   return <section className="assessments-panel" aria-labelledby={`assessments-${family.id}`}>
     <div className="section-head"><div><p className="eyebrow">Família · Avaliações</p><h2 id={`assessments-${family.id}`}>Avaliações</h2></div><span className="clinical-status">Pessoa é o sujeito clínico</span></div>
     <p className="fine-print">A visão familiar mostra somente status e datas. Respostas aparecem após seleção explícita de uma pessoa.</p>
     <div className="assessment-member-list">{familyPeople.map((person) => { const items = applications.filter((item) => item.familyId === family.id && item.personId === person.id); const latest = [...items].sort((a, b) => b.assessmentDate.localeCompare(a.assessmentDate))[0]; return <button className={person.id === personId ? "assessment-member selected" : "assessment-member"} key={person.id} onClick={() => guarded(() => setPersonId(person.id))}><strong>{person.displayName || person.code}</strong><span>{latest ? `${statusLabels[latest.status]} · ${latest.assessmentDate}` : "Avaliação não iniciada"}</span><small>{items.length} aplicação(ões)</small></button>; })}</div>
     {selectedPerson && <div className="assessment-person-area" key={selectedPerson.id}>
-      <div className="assessment-person-header"><div><p className="eyebrow">Pessoa selecionada</p><h3>{selectedPerson.displayName || selectedPerson.code}</h3><small>Família {family.code} · {adultDcntEsfDefinition.version}</small></div><div className="action-row"><button onClick={() => void start()}>Nova aplicação</button><button onClick={() => void start("reassessment")}>Nova longitudinal</button></div></div>
+      <div className="assessment-person-header"><div><p className="eyebrow">Pessoa selecionada</p><h3>{selectedPerson.displayName || selectedPerson.code}</h3><small>Família {family.code} · {adultDcntEsfDefinition.version}</small></div><div className="action-row"><button onClick={() => void start()}>Nova aplicação</button></div></div>
       <AssessmentViews personId={selectedPerson.id} personLabel={selectedPerson.displayName || selectedPerson.code} applications={personApplications} />
-      <div className="assessment-history">{personApplications.length ? personApplications.map((item) => <AssessmentHistoryCard key={item.applicationId} application={item} onOpen={() => guarded(() => setActiveApplicationId(item.applicationId))} onRectify={() => void rectify(item)} />) : <p className="fine-print">Nenhuma aplicação para esta pessoa.</p>}</div>
+      <div className="assessment-history">{activeApplications.length ? activeApplications.map((item) => <AssessmentHistoryCard key={item.applicationId} application={item} personLabel={selectedPerson.displayName || selectedPerson.code} onOpen={() => guarded(() => setActiveApplicationId(item.applicationId))} onRectify={() => void rectify(item)} />) : <p className="fine-print">Nenhuma aplicação ativa para esta pessoa. Rascunhos arquivados ficam em Mais → Histórico.</p>}</div>
       {applications.find((item) => item.applicationId === activeApplicationId) && <AssessmentEditor key={activeApplicationId} application={applications.find((item) => item.applicationId === activeApplicationId)!} onSaved={onSaved} onClose={() => guarded(() => setActiveApplicationId(undefined))} onRequestAction={(action) => guarded(() => { void action(); })} onEditStateChange={setEditorControls} demoActive={demoActive} />}
     </div>}
     {pendingAction && <div className="assessment-confirm" role="dialog" aria-modal="true" aria-labelledby="unsaved-title"><h4 id="unsaved-title">Há alterações não salvas</h4><p>Escolha como continuar sem descartar dados silenciosamente.</p><div className="action-row"><button onClick={() => { const action = pendingAction; void editorControls.save().then((ok) => { if (ok) { setPendingAction(null); action(); } }); }}>Salvar e continuar</button><button onClick={() => setPendingAction(null)}>Continuar editando</button><button onClick={() => { editorControls.discard(); const action = pendingAction; setPendingAction(null); action(); }}>Descartar alterações locais</button></div></div>}
   </section>;
 }
 
-function AssessmentHistoryCard({ application, onOpen, onRectify }: { application: InstrumentApplication; onOpen: () => void; onRectify: () => void }) {
-  return <article className="assessment-history-card"><div><strong>{statusLabels[application.status]}</strong><span>{application.assessmentDate} · revisão {application.revisionNumber}</span>{application.rectifiesApplicationId && <small>Retifica {application.rectifiesApplicationId}</small>}</div><div className="action-row"><button onClick={onOpen}>{application.status === "draft" ? "Continuar" : "Visualizar"}</button>{(application.status === "completed" || application.status === "rectified") && <button onClick={onRectify}>Iniciar retificação</button>}</div></article>;
+function AssessmentHistoryCard({ application, personLabel, onOpen, onRectify }: { application: InstrumentApplication; personLabel: string; onOpen: () => void; onRectify: () => void }) {
+  return <article className="assessment-history-card"><div><strong>{statusLabels[application.status]}</strong><span>{personLabel} · {application.assessmentDate} · revisão {application.revisionNumber}</span><small>{assessmentKindLabel(application)}</small>{application.rectifiesApplicationId && <small>Retifica a aplicação {application.rectifiesApplicationId}</small>}</div><div className="action-row"><button onClick={onOpen}>{application.status === "draft" ? "Continuar" : "Visualizar"}</button>{(application.status === "completed" || application.status === "rectified") && <button onClick={onRectify}>Iniciar retificação</button>}</div></article>;
 }
 
 function AssessmentEditor({ application: initial, onSaved, onClose, onRequestAction, onEditStateChange, demoActive }: { application: InstrumentApplication; onSaved: () => Promise<void>; onClose: () => void; onRequestAction: (action: () => Promise<void>) => void; onEditStateChange: (controls: { state: "saved" | "dirty" | "saving" | "save-error"; save: () => Promise<boolean>; discard: () => void }) => void; demoActive: boolean }) {

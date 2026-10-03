@@ -432,3 +432,9 @@ button.secondary { color: var(--text); background: rgba(15,95,82,.08); }
 .assessment-autosave[data-state="dirty"] { color: var(--brand); }
 .assessment-autosave[data-state="saving"] { color: var(--muted); }
 .assessment-autosave[data-state="save-error"] { color: var(--warning); }
+.history-family-list { display: grid; gap: .4rem; margin: 0 0 1rem; padding: 0; list-style: none; }
+.history-family-list button { display: block; width: 100%; text-align: left; padding: .8rem .9rem; border: 1px solid var(--line); border-radius: 1.1rem; background: var(--surface); color: inherit; }
+.history-family-list button[aria-expanded="true"] { border-color: var(--brand); }
+.history-family-list strong, .history-family-list span { display: block; }
+.history-family-list span { color: var(--muted); font-size: .82rem; }
+.history-panel .link-group { margin-top: .8rem; }

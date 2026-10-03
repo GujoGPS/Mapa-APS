@@ -1,5 +1,6 @@
 "use client";
 
+import {HistoryPanel} from "./history-panel";
 import {Sheet} from "./sheet";
 import { type FormEvent, useMemo, useState } from "react";
 import type { EncounterKind } from "@/src/contracts/care";
@@ -101,7 +102,7 @@ export function Workspace() {
 
       {tab === "journey" && (journeySemester ? <JourneyDashboard data={data} semester={journeySemester} onSaved={refresh} onVisit={(familyId)=>{setSelectedFamilyId(familyId);setTab("care")}} /> : <section className="card"><p className="eyebrow">Semestre ativo</p><h2>Nenhuma Jornada ativa</h2><p>Crie uma Jornada para organizar o acompanhamento longitudinal.</p><button onClick={() => setComposer("semester")}>Criar Jornada</button></section>)}
 
-      {tab === "more" && <><DemoModePanel active={Boolean(demoSession)} families={data.families} onChanged={refresh} /><ReleaseAudit /><StorageDashboard /><section className="card"><p className="eyebrow">Marco 2</p><h2>Escopo local</h2><p>A versão está operacional para estudo, organização e demonstração acadêmica local. O Mapa não substitui prontuário ou prescrição institucional.</p></section></>}
+      {tab === "more" && <><DemoModePanel active={Boolean(demoSession)} families={data.families} onChanged={refresh} /><HistoryPanel families={data.families} people={data.people} memberships={data.memberships} relationships={data.relationships} externalLinks={data.externalLinks} assessments={data.assessments} /><ReleaseAudit /><StorageDashboard /><section className="card"><p className="eyebrow">Marco 2</p><h2>Escopo local</h2><p>A versão está operacional para estudo, organização e demonstração acadêmica local. O Mapa não substitui prontuário ou prescrição institucional.</p></section></>}
 
       <nav className="bottom-nav" aria-label="Navegação principal">{(Object.keys(labels) as Tab[]).map((item) => <button key={item} className={tab===item?"active":""} onClick={() => setTab(item)}><span aria-hidden="true">{item === "home" ? "⌂" : item === "clinical" ? "+" : item === "care" ? "✦" : item === "journey" ? "◇" : "•••"}</span>{labels[item]}</button>)}</nav>
 

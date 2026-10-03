@@ -56,12 +56,12 @@ describe("fluxo de avaliações no modo demonstração", () => {
     fireEvent.click(screen.getByRole("button", { name: "Salvar rascunho" }));
     await waitFor(() => expect(screen.getAllByRole("status").some((node) => /salvo/i.test(node.textContent ?? ""))).toBe(true));
     fireEvent.click(screen.getByRole("button", { name: /Pessoa dois/ }));
-    expect(screen.getByText("Nenhuma aplicação para esta pessoa.")).toBeTruthy();
+    expect(screen.getByText(/Nenhuma aplicação ativa para esta pessoa/)).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: /Pessoa demonstrativa/ }));
     fireEvent.click(screen.getByRole("button", { name: "Continuar" }));
     expect(screen.getByDisplayValue("Resposta sintética")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Sair e restaurar estado anterior" }));
-    await waitFor(() => expect(screen.getByText("Nenhuma aplicação para esta pessoa.")).toBeTruthy());
+    await waitFor(() => expect(screen.getByText(/Nenhuma aplicação ativa para esta pessoa/)).toBeTruthy());
     expect(state.applications).toHaveLength(0);
     expect(screen.getByText("Entrar no modo demonstração")).toBeTruthy();
   });
