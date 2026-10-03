@@ -2,6 +2,7 @@
 
 import {AiPromptsPanel} from "./ai-prompts-panel";
 import {UbsPanel} from "./ubs-panel";
+import {SplashScreen} from "./splash-screen";
 import {MoreMenu, type MoreSection} from "./more-menu";
 import {HistoryPanel} from "./history-panel";
 import {Sheet} from "./sheet";
@@ -85,10 +86,10 @@ export function Workspace() {
     await saveEntity(ENTITY_TYPES.semester, semester); await refresh(); setComposer(null); setMessage("Jornada criada. O número de famílias é uma expectativa, não um limite.");
   }
 
-  if (loading) return <main className="shell"><p>Carregando o dispositivo...</p></main>;
+  if (loading) return <SplashScreen />;
   return (
     <main className="shell app-shell">
-      <header className="app-header"><div><p className="eyebrow">Mapa</p><h1>{labels[tab]}</h1></div><span className={demoSession ? "local-badge demo-badge" : "local-badge"}>{demoSession ? "DEMONSTRAÇÃO · SINTÉTICO" : "Local"}</span></header>
+      <header className="app-header"><img className="app-header-logo" src="/brand/icon-512.png" alt="" width={512} height={512} /><div><p className="eyebrow">Mapa</p><h1>{labels[tab]}</h1></div><span className={demoSession ? "local-badge demo-badge" : "local-badge"}>{demoSession ? "DEMONSTRAÇÃO · SINTÉTICO" : "Local"}</span></header>
       {error && <p className="error-banner" role="alert">{error}</p>}
       <p className="system-message" role="status" aria-live="polite">{message}</p>
       {primeiraAvaliacao && <p className="first-assessment-offer"><strong>Atalho</strong><span>Ir direto para a ficha ESF desta pessoa, sem navegar pela lista.</span><button onClick={() => { setTab("care"); setStartEvaluationFor(primeiraAvaliacao); setPrimeiraAvaliacao(undefined); }}>Iniciar primeira avaliação (ESF)</button></p>}

@@ -52,7 +52,7 @@ export function SecurityGate({ children }: { children: ReactNode }) {
   return (
     <main className="gate">
       <section className="gate-card" aria-labelledby="gate-title">
-        <div className="brand-mark" aria-hidden="true"><span /><span /><span /></div>
+        <img className="brand-mark-image" src="/brand/icon-192.png" alt="" width={192} height={192} />
         <p className="eyebrow">Proteção local</p>
         <h1 id="gate-title">{state === "setup" ? "Crie um PIN para este dispositivo" : "Mapa protegido"}</h1>
         <p>{state === "setup" ? "Defina um PIN para proteger o acesso ao Mapa neste dispositivo." : "A proteção local está ativa neste dispositivo. Digite seu PIN para continuar."}</p>

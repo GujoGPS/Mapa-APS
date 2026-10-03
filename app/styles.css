@@ -9,6 +9,8 @@
   --brand-2: #3c8e7c;
   --warning: #b36b17;
   --shadow: 0 18px 50px rgba(13, 52, 45, 0.08);
+  /* Ambar das janelas da marca: serve ao pulso da abertura ate a paleta unica entrar. */
+  --glow: #f2a93b;
 }
 
 * { box-sizing: border-box; }
@@ -26,14 +28,6 @@ button, input, textarea, select { font: inherit; }
 .hero h1 { margin: 0; font-size: clamp(2.5rem, 12vw, 4.8rem); line-height: .88; letter-spacing: -.065em; }
 .signature { margin: .6rem 0 0; color: var(--muted); font-size: 1.05rem; }
 .eyebrow { margin: 0 0 .6rem; color: var(--brand); font-size: .76rem; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
-.brand-mark { width: 4.2rem; height: 4.2rem; position: relative; flex: 0 0 auto; }
-.brand-mark span { position: absolute; border-radius: 999px; background: var(--brand); box-shadow: 0 0 0 7px rgba(15, 95, 82, .08); }
-.brand-mark span:nth-child(1) { width: 1rem; height: 1rem; left: .15rem; top: 1.65rem; }
-.brand-mark span:nth-child(2) { width: .82rem; height: .82rem; right: .25rem; top: .35rem; }
-.brand-mark span:nth-child(3) { width: .72rem; height: .72rem; right: .4rem; bottom: .2rem; }
-.brand-mark::before, .brand-mark::after { content: ""; position: absolute; height: .22rem; border-radius: 1rem; background: linear-gradient(90deg, var(--brand), var(--brand-2)); transform-origin: left center; left: .85rem; top: 2rem; }
-.brand-mark::before { width: 2.55rem; transform: rotate(-31deg); }
-.brand-mark::after { width: 2.45rem; transform: rotate(28deg); }
 .card { margin-top: 1rem; padding: 1.35rem; border: 1px solid var(--line); border-radius: 1.65rem; background: var(--surface); box-shadow: var(--shadow); backdrop-filter: blur(18px); }
 .lead { display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: start; }
 .card h2 { margin: 0; max-width: 18ch; font-size: clamp(1.4rem, 5vw, 2.1rem); letter-spacing: -.035em; }
@@ -504,3 +498,49 @@ button.secondary { color: var(--text); background: rgba(15,95,82,.08); }
 .vaccine-nome { display: block; font-size: .93rem; }
 .vaccine-doses { display: block; color: var(--muted); font-size: .8rem; }
 .vaccine-obs { display: block; margin-top: .25rem; color: var(--muted); font-size: .74rem; line-height: 1.4; }
+
+/* ---- Abertura e marca ---- */
+.splash { display: grid; place-items: center; gap: 1.4rem; min-height: 100dvh; padding: 2rem; text-align: center; }
+.splash-mark { position: relative; width: min(78vw, 20rem); }
+.splash-image { display: block; width: 100%; height: auto; border-radius: 1.6rem; }
+.splash-message { color: var(--muted); font-size: .9rem; }
+
+/* O pulso e desenhado por cima da imagem, alinhado ao no central e aos arcos. */
+.splash-pulse { position: absolute; pointer-events: none; }
+
+.splash-pulse-node {
+  left: 76%; top: 25%; width: .5rem; height: .5rem; margin: -.25rem 0 0 -.25rem;
+  border-radius: 999px; background: var(--glow);
+  box-shadow: 0 0 .5rem var(--glow), 0 0 1.6rem var(--glow);
+  animation: splash-node 2.4s ease-in-out infinite;
+}
+.splash-pulse-halo {
+  left: 76%; top: 25%; width: 2.4rem; height: 2.4rem; margin: -1.2rem 0 0 -1.2rem;
+  border-radius: 999px; border: 1px solid var(--glow);
+  animation: splash-halo 2.4s ease-out infinite;
+}
+.splash-pulse-arc { height: 1px; border-radius: 999px; background: linear-gradient(90deg, transparent, var(--glow), transparent); transform-origin: right center; }
+.splash-pulse-arc-1 { left: 24%; top: 34%; width: 52%; transform: rotate(-9deg); animation: splash-arc 2.4s ease-in-out infinite; }
+.splash-pulse-arc-2 { left: 30%; top: 46%; width: 46%; transform: rotate(-4deg); animation: splash-arc 2.4s ease-in-out .45s infinite; }
+.splash-pulse-arc-3 { left: 34%; top: 58%; width: 42%; transform: rotate(2deg); animation: splash-arc 2.4s ease-in-out .9s infinite; }
+
+@keyframes splash-node {
+  0%, 100% { opacity: .55; transform: scale(.85); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+@keyframes splash-halo {
+  0% { opacity: .5; transform: scale(.55); }
+  70% { opacity: 0; transform: scale(1.5); }
+  100% { opacity: 0; transform: scale(1.5); }
+}
+@keyframes splash-arc {
+  0%, 100% { opacity: .12; }
+  50% { opacity: .75; }
+}
+
+.brand-mark-image { width: 5rem; height: 5rem; border-radius: 1.4rem; object-fit: cover; margin-bottom: .6rem; }
+.app-header-logo { width: 2.6rem; height: 2.6rem; border-radius: .8rem; object-fit: cover; flex: 0 0 auto; }
+
+@media (prefers-reduced-motion: reduce) {
+  .splash-pulse { animation: none !important; opacity: .5; }
+}
