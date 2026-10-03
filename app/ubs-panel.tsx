@@ -59,7 +59,7 @@ export function UbsPanel() {
     <div className="section-head">
       <div>
         <p className="eyebrow">Mais · Unidade</p>
-        <h2 id="ubs-title">UBS</h2>
+        <h2 id="ubs-title">Serviços e agendamento</h2>
       </div>
     </div>
     <p className="fine-print">O que a unidade oferece e como agendar. Conteúdo de referência desta UBS, não configurável por instalação.</p>

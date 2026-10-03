@@ -53,7 +53,7 @@ export function HistoryPanel({ families, people, memberships, relationships, ext
     .sort((a, b) => b.assessmentDate.localeCompare(a.assessmentDate));
 
   return <section className="card history-panel" aria-labelledby="history-title">
-    <div className="section-head"><div><p className="eyebrow">Mais</p><h2 id="history-title">Histórico</h2></div></div>
+    <div className="section-head"><div><p className="eyebrow">Mais</p><h2 id="history-title">Quem mudou e quando</h2></div></div>
     <p className="fine-print">Quem foi alterado, quando e por quê. Avaliações concluídas e retificações mantêm a cadeia entre si.</p>
 
     {!comHistorico.length && <p className="fine-print">Nenhuma família com histórico registrado ainda.</p>}

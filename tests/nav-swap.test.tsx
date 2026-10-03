@@ -33,7 +33,7 @@ describe("barra principal apos a troca", () => {
   it("UBS abre a referencia da unidade", async () => {
     await renderApp();
     fireEvent.click(screen.getByRole("button", { name: /UBS/ }));
-    await waitFor(() => expect(screen.getByRole("heading", { level: 2, name: "UBS" })).toBeTruthy());
+    await waitFor(() => expect(screen.getByRole("heading", { level: 2, name: "Serviços e agendamento" })).toBeTruthy());
     expect(screen.getByRole("region", { name: "Serviços ofertados" })).toBeTruthy();
   });
 

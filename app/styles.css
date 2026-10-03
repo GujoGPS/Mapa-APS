@@ -1076,3 +1076,11 @@ button.secondary { color: var(--text); background: var(--tinte-1); }
   border: 1px solid var(--seguro); border-radius: var(--r-2);
   background: var(--seguro-suave); color: var(--seguro); font-weight: 700; cursor: pointer;
 }
+
+/* Rotulo so para leitor de tela: repete o titulo da aba na pagina, entao nao vai a olho. */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+.assessment-progress .concluido { color: var(--seguro); font-weight: 700; }

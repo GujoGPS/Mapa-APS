@@ -37,7 +37,7 @@ async function exportSvg(){const dataUrl=await flowExport?.exportAllNodes();if(!
 return <section className="relations-panel" aria-label="Relações familiares">
   <div className="relations-head">
     <div><p className="eyebrow">Relações</p><h2>Família, vínculos e território</h2></div>
-    <button onClick={()=>setComposer(diagramKind==="ecomap"?"resource":"relationship")}>Adicionar</button>
+    <button onClick={()=>setComposer(diagramKind==="ecomap"?"resource":"relationship")}>{diagramKind==="ecomap"?"Adicionar recurso":"Adicionar vínculo"}</button>
   </div>
   <div className="relations-tabs" role="tablist">
     {([{id:"diagram",label:"Diagrama"},{id:"links",label:`Vínculos e recursos (${p.relationships.filter(isRelationshipOpen).length+p.resources.length})`},{id:"narrative",label:"Narrativa"},{id:"prompt",label:"Prompt IA"}] as {id:View;label:string}[]).map((item)=><button key={item.id} role="tab" aria-selected={view===item.id} className={view===item.id?"active":""} onClick={()=>setView(item.id)}>{item.label}</button>)}

@@ -45,7 +45,7 @@ describe("Mais como menu de navegação", () => {
   it("cada cartão leva à sua sub-tela", async () => {
     await abrirMais();
     fireEvent.click(screen.getByRole("button", { name: /Histórico/ }));
-    await waitFor(() => expect(screen.getByRole("heading", { name: "Histórico" })).toBeTruthy());
+    await waitFor(() => expect(screen.getByRole("heading", { name: "Quem mudou e quando" })).toBeTruthy());
   });
 
   it("a sub-tela de Prompts mostra o montador de prompt", async () => {
@@ -69,7 +69,7 @@ describe("Mais como menu de navegação", () => {
   it("permite voltar ao menu sem sair de Mais", async () => {
     await abrirMais();
     fireEvent.click(screen.getByRole("button", { name: /Histórico/ }));
-    await waitFor(() => expect(screen.getByRole("heading", { name: "Histórico" })).toBeTruthy());
+    await waitFor(() => expect(screen.getByRole("heading", { name: "Quem mudou e quando" })).toBeTruthy());
     fireEvent.click(screen.getByRole("button", { name: /Voltar ao menu de Mais/ }));
     await waitFor(() => expect(screen.getByRole("navigation", { name: "Seções de Mais" })).toBeTruthy());
   });

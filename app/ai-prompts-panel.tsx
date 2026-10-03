@@ -104,7 +104,7 @@ export function AiPromptsPanel({ families, people, memberships, relationships }:
       </label>}
     </div>
 
-    {!familia && <p className="fine-print">Escolha uma família para montar o prompt.</p>}
+    {!familia && <p className="fine-print">Escolha uma família na lista acima e depois a pessoa. O prompt só é montado com dados já revisados.</p>}
 
     {familia && resultado && resultado.privacy.length > 0 && <div className="prompt-excluded prompt-privacy" role="status">
       <h4>Dado da pessoa retirado por privacidade</h4>

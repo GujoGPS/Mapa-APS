@@ -125,7 +125,7 @@ export function AssessmentViews({ personId, personLabel, applications }: Props) 
         ))}
       </div>
 
-      {view === "clinical" && <FactList facts={clinicalVisibleFacts(currentFacts)} empty="Nenhum fato clínico derivado ainda." />}
+      {view === "clinical" && <FactList facts={clinicalVisibleFacts(currentFacts)} empty="Nada calculado ainda a partir desta ficha. Conforme você preencher, os cálculos aparecem aqui." />}
       {view === "person" && <>
         <p className="fine-print">Notas internas, limitações da fonte e fatos pendentes de revisão não aparecem aqui.</p>
         <FactList facts={personVisibleFactsAfterReview(currentFacts)} empty="Nada liberado para a pessoa até aqui." />
