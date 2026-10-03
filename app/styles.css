@@ -404,3 +404,5 @@ button.secondary { color: var(--text); background: rgba(15,95,82,.08); }
 .flow-legend ul { margin: 0; padding: 0; list-style: none; }
 .flow-legend li { display: flex; align-items: center; gap: .45rem; padding: .12rem 0; }
 .flow-legend-line { display: inline-block; width: 22px; border-top-width: 3px; border-top-style: solid; }
+.flow-layout-reset { min-height: 2rem; padding: .35rem .6rem; border: 1px solid var(--line); border-radius: .7rem; color: var(--text); background: var(--surface); font-size: .72rem; font-weight: 800; }
+.flow-layout-reset:disabled { opacity: .45; cursor: default; }

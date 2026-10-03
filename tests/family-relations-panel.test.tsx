@@ -8,6 +8,11 @@ vi.mock("@/src/storage/idb", () => ({
 }));
 vi.mock("@/src/storage/hash", () => ({ checksumOf: vi.fn(async (value: unknown) => JSON.stringify(value)) }));
 vi.mock("@/src/domain/demo-session", () => ({ getDemoSession: vi.fn(async () => undefined) }));
+vi.mock("@/src/domain/diagram-layout-store", () => ({
+  loadPositions: vi.fn(async () => undefined),
+  savePositions: vi.fn(async () => undefined),
+  clearPositions: vi.fn(async () => 0),
+}));
 
 import { FamilyRelations } from "@/app/family-relations";
 import type { Family, FamilyMembership, Person } from "@/src/contracts/family";
@@ -114,6 +119,13 @@ describe("interacoes do diagrama", () => {
     await waitFor(() => expect(screen.getByTestId("family-diagram-flow")).toBeTruthy());
     await waitFor(() => expect(within(screen.getByTestId("family-diagram-flow")).getByText("Ana")).toBeTruthy());
     expect(screen.queryByText("Qualidade do vinculo")).toBeNull();
+  });
+
+  it("oferece voltar ao desenho original quando ha layout salvo", async () => {
+    renderPanel();
+    await diagramElement();
+    const reset = screen.getByRole("button", { name: "Voltar ao desenho original" });
+    expect(reset.hasAttribute("disabled")).toBe(true);
   });
 
   it("avisa a quem seleciona pessoa ao clicar num no", async () => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, type RefObject } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   Background,
   Controls,
@@ -10,18 +10,23 @@ import {
   ReactFlow,
   ReactFlowProvider,
   BaseEdge,
+  getNodesBounds,
   getSmoothStepPath,
+  getViewportForBounds,
   MarkerType,
   Panel,
   type Edge,
   type EdgeProps,
   type Node,
+  type NodeChange,
   type NodeProps,
   useReactFlow,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { qualityStyle, type DiagramEdge, type DiagramModel, type DiagramNode } from "@/src/domain/diagram-engine";
 import { flowAriaLabels, qualityLegend } from "@/src/domain/diagram-labels";
+import { mergePositions, positionsFromNodes, type LayoutScope, type PositionMap } from "@/src/domain/diagram-layout";
+import { clearPositions, loadPositions, savePositions } from "@/src/domain/diagram-layout-store";
 
 /**
  * Traducao de formato, nada mais: quem decide quem se relaciona com quem, quais nos existem e
@@ -29,16 +34,34 @@ import { flowAriaLabels, qualityLegend } from "@/src/domain/diagram-labels";
  * nos e arestas do React Flow.
  */
 
+
+export interface FlowExportHandle {
+  /** Enquadra todos os nos e devolve o SVG do grafo inteiro, ja no tamanho final. */
+  exportAllNodes: () => Promise<string | undefined>;
+}
+
+export const FlowExportContext = createContext<FlowExportHandle | undefined>(undefined);
+
+/** Usado pelo painel para exportar o diagrama inteiro, e nao apenas a fatia visivel. */
+export function useFlowExport(): FlowExportHandle | undefined {
+  return useContext(FlowExportContext);
+}
+
 export interface FamilyFlowProps {
   model: DiagramModel;
   onSelectNode?: (nodeId: string) => void;
   selectedNodeId?: string;
-  /** Permite exportar o desenho sem conhecer a estrutura interna do React Flow. */
-  containerRef?: RefObject<HTMLDivElement | null>;
   /** Aviso da biblioteca; quem recebe decide como mostrar na interface. */
   onFlowError?: (code: string, message: string) => void;
   /** Legenda das cores de vinculo; so aparece quando o diagrama tem vinculos. */
   showLegend?: boolean;
+  /** Escopo do desenho salvo: familia, tipo, perspectiva e camada. */
+  scope?: LayoutScope;
+  /** Avisa quando o usuario arrasta nos, para o painel persistir. */
+  onPositionsChange?: (positions: PositionMap) => void;
+  /** true quando ha posicoes salvas diferentes do desenho calculado. */
+  hasSavedLayout?: boolean;
+  onResetLayout?: () => void;
 }
 
 export interface FamilyNodeData extends Record<string, unknown> {
@@ -66,10 +89,10 @@ const kindClass: Record<DiagramNode["kind"], string> = {
   household: "household",
 };
 
-export function toFlowNodes(model: DiagramModel, selectedNodeId?: string): Node[] {
+export function toFlowNodes(model: DiagramModel, selectedNodeId?: string, positions?: PositionMap): Node[] {
   return model.nodes.map((node) => ({
     id: node.id,
-    position: { x: node.x, y: node.y },
+    position: positions?.[node.id] ?? { x: node.x, y: node.y },
     type: "familyNode",
     selected: selectedNodeId === node.id,
     data: {
@@ -151,11 +174,36 @@ function RelationshipLegend() {
   );
 }
 
-function FamilyDiagram({ model, onSelectNode, selectedNodeId, containerRef, onFlowError, showLegend }: FamilyFlowProps) {
-  const nodes = useMemo(() => toFlowNodes(model, selectedNodeId), [model, selectedNodeId]);
+type InternalFlowProps = FamilyFlowProps & { containerRef: RefObjectLike };
+type RefObjectLike = { current: HTMLDivElement | null };
+
+function FamilyDiagram({ model, onSelectNode, selectedNodeId, containerRef, onFlowError, showLegend, scope, onPositionsChange, hasSavedLayout, onResetLayout }: InternalFlowProps) {
+  const [saved, setSaved] = useState<PositionMap | undefined>(undefined);
+  const positions = useMemo(
+    () => mergePositions(model.nodes, saved),
+    [model.nodes, saved],
+  );
+  const nodes = useMemo(() => toFlowNodes(model, selectedNodeId, positions), [model, selectedNodeId, positions]);
   const edges = useMemo(() => toFlowEdges(model), [model]);
   const onNodeClick = useCallback((_: unknown, node: Node) => { onSelectNode?.(node.id); }, [onSelectNode]);
   const { fitView } = useReactFlow();
+  const scopeKey = scope ? `${scope.familyId}|${scope.kind}|${scope.perspectivePersonId ?? ""}|${scope.layer ?? ""}` : "";
+  useEffect(() => {
+    if (!scope) { setSaved(undefined); return; }
+    let active = true;
+    void loadPositions(scope).then((loaded) => { if (active) setSaved(loaded); }).catch(() => { if (active) setSaved(undefined); });
+    return () => { active = false; };
+  }, [scopeKey, scope]);
+  const onNodesChange = useCallback((changes: NodeChange<Node>[]) => {
+    const moved = changes.filter((change) => "position" in change && change.position) as { id: string; position: { x: number; y: number } }[];
+    if (!moved.length) return;
+    setSaved((current) => ({ ...(current ?? {}), ...Object.fromEntries(moved.map((change) => [change.id, change.position])) }));
+  }, []);
+  // A persistencia acontece depois que o grafo assenta, para gravar a posicao final do arrasto.
+  useEffect(() => {
+    if (!saved || !onPositionsChange) return;
+    onPositionsChange(positionsFromNodes(nodes));
+  }, [saved, nodes, onPositionsChange]);
   // Trocar de familia, perspectiva ou camada precisa reenquadrar; senao a visao anterior fica.
   const signature = `${model.kind}|${model.perspectiveLabel}|${model.nodes.map((node) => node.id).join(",")}|${model.edges.length}`;
   useEffect(() => { fitView({ padding: 0.2, duration: 300 }); }, [signature, fitView]);
@@ -174,6 +222,7 @@ function FamilyDiagram({ model, onSelectNode, selectedNodeId, containerRef, onFl
         edgeTypes={edgeTypes}
         onNodeClick={onNodeClick}
         nodesDraggable
+        onNodesChange={onNodesChange}
         nodesConnectable={false}
         elementsSelectable
         fitView
@@ -185,15 +234,55 @@ function FamilyDiagram({ model, onSelectNode, selectedNodeId, containerRef, onFl
         <MiniMap pannable zoomable />
         <Controls />
         {showLegend && model.edges.length > 0 && <RelationshipLegend />}
+        {onResetLayout && <Panel position="top-left" className="flow-legend">
+          <button type="button" className="flow-layout-reset" onClick={onResetLayout} disabled={!hasSavedLayout}>Voltar ao desenho original</button>
+        </Panel>}
       </ReactFlow>
     </div>
+  );
+}
+
+function FlowWithExport(props: FamilyFlowProps) {
+  const { fitView, getViewport, setViewport, getNodes } = useReactFlow();
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const exportAllNodes = useCallback(async () => {
+    const viewport = containerRef?.current?.querySelector<HTMLElement>(".react-flow__viewport");
+    const surface = containerRef?.current;
+    if (!viewport || !surface) return undefined;
+    const internal = getNodes();
+    if (!internal.length) return undefined;
+    const width = viewport.offsetWidth;
+    const height = viewport.offsetHeight;
+    const previous = getViewport();
+    const bounds = getNodesBounds(internal);
+    const next = getViewportForBounds(bounds, width, height, 0.12, 2, 0.1);
+    setViewport(next);
+    // A viewport so assenta no proximo quadro; sem essa espera o SVG sairia com o enquadramento velho.
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    try {
+      const styles = getComputedStyle(surface);
+      const backgroundColor = styles.backgroundColor.includes("rgba(0, 0, 0, 0)") || styles.backgroundColor === "transparent" ? getComputedStyle(document.body).backgroundColor : styles.backgroundColor;
+      const { toSvg } = await import("html-to-image");
+      return await toSvg(viewport, { backgroundColor, width, height, cacheBust: true, style: { width: `${width}px`, height: `${height}px` } });
+    } finally {
+      setViewport(previous);
+      fitView({ padding: 0.2, duration: 200 });
+    }
+  }, [containerRef, fitView, getViewport, setViewport, getNodes]);
+
+  const handle = useMemo(() => ({ exportAllNodes }), [exportAllNodes]);
+  return (
+    <FlowExportContext.Provider value={handle}>
+      <FamilyDiagram {...props} containerRef={containerRef} />
+    </FlowExportContext.Provider>
   );
 }
 
 export function FamilyDiagramFlow(props: FamilyFlowProps) {
   return (
     <ReactFlowProvider>
-      <FamilyDiagram {...props} />
+      <FlowWithExport {...props} />
     </ReactFlowProvider>
   );
 }
