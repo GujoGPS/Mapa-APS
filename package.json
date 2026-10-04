@@ -12,7 +12,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --quiet --ignore-pattern dist-production --rule react-hooks/set-state-in-effect:off",
+    "lint": "eslint . --quiet --rule react-hooks/set-state-in-effect:off",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
