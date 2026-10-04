@@ -8,7 +8,7 @@ import { lifeStageLabels } from "@/src/domain/diagram-labels";
 import {MoreMenu, type MoreSection} from "./more-menu";
 import {HistoryPanel} from "./history-panel";
 import {Sheet} from "./sheet";
-import { type FormEvent, useMemo, useState } from "react";
+import { type FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import type { EncounterKind } from "@/src/contracts/care";
 import { createEncounter, createFamily, createMembership, createPending, createPerson, createSemester, linkFamilyToSemester, updateFamily, updatePerson } from "@/src/domain/factories";
 import { ENTITY_TYPES } from "@/src/domain/entity-types";
@@ -37,6 +37,25 @@ export function Workspace() {
   const [selectedFamilyId, setSelectedFamilyId] = useState<string>();
   const [selectedPersonId, setSelectedPersonId] = useState<string>();
   const { avise } = useToast();
+  // Transicao entre abas pela Web Animations API: anima o conteudo sem remontar nada,
+  // o que perderia o estado dos paineis (busca na Clinica, abas do editor, rolagem).
+  const conteudoRef = useRef<HTMLDivElement>(null);
+  const primeiraRenderizacao = useRef(true);
+  useEffect(() => {
+    if (primeiraRenderizacao.current) { primeiraRenderizacao.current = false; return; }
+    const alvo = conteudoRef.current;
+    // jsdom e ambientes sem matchMedia nao devem quebrar a navegacao.
+    const semMovimento = typeof window.matchMedia === "function"
+      && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!alvo || semMovimento) return;
+    // Sem Web Animations API nao ha o que fazer — a aba troca normalmente, sem movimento.
+    if (typeof alvo.animate !== "function") return;
+    if (typeof alvo.getAnimations === "function") alvo.getAnimations().forEach((animacao) => animacao.cancel());
+    alvo.animate(
+      [{ opacity: 0, transform: "translateY(0.5rem)" }, { opacity: 1, transform: "none" }],
+      { duration: 280, easing: "cubic-bezier(.16, 1, .3, 1)", fill: "none" },
+    );
+  }, [tab]);
   const [primeiraAvaliacao, setPrimeiraAvaliacao] = useState<string>();
   const [startEvaluationFor, setStartEvaluationFor] = useState<string>();
   const activeSemester = data.semesters.find((semester) => semester.state === "active");
@@ -102,6 +121,7 @@ export function Workspace() {
       {error && <p className="error-banner" role="alert">{error}</p>}
       {primeiraAvaliacao && <p className="first-assessment-offer"><strong>Atalho</strong><span>Ir direto para a ficha ESF desta pessoa, sem navegar pela lista.</span><button onClick={() => { setTab("care"); setStartEvaluationFor(primeiraAvaliacao); setPrimeiraAvaliacao(undefined); }}>Iniciar primeira avaliação (ESF)</button></p>}
 
+      <div className="conteudo" ref={conteudoRef}>
       {tab === "home" && <>
         <section className="card hero-card"><p className="eyebrow">Agora</p><h2>{activeSemester ? activeSemester.label : "Comece sua Jornada"}</h2><p>{data.families.length ? `${data.families.length} família(s) no dispositivo e ${data.pending.filter((item) => item.destination === "open").length} pendência(s) aberta(s).` : "Crie um semestre ou abra o modo demonstração isolado."}</p><div className="action-row">{!activeSemester && <button onClick={() => setComposer("semester")}>Criar Jornada</button>}<button onClick={() => setComposer("encounter")} disabled={!data.families.length}>Novo encontro</button>{!data.families.length && <button onClick={() => setTab("more")}>Modo demonstração</button>}</div></section>
         <section className="quick-grid"><button onClick={() => { setTab("care"); setComposer("family"); }}>Nova família</button><button onClick={() => setTab("care")}>Abrir cuidado</button><button onClick={() => setTab("more")}>Visitar semestre</button><button onClick={() => setTab("more")}>Estado local</button></section>
@@ -128,6 +148,7 @@ export function Workspace() {
         {moreSection === "history" && <HistoryPanel families={data.families} people={data.people} memberships={data.memberships} relationships={data.relationships} externalLinks={data.externalLinks} assessments={data.assessments} />}
         {moreSection === "device" && <StorageDashboard />}
       </>} />}
+      </div>
 
       <nav className="bottom-nav" aria-label="Navegação principal">{(Object.keys(labels) as Tab[]).map((item) => <button key={item} className={tab===item?"active":""} onClick={() => { setTab(item); setMoreSection(undefined); }}><span aria-hidden="true">{item === "home" ? "⌂" : item === "clinical" ? "+" : item === "care" ? "✦" : item === "ubs" ? "⌖" : "•••"}</span>{labels[item]}</button>)}</nav>
 

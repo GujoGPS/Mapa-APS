@@ -1161,3 +1161,8 @@ button.secondary { color: var(--text); background: var(--tinte-1); }
   to { opacity: 1; transform: none; }
 }
 @media (prefers-reduced-motion: reduce) {  }
+
+/* O conteudo das abas e animado pela Web Animations API no momento da troca.
+   Nao ha regra aqui de proposito: uma animacao por CSS exigiria remontar o bloco e
+   perderia o estado dos paineis. */
+.conteudo { will-change: opacity, transform; }
