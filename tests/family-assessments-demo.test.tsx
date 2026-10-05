@@ -60,7 +60,10 @@ describe("fluxo de avaliações no modo demonstração", () => {
     expect(screen.getByText(/Nenhuma aplicação ativa para esta pessoa/)).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: /Pessoa demonstrativa/ }));
     fireEvent.click(screen.getByRole("button", { name: "Continuar" }));
-    expect(screen.getByDisplayValue("Resposta sintética")).toBeTruthy();
+    // Reabrir a ficha relê do repositório mockado, que é assíncrono. Era a única
+    // asserção do teste sem waitFor, e por isso falhava de vez em quando sem
+    // qualquer mudança no app.
+    await waitFor(() => expect(screen.getByDisplayValue("Resposta sintética")).toBeTruthy());
     fireEvent.click(screen.getByRole("button", { name: "Sair e restaurar estado anterior" }));
     await waitFor(() => expect(screen.getByText(/Nenhuma aplicação ativa para esta pessoa/)).toBeTruthy());
     expect(state.applications).toHaveLength(0);
