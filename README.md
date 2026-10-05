@@ -1,210 +1,181 @@
+<div align="center">
+
+<img src="public/brand/mapa-logo.png" alt="Mapa — Pessoas, Território, Cuidado" width="260" />
+
 # Mapa
 
 **Clínica, família e território**
 
-Aplicativo local de apoio ao estudo, à organização longitudinal do cuidado familiar e à comunicação clínica supervisionada na Atenção Primária à Saúde.
+Ferramenta local de apoio ao estudo, à organização longitudinal do cuidado familiar e à
+comunicação clínica supervisionada na Atenção Primária à Saúde.
 
-> O Mapa é uma ferramenta acadêmica e pessoal. Não substitui prontuário institucional, julgamento clínico, protocolos locais, prescrição profissional, receitas ou laudos.
+Feito para uma Reality: **celular, uma mão só, em pé, na visita domiciliar, com o paciente
+na frente.** Por isso o alvo de toque nunca é menor que 44 px, o contraste nunca fica abaixo
+de AA e nenhuma informação depende só de cor.
 
-## Estado atual
+</div>
 
-- Versão: `1.0.4`
-- Escopo: uso acadêmico local e demonstração supervisionada
-- Decisão operacional: `GO LOCAL`
-- Build de produção: aprovado
-- Biblioteca clínica: implementada
-- Caderno farmacológico autoral: implementado e pesquisável
-- Catálogo farmacológico: preenchido e mantido pelo autor do projeto
-- Persistência local: implementada
-- Backup protegido: implementado com AES-GCM
-- Dados sintéticos: disponíveis para demonstração e testes
-- Dados reais: condicionados às regras da instituição, do serviço e do prontuário oficial
+> **Escopo.** O Mapa é uma ferramenta acadêmica e pessoal. **Não substitui prontuário
+> institucional, julgamento clínico, protocolos locais, prescrição profissional, receitas ou
+> laudos.** Uso real depende das regras da instituição, da preceptoria, da unidade e do
+> prontuário oficial.
 
-## Principais recursos
+---
 
-- acompanhamento longitudinal por semestre;
-- organização de famílias, pessoas, encontros e pendências;
-- Jornada acadêmica com reflexões, competências e feedbacks;
-- genograma e ecomapa com representação estruturada;
-- biblioteca clínica com condições, exames e fontes;
-- caderno farmacológico autoral separado por indicação, população, via e apresentação;
-- busca por medicamento, classe terapêutica e nome comercial;
-- perfis farmacológicos com campos para início, titulação, dose usual, alvo, teto, duração e ajustes orgânicos;
-- bloqueio local por PIN e proteção por inatividade;
-- persistência no navegador e solicitação de armazenamento persistente;
-- exportação, backup protegido, checksums e restauração atômica;
-- auditoria local de prontidão operacional;
-- aplicação responsiva e instalável como PWA.
-
-## Requisitos
-
-- Node.js 22 ou superior
-- npm 11 ou superior
-
-## Instalação
+## Começando
 
 ```bash
 npm install
-```
-
-## Desenvolvimento
-
-```bash
 npm run dev
 ```
 
-Abra:
+Abra <http://localhost:3000>. O app instala um **PIN local** no primeiro uso: ele é gravado
+apenas neste aparelho e nunca sai daqui.
 
-```text
-http://localhost:3000
-```
+Requer **Node.js 22+** e **npm 11+**.
 
-## Verificação e build
+---
+
+## As cinco telas
+
+| Tela | Para quê |
+|---|---|
+| **Início** | Panorama da jornada, atalhos e linha do tempo dos encontros |
+| **Clínica** | Condições, medicamentos, exames, calendário de vacinação e as fontes de cada conteúdo |
+| **Cuidado** | Ações, ficha ESF, vínculos familiares, genograma e ecomapa |
+| **UBS** | Serviços ofertados, grupos e como agendar — referência estática |
+| **Mais** | Jornada, histórico, prompts de IA, modo demonstração e estado do aparelho |
+
+---
+
+## O que o app faz
+
+### Cuidado longitudinal
+
+- Semestres com famílias vinculadas, encontros e pendências
+- Genograma e ecomapa desenhados com **React Flow**, por perspectiva e por camada
+- Vínculos familiares com **qualidade da relação e recursos externos**, editáveis e com trilha de auditoria
+- **Modo de demonstração** com três famílias complexas, isolado dos seus dados reais
+
+### Ficha ESF do adulto com DCNT
+
+Instrumento digitalizado da página 28 do formulário local da ESF, com provenance em cada campo.
+
+- **6 blocos preenchíveis** — identificação, perfil sociodemográfico, condições e rastreamentos,
+  exame físico e avaliação paramétrica, avaliação dos pés, síntese e encaminhamentos (CIAP-2)
+- Bloco de **genograma, ecomapa e observações** remete para a aba Cuidado, onde já é registrado
+- **Fatos clínicos derivados** e versionados, com proveniência e revisão humana
+- **Retificação** encadeada: corrigir uma avaliação cria uma nova versão, sem apagar a anterior
+- Serviços marcados viram **propostas** — nenhum vínculo do ecomapa nasce sem decisão humana
+- Salvamento automático com debounce e estado visível
+
+### Biblioteca clínica
+
+- Condições, exames, caderno farmacológico autoral e **calendário nacional de vacinação** por faixa etária
+- Busca por nome, sinônimo, classe terapêutica e nome comercial
+- Cada conteúdo aponta para a **fonte** de onde veio
+
+### Comunicação clínica supervisionada
+
+- Montador de **prompt para IA externa** com sanitização por padrão
+- Identificadores saem: entram o código da família, o da pessoa e a idade
+- O que foi **retirado por privacidade** e o que é **lacuna de preenchimento** são separados e explicados
+
+### Privacidade e dados
+
+- **PIN local** com bloqueio por inatividade e ao esconder a aba
+- Persistência no navegador, com solicitação de **armazenamento persistente**
+- **Backup protegido com AES-GCM**, checksum e restauração atômica
+- **Modo demonstração isolado**: guarda o estado normal, semeia casos sintéticos separados e
+  devolve tudo ao sair — inclusive rascunhos e eventos
+- A tela de revisão do prompt mostra **exatamente o que sai** antes de qualquer cópia
+
+---
+
+## Interface
+
+O sistema visual tem **um tema só**, escuro, extraído por amostragem da própria marca.
+
+| Papel | Cor | Vem de |
+|---|---|---|
+| Noite | `#081028` | o céu da ilustração |
+| Texto | `#f4e4d0` | a cor do "Mapa" na marca |
+| Luz | `#f0e4a2` | as janelas acesas |
+| Seguro | `#8ac6b4` | a copa das árvores |
+| Conexão | `#5a9ce4` | o arco entre as casas |
+| Erro | `#de735e` | derivado da família quente, 41° longe do dourado |
+
+**O dourado é luz, não decoração.** Aparece só em aba ativa, item selecionado e campo em foco —
+sempre acompanhado de **forma** (linha de 2 px, barra lateral, anel), porque sob sol forte a cor
+sozinha não separa estado. O botão primário é creme, nunca dourado.
+
+Toda animação respeita `prefers-reduced-motion`.
+
+---
+
+## Verificação
 
 ```bash
-npm run lint
-npm run typecheck
-npm run test
-npm run verify
-npm run build
+npm run verify   # docs, dados sintéticos, marcos 1-7, auditoria estática, tipos, lint e testes
+npm run build    # build de produção
 ```
 
-## Execução em produção local
+| Verificação | Estado |
+|---|---|
+| TypeScript | ✅ sem erros |
+| ESLint | ✅ sem avisos |
+| Testes | ✅ **308** em 51 arquivos |
+| Build de produção | ✅ |
+| Documentação canônica | ✅ 10 blocos |
 
-Depois de concluir o build:
+A CI roda `verify` + `build` em cada push e pull request para `main`.
 
-```bash
-npm run start
-```
+---
 
-Abra:
+## Estrutura
 
 ```text
-http://localhost:3000
+app/        App Router, telas e componentes        26 arquivos
+src/        domínio, contratos eClinical        71 arquivos
+tests/      308 testes                            52 arquivos
+scripts/    verificação e auditoria                21 arquivos
+docs/       77 documentos, incluindo 25 ADRs
 ```
 
-## Estrutura do projeto
+O domínio não depende da interface: as telas leem de casos de uso e escrevem por comandos, e
+tudo que é clínico tem teste de comportamento.
 
-```text
-app/                                  App Router, interface e componentes
-src/audit/                            Gates e prontidão operacional
-src/backup/                           Exportação, proteção e restauração
-src/clinical/                         Biblioteca clínica e fontes
-src/clinical/pharmacology/            Caderno farmacológico autoral
-src/contracts/                        Contratos TypeScript do domínio
-src/data/synthetic/                   Cenários e famílias sintéticas
-src/domain/                           Regras de domínio e diagramas
-src/security/                         PIN, codificação e utilidades de segurança
-src/storage/                          Persistência local, schema e checksums
-tests/                                Testes unitários e de contrato
-docs/                                 Memória canônica, decisões e documentação
-scripts/                              Verificações e auditorias do repositório
-.github/workflows/                    Integração contínua
-```
-
-## Caderno farmacológico autoral
-
-O catálogo farmacológico utilizado pela interface está em:
-
-```text
-src/clinical/pharmacology/catalog.ts
-```
-
-Os arquivos relacionados são:
-
-```text
-src/clinical/pharmacology/types.ts       Contratos TypeScript
-src/clinical/pharmacology/catalog.ts     Catálogo exibido no aplicativo
-src/clinical/pharmacology/example.ts     Molde estrutural não exibido
-src/clinical/pharmacology/validation.ts  Validação das fichas
-src/clinical/pharmacology/README.md      Instruções específicas
-```
-
-Estados editoriais aceitos:
-
-```text
-draft
-checked-source
-checked-preceptor
-reviewed
-archived
-```
-
-Após modificar o catálogo, execute:
-
-```bash
-npm run verify
-npm run build
-```
-
-## Regra documental
-
-Antes de uma mudança arquitetural:
-
-1. ler `docs/PROJECT_STATE.md`;
-2. consultar `docs/DECISIONS.md`;
-3. criar ou atualizar um ADR em `docs/adr/`;
-4. registrar a mudança em `docs/CHANGELOG.md`;
-5. atualizar critérios, contratos e testes afetados.
+---
 
 ## Segurança e privacidade
 
-- mantenha o dispositivo protegido por senha, PIN ou biometria;
-- utilize o bloqueio local do Mapa;
-- gere backups protegidos regularmente;
-- não publique bancos locais, backups ou dados identificáveis no GitHub;
-- não registre dados pessoais em issues, logs, fixtures ou testes;
-- não use previews públicos para informações identificáveis;
-- respeite as regras da instituição, da preceptoria, da unidade de saúde e do prontuário oficial;
-- trate o Mapa como ferramenta complementar, não como substituto do sistema institucional.
+- **Nunca** publique bancos locais, backups ou dados identificáveis neste repositório
+- **Nunca** registre dados pessoais em issues, logs, fixtures ou testes
+- Não use previews públicos para conteúdo identificável
+- Mantenha o aparelho protegido por senha, PIN ou biometria
+- Trate o Mapa como **complementar**, nunca como substituto do sistema institucional
 
-Consulte também:
+Veja também [`SECURITY.md`](SECURITY.md) e [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
-```text
-SECURITY.md
-docs/PRIVACY_MODEL.md
-docs/release/GO_LOCAL.md
-docs/release/PHARMACOLOGY_AUTHORING.md
-```
+> **Sobre a documentação interna.** `docs/PROJECT_STATE.md`, `docs/DATA_MODEL.md`,
+> `docs/DECISIONS.md` e `docs/CHANGELOG.md` estão atualizados. Já `docs/ARCHITECTURE.md`,
+> `docs/PRIVACY_MODEL.md`, `docs/ROADMAP.md` e `docs/PHARMACOLOGY_GOVERNANCE.md` são de
+> 28/09 e descrevem um app anterior à ficha ESF — trate-os como histórico.
+> O `docs/release/GO_LOCAL.md` é de 28/09 e **não cobre** o escopo clínico atual.
+
+---
 
 ## Dados sintéticos
 
-Os cenários sintéticos existem para:
+Três cenários de família complexa, com conteúdo clínico, rede de recursos externos e cadeia de
+retificação. Servem para demonstração, regressão, desenvolvimento e teste de backup.
 
-- demonstração;
-- regressão;
-- desenvolvimento;
-- validação de fluxos;
-- testes de backup e restauração;
-- testes dos diagramas familiares.
+Eles existem para **demonstrar capacidades do app** — não para parecer registro real. Nomes,
+bairros e profissões são genéricos de propósito.
 
-Dados sintéticos não devem ser confundidos com registros reais.
-
-## Integração contínua
-
-O workflow localizado em:
-
-```text
-.github/workflows/ci.yml
-```
-
-pode executar verificações automatizadas do repositório no GitHub Actions.
-
-## Status resumido
-
-```text
-Instalação:              aprovada
-TypeScript:              aprovado
-Lint:                    aprovado
-Testes:                  aprovados
-Build de produção:       aprovado
-Execução local:          aprovada
-Persistência:            implementada
-Backup protegido:        implementado
-Piloto sintético:        aprovado
-Uso acadêmico local:     GO
-```
+---
 
 ## Licença e autoria
 
-Projeto acadêmico autoral. A definição de licença, distribuição e colaboração deve ser feita explicitamente antes de reutilização por terceiros.
+Projeto acadêmico autoral. A definição de licença, distribuição e colaboração deve ser feita
+explicitamente antes de qualquer reutilização por terceiros.

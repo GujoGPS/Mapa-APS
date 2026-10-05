@@ -1,9 +1,18 @@
 # Mapa: Especificação Canônica
 
 **Assinatura:** Clínica, família e território  
-**Versão da especificação:** 1.0.0  
-**Data:** 27 de setembro de 2026  
-**Estado:** planejamento conceitual concluído, pronto para iniciar produção mediante comando do responsável pelo projeto.
+**Versão do aplicativo:** `0.7.0-rc.0`
+**Data:** 05 de outubro de 2026
+**Estado:** aplicativo implementado e verificado — 308 testes, typecheck, lint, build e `verify` aprovados.
+
+> **Aviso de defasagem.** Este pacote foi escrito na fase de planejamento (28/09) e **não foi
+> reescrito desde então**. `PROJECT_STATE.md`, `DECISIONS.md`, `DATA_MODEL.md` e o `CHANGELOG`
+> estão atualizados; `ARCHITECTURE.md`, `PRIVACY_MODEL.md`, `ROADMAP.md` e
+> `PHARMACOLOGY_GOVERNANCE.md` **descrevem um app que não existe mais** — são anteriores à ficha
+> ESF, ao calendário de vacinação, à aba UBS, à identidade visual e à revisão de texto.
+>
+> Ao seguir a ordem de leitura abaixo, trate esses quatro como **histórico**, não como
+> descrição do código atual. Para o estado real, comece pelo `README.md` da raiz.
 
 Este pacote é a memória externa formal do projeto **Mapa**. Ele consolida as decisões tomadas nos cinco rounds de planejamento e deve ser tratado como fonte canônica durante design, implementação, testes e revisão clínica.
 
