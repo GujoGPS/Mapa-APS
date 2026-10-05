@@ -155,8 +155,13 @@ tudo que é clínico tem teste de comportamento.
 - Mantenha o aparelho protegido por senha, PIN ou biometria
 - Trate o Mapa como **complementar**, nunca como substituto do sistema institucional
 
-Veja também [`SECURITY.md`](SECURITY.md), [`CONTRIBUTING.md`](CONTRIBUTING.md) e
-`docs/release/GO_LOCAL.md`.
+Veja também [`SECURITY.md`](SECURITY.md) e [`CONTRIBUTING.md`](CONTRIBUTING.md).
+
+> **Sobre a documentação interna.** `docs/PROJECT_STATE.md`, `docs/DATA_MODEL.md`,
+> `docs/DECISIONS.md` e `docs/CHANGELOG.md` estão atualizados. Já `docs/ARCHITECTURE.md`,
+> `docs/PRIVACY_MODEL.md`, `docs/ROADMAP.md` e `docs/PHARMACOLOGY_GOVERNANCE.md` são de
+> 28/09 e descrevem um app anterior à ficha ESF — trate-os como histórico.
+> O `docs/release/GO_LOCAL.md` é de 28/09 e **não cobre** o escopo clínico atual.
 
 ---
 
