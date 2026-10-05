@@ -60,9 +60,11 @@ describe("fluxo de avaliações no modo demonstração", () => {
     expect(screen.getByText(/Nenhuma aplicação ativa para esta pessoa/)).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: /Pessoa demonstrativa/ }));
     fireEvent.click(screen.getByRole("button", { name: "Continuar" }));
-    // Reabrir a ficha relê do repositório mockado, que é assíncrono. Era a única
-    // asserção do teste sem waitFor, e por isso falhava de vez em quando sem
-    // qualquer mudança no app.
+    // Reabrir a ficha relê do repositório mockado, que é assíncrono: a resposta
+    // não aparece no mesmo tick do clique. Esperar aqui é o correto, mesmo que o
+    // teste mal consuma tempo — 200 ms sozinho, 2,4 s na suíte completa, bem
+    // dentro do limite. As falhas que apareceram foram contenção de CPU com
+    // build e verify rodando junto, não um defeito deste teste.
     await waitFor(() => expect(screen.getByDisplayValue("Resposta sintética")).toBeTruthy());
     fireEvent.click(screen.getByRole("button", { name: "Sair e restaurar estado anterior" }));
     await waitFor(() => expect(screen.getByText(/Nenhuma aplicação ativa para esta pessoa/)).toBeTruthy());
