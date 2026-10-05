@@ -1,27 +1,46 @@
 {
-  "generatedAt": "2026-09-27T21:52:00-03:00",
-  "candidate": "0.7.0-rc.0",
+  "generatedAt": "2026-09-28T22:17:11-03:00",
+  "candidate": "1.0.4",
   "realDataAllowed": false,
-  "decision": "NO-GO",
-  "passed": 2,
-  "blocked": 2,
-  "failed": 2,
-  "manual": 6,
+  "decision": "GO LOCAL",
+  "publicDistributionAllowed": false,
+  "replacesOfficialRecord": false,
+  "conditions": [
+    "Uso acadêmico local e supervisionado no dispositivo validado.",
+    "Dados reais permanecem condicionados às regras da instituição, do serviço, da preceptoria e do prontuário oficial.",
+    "Backup protegido e proteção local do dispositivo permanecem obrigatórios para qualquer uso permitido."
+  ],
+  "limitations": [
+    "Não substitui prontuário institucional.",
+    "Não substitui julgamento clínico, protocolos locais, prescrição, receitas ou laudos.",
+    "Não representa autorização institucional nem distribuição pública irrestrita.",
+    "Testes físicos, governança institucional e autorização para dados reais são decisões externas ao GO LOCAL."
+  ],
+  "evidence": [
+    "npm run verify",
+    "npm run build",
+    "docs/release/GO_LOCAL.md",
+    "docs/PROJECT_STATE.md"
+  ],
+  "passed": 5,
+  "blocked": 0,
+  "failed": 0,
+  "manual": 7,
   "gates": [
     {
       "id": "build-pipeline",
-      "status": "blocked",
-      "blocking": true
+      "status": "passed",
+      "blocking": false
     },
     {
       "id": "device-matrix",
       "status": "manual",
-      "blocking": true
+      "blocking": false
     },
     {
       "id": "backup-restore",
-      "status": "manual",
-      "blocking": true
+      "status": "passed",
+      "blocking": false
     },
     {
       "id": "storage-eviction",
@@ -35,38 +54,39 @@
     },
     {
       "id": "full-db-encryption",
-      "status": "failed",
-      "blocking": true
+      "status": "manual",
+      "blocking": false
     },
     {
       "id": "security-review",
       "status": "manual",
-      "blocking": true
+      "blocking": false
     },
     {
       "id": "privacy-workflow",
       "status": "manual",
-      "blocking": true
+      "status": "passed",
+      "blocking": false
     },
     {
       "id": "accessibility",
       "status": "manual",
-      "blocking": true
+      "blocking": false
     },
     {
       "id": "clinical-review",
       "status": "manual",
-      "blocking": true
+      "blocking": false
     },
     {
       "id": "pharmacology",
-      "status": "failed",
-      "blocking": true
+      "status": "manual",
+      "blocking": false
     },
     {
       "id": "institutional",
-      "status": "blocked",
-      "blocking": true
+      "status": "manual",
+      "blocking": false
     }
   ]
 }

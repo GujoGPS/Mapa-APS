@@ -1,6 +1,6 @@
 # GO local
 
-A versão 1.0.3 recebe GO para uso acadêmico local, demonstração sintética e organização pessoal no dispositivo validado pelo responsável.
+A versão 1.0.4 recebe GO LOCAL para uso acadêmico local, demonstração supervisionada e organização pessoal no dispositivo validado pelo responsável.
 
 ## Evidências aceitas
 
@@ -13,4 +13,4 @@ A versão 1.0.3 recebe GO para uso acadêmico local, demonstração sintética e
 
 ## Escopo
 
-O GO não transforma o Mapa em prontuário institucional e não representa autorização institucional para prescrição ou assistência autônoma.
+O GO LOCAL não autoriza dados reais de forma irrestrita, não transforma o Mapa em prontuário institucional, não representa distribuição pública ampla e não autoriza prescrição ou assistência autônoma.

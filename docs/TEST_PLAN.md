@@ -35,6 +35,34 @@
 - população não coberta;
 - dados insuficientes.
 
+### Instrumento ESF
+
+- completude de perguntas, opções, IDs, dependências e proveniência;
+- isolamento de aplicações por pessoa dentro do contexto familiar;
+- condicionais com estado não aplicável;
+- idade, IMC, média de pressão e circunferência local;
+- classificações manuais sem cálculo automático;
+- propostas de família/ecomapa sem atualização automática;
+- políticas conservadoras para projeção clínica, da pessoa e familiar.
+- interface de avaliações dentro da família;
+- troca de integrante sem vazamento de respostas;
+- renderer derivado da definição, blocos ausentes e condicionais;
+- retomada de rascunho, revisão, conclusão e retificação pela interface.
+- renderização dedicada dos tipos de resposta usados pelo instrumento, incluindo pressão por visita e medidas de cintura;
+- respostas condicionais preservadas como não aplicáveis, progresso por bloco e revisão estrutural;
+- estados salvo/alterado/salvando/erro, confirmação de saída, acessibilidade estrutural e demonstração pela interface;
+- roteiro manual responsivo em desktop, tablet e celular: verificar ausência de overflow horizontal, PA legível, opções longas quebrando linha, histórico em uma coluna e revisão estrutural utilizável.
+- roteiro obrigatório da interface de avaliações:
+  - desktop (>= 1024px): selecionar pessoa, abrir histórico, alternar blocos, revisar PA e exame dos pés, abrir revisão estrutural e provocar o diálogo de alterações não salvas; confirmar ausência de overflow;
+  - tablet (768–1023px): repetir o fluxo verificando quebra de opções longas, histórico e cards de bloco sem sobreposição;
+  - celular (< 768px): repetir o fluxo verificando uma coluna, PA e exame dos pés legíveis, diálogo acessível, revisão estrutural rolável e ausência de overflow horizontal.
+- criação e persistência de aplicações por pessoa;
+- isolamento entre pessoas da mesma família;
+- respostas tipadas, estados e bloqueio de sobrescrita;
+- retificação imutável e longitudinalidade;
+- migração idempotente e checksums de aplicações no backup;
+- aplicações sintéticas identificáveis e excluídas do backup normal.
+
 ### Farmacologia
 
 - medicamento desconhecido;

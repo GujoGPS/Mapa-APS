@@ -1,0 +1,478 @@
+{
+  "synthetic": true,
+  "scenarioVersion": 2,
+  "cases": [
+    {
+      "id": "caso_a_vila_serena",
+      "familyId": "family_demo_vila_serena",
+      "code": "F-001",
+      "nickname": "Vila Serena",
+      "focus": "cadeia de decisão clínica: ficha, derivações, propostas e retificação",
+      "demonstrates": [
+        "CareFacts calculados",
+        "propostas de servico",
+        "aprovacao e rejeicao humana",
+        "retificação de avaliação"
+      ],
+      "people": [
+        {
+          "id": "p_a_1",
+          "code": "P-001-A",
+          "displayName": "Helena Ribeiro",
+          "lifeStage": "older-adult",
+          "role": "pessoa acompanhada",
+          "careRole": "care-recipient"
+        },
+        {
+          "id": "p_a_2",
+          "code": "P-001-B",
+          "displayName": "Otavio Ribeiro",
+          "lifeStage": "adult",
+          "role": "companheiro",
+          "careRole": "support"
+        },
+        {
+          "id": "p_a_3",
+          "code": "P-001-C",
+          "displayName": "Marina Ribeiro",
+          "lifeStage": "adult",
+          "role": "filha",
+          "careRole": "support"
+        }
+      ],
+      "subject": "p_a_1",
+      "conditions": [
+        {
+          "person": "p_a_1",
+          "label": "hipertensao arterial",
+          "kind": "confirmed",
+          "state": "controlled"
+        },
+        {
+          "person": "p_a_1",
+          "label": "diabetes mellitus tipo 2",
+          "kind": "confirmed",
+          "state": "uncontrolled"
+        },
+        {
+          "person": "p_a_1",
+          "label": "obesidade",
+          "kind": "risk-factor",
+          "state": "identified"
+        }
+      ],
+      "medications": [
+        {
+          "person": "p_a_1",
+          "name": "losartana 50mg",
+          "use": "regular-use"
+        },
+        {
+          "person": "p_a_1",
+          "name": "metformina 850mg",
+          "use": "irregular-use"
+        }
+      ],
+      "exams": [
+        {
+          "person": "p_a_1",
+          "name": "HbA1c",
+          "value": "8,4",
+          "numeric": 8.4,
+          "unit": "%",
+          "reviewed": true
+        }
+      ],
+      "screenings": [
+        {
+          "person": "p_a_1",
+          "title": "Rastreamento de cancer de colo do utero",
+          "state": "performed"
+        }
+      ],
+      "plans": [
+        {
+          "person": "p_a_1",
+          "title": "educação em saúde e ajuste de uso",
+          "target": "dyad",
+          "state": "agreed"
+        }
+      ],
+      "relationships": [
+        {
+          "from": "p_a_1",
+          "to": "p_a_2",
+          "formalType": "conjuge",
+          "quality": "strong",
+          "direction": "reciprocal",
+          "perspective": "p_a_1"
+        },
+        {
+          "from": "p_a_1",
+          "to": "p_a_3",
+          "formalType": "filha",
+          "quality": "strong",
+          "direction": "reciprocal",
+          "perspective": "p_a_1"
+        }
+      ],
+      "encounters": [
+        {
+          "kind": "first-contact",
+          "at": "2026-03-11T09:00:00-03:00",
+          "title": "Primeiro contato e abertura da ficha",
+          "people": [
+            "p_a_1",
+            "p_a_2",
+            "p_a_3"
+          ],
+          "nextStep": "Conferir unidades das exame-labiratorio"
+        },
+        {
+          "kind": "review",
+          "at": "2026-08-19T09:30:00-03:00",
+          "title": "Revisao de rotina com a filha presente",
+          "people": [
+            "p_a_1",
+            "p_a_3"
+          ],
+          "nextStep": "Discutir divergência de uso de metformina"
+        }
+      ],
+      "pending": [
+        {
+          "title": "Confirmar HbA1c de controle com laboratorio",
+          "kind": "complete-record",
+          "priority": "attention",
+          "person": "p_a_1"
+        }
+      ]
+    },
+    {
+      "id": "caso_b_rio_doce",
+      "familyId": "family_demo_rio_doce",
+      "code": "F-002",
+      "nickname": "Rio Doce",
+      "focus": "rede, ruptura e vínculo não exportável",
+      "demonstrates": [
+        "espectro de qualidade de vínculo",
+        "changeLog com motivo",
+        "recurso externo no ecomapa",
+        "bloqueio de exportacao"
+      ],
+      "people": [
+        {
+          "id": "p_b_1",
+          "code": "P-002-A",
+          "displayName": "Camila Prado",
+          "lifeStage": "adult",
+          "role": "responsavel legal",
+          "careRole": "primary-caregiver"
+        },
+        {
+          "id": "p_b_2",
+          "code": "P-002-B",
+          "displayName": "Davi Prado",
+          "lifeStage": "adolescent",
+          "role": "filho",
+          "careRole": "care-recipient"
+        }
+      ],
+      "subject": "p_b_2",
+      "externalPeople": [
+        {
+          "id": "p_b_ext",
+          "code": "P-002-C",
+          "displayName": "Sergio Prado",
+          "lifeStage": "adult",
+          "role": "tio"
+        }
+      ],
+      "conditions": [
+        {
+          "person": "p_b_2",
+          "label": "sobrepeso",
+          "kind": "risk-factor",
+          "state": "identified"
+        },
+        {
+          "person": "p_b_2",
+          "label": "ansiedade",
+          "kind": "reported",
+          "state": "investigating"
+        }
+      ],
+      "medications": [
+        {
+          "person": "p_b_2",
+          "name": "medicamento de uso irregular para Ansiedade",
+          "use": "irregular-use"
+        }
+      ],
+      "exams": [],
+      "screenings": [
+        {
+          "person": "p_b_2",
+          "title": "Rastreamento de saúde mental",
+          "state": "accepted"
+        }
+      ],
+      "plans": [
+        {
+          "person": "p_b_2",
+          "title": "Articular escola e saúde mental",
+          "target": "family",
+          "state": "discussed"
+        }
+      ],
+      "relationships": [
+        {
+          "from": "p_b_2",
+          "to": "p_b_1",
+          "formalType": "responsavel legal",
+          "quality": "strong",
+          "direction": "reciprocal",
+          "perspective": "p_b_2"
+        },
+        {
+          "from": "p_b_2",
+          "to": "p_b_ext",
+          "formalType": "tio",
+          "quality": "ruptured",
+          "direction": "unilateral",
+          "perspective": "p_b_2",
+          "changeLog": [
+            {
+              "at": "2026-05-06T14:00:00-03:00",
+              "action": "edited",
+              "reason": "apos reunião de caso, rompimento confirmado pela adolescente"
+            }
+          ]
+        },
+        {
+          "from": "p_b_1",
+          "to": "p_b_ext",
+          "formalType": "irmao",
+          "quality": "conflict",
+          "direction": "reciprocal",
+          "perspective": "p_b_1",
+          "sharingState": "private",
+          "changeLog": [
+            {
+              "at": "2026-05-06T14:00:00-03:00",
+              "action": "created",
+              "reason": "marcado como privado por conflito familiar em curso"
+            }
+          ]
+        }
+      ],
+      "resources": [
+        {
+          "id": "res_b_1",
+          "name": "CRAS do municipio",
+          "type": "social-assistance",
+          "state": "active"
+        },
+        {
+          "id": "res_b_2",
+          "name": "Escola municipal",
+          "type": "education",
+          "state": "active"
+        },
+        {
+          "id": "res_b_3",
+          "name": "UBS de referência",
+          "type": "health",
+          "state": "active"
+        }
+      ],
+      "externalLinks": [
+        {
+          "person": "p_b_1",
+          "resource": "res_b_1",
+          "quality": "adequate",
+          "direction": "reciprocal",
+          "perspective": "p_b_1"
+        },
+        {
+          "person": "p_b_2",
+          "resource": "res_b_2",
+          "quality": "divergent",
+          "direction": "unilateral",
+          "perspective": "p_b_2"
+        },
+        {
+          "person": "p_b_2",
+          "resource": "res_b_3",
+          "quality": "strong",
+          "direction": "reciprocal",
+          "perspective": "p_b_2"
+        }
+      ],
+      "encounters": [
+        {
+          "kind": "home-visit",
+          "at": "2026-05-06T14:00:00-03:00",
+          "title": "Visita domiciliar apos recusa escolar",
+          "people": [
+            "p_b_1",
+            "p_b_2"
+          ],
+          "nextStep": "Discutir vínculo rompido com a equipe"
+        }
+      ],
+      "pending": [
+        {
+          "title": "Retomar contato com a escola",
+          "kind": "referral",
+          "priority": "attention",
+          "person": "p_b_2"
+        }
+      ]
+    },
+    {
+      "id": "caso_c_alto_da_serra",
+      "familyId": "family_demo_alto_da_serra",
+      "code": "F-003",
+      "nickname": "Alto da Serra",
+      "focus": "longitudinal, três gerações e multiprofissional",
+      "demonstrates": [
+        "três geracoes",
+        "duas avaliacoes no tempo",
+        "plano com alvo dyad",
+        "semestre, snapshot e adendo"
+      ],
+      "people": [
+        {
+          "id": "p_c_1",
+          "code": "P-003-A",
+          "displayName": "Idalina Campos",
+          "lifeStage": "older-adult",
+          "role": "avó",
+          "careRole": "care-recipient"
+        },
+        {
+          "id": "p_c_2",
+          "code": "P-003-B",
+          "displayName": "Renata Campos",
+          "lifeStage": "adult",
+          "role": "filha e cuidadora",
+          "careRole": "primary-caregiver"
+        },
+        {
+          "id": "p_c_3",
+          "code": "P-003-C",
+          "displayName": "Lucas Campos",
+          "lifeStage": "child",
+          "role": "neto",
+          "careRole": "none"
+        }
+      ],
+      "subject": "p_c_1",
+      "conditions": [
+        {
+          "person": "p_c_1",
+          "label": "demência em evolução",
+          "kind": "reported",
+          "state": "investigating"
+        },
+        {
+          "person": "p_c_1",
+          "label": "hipertensao arterial",
+          "kind": "confirmed",
+          "state": "controlled"
+        }
+      ],
+      "medications": [
+        {
+          "person": "p_c_1",
+          "name": "anti-hipertensivo de uso continuo",
+          "use": "regular-use"
+        }
+      ],
+      "exams": [],
+      "screenings": [
+        {
+          "person": "p_c_1",
+          "title": "Rastreamento de demência",
+          "state": "requested"
+        },
+        {
+          "person": "p_c_3",
+          "title": "Rastreamento de asma",
+          "state": "performed"
+        }
+      ],
+      "plans": [
+        {
+          "person": "p_c_1",
+          "title": "Rede de apoio para a filha cuidadora",
+          "target": "dyad",
+          "state": "in-progress"
+        }
+      ],
+      "relationships": [
+        {
+          "from": "p_c_1",
+          "to": "p_c_2",
+          "formalType": "filha",
+          "quality": "strong",
+          "direction": "reciprocal",
+          "perspective": "p_c_1",
+          "careDirection": "p_c_2"
+        },
+        {
+          "from": "p_c_2",
+          "to": "p_c_3",
+          "formalType": "filho",
+          "quality": "strong",
+          "direction": "reciprocal",
+          "perspective": "p_c_2"
+        },
+        {
+          "from": "p_c_1",
+          "to": "p_c_3",
+          "formalType": "neto",
+          "quality": "adequate",
+          "direction": "reciprocal",
+          "perspective": "p_c_1"
+        }
+      ],
+      "encounters": [
+        {
+          "kind": "family-meeting",
+          "at": "2026-02-18T10:00:00-03:00",
+          "title": "reunião familiar com as três geracoes",
+          "people": [
+            "p_c_1",
+            "p_c_2",
+            "p_c_3"
+          ],
+          "nextStep": "Observar quem cuida no banho"
+        },
+        {
+          "kind": "consultation",
+          "at": "2026-09-10T10:00:00-03:00",
+          "title": "Consulta de seguimento com a filha",
+          "people": [
+            "p_c_1",
+            "p_c_2"
+          ],
+          "nextStep": "Avaliar sobrecarga da cuidadora"
+        }
+      ],
+      "pending": [
+        {
+          "title": "Encaminhar para avaliação da sobrecarga da cuidadora",
+          "kind": "referral",
+          "priority": "attention",
+          "person": "p_c_2"
+        }
+      ],
+      "addendum": {
+        "title": "correção de data de atendimento",
+        "reason": "Registro de visita transcrito com data incorreta; corrigido sem alterar o original."
+      }
+    }
+  ]
+}

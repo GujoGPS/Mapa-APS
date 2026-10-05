@@ -1,5 +1,38 @@
 # Changelog da Especificação
 
+## Não datado - fluxo ESF do adulto e projeções derivadas
+
+### Acrescentado
+
+- questionário da ficha "Avaliação de Saúde e DCNT do Adulto" como instrumento tipado e
+  versionado, com as opções legíveis da página e as limitações de bloco declaradas;
+- fatos clínicos derivados (`care-fact`), com proveniência, regra, certeza e visibilidade
+  independente para clínica, pessoa e família;
+- projeção de informação faltante baseada nas condições de aplicabilidade da própria ficha;
+- persistência dos fatos ao concluir a aplicação, com supersessão na retificação;
+- demonstração isolada com snapshot reversível, saída pela interface e backup normal limpo;
+- edição de família e de pessoa preservando identidade, vitalidade e origem;
+- serviços da ficha como propostas revisadas: nenhum vínculo de ecomapa nasce sem confirmação
+  humana e texto compartilhável;
+- visões acadêmica, da pessoa e comparação entre aplicações dentro da área da família.
+
+- camada de desenho dos diagramas familiares migrada para React Flow, com o motor de dominio
+  intacto como fonte de verdade, teste de renderizacao e teste de paridade do painel;
+- exportacao de diagrama em vetor preservada via `html-to-image` sobre o viewport do fluxo.
+
+- clique em um nó abre a pessoa selecionada;
+- legenda das cores por qualidade de vínculo, gerada a partir da mesma fonte que pinta as arestas;
+- reenquadramento automático ao trocar de família, perspectiva ou camada;
+- posição de nó arrastada guardada como sobreposição do desenho do motor, com volta ao original;
+- exportação do SVG agora enquadra todos os nós, e não apenas a fatia visível.
+
+### Corrigido
+
+- `summary.services` ace selections múltiplas, como na ficha impressa;
+- rejeição de proposta não exige texto compartilhável;
+- parametricidade de `supersedeFacts` corrigida;
+- aplicabilidade movida da interface para o domínio.
+
 ## 1.0.0 - 2026-09-27
 
 ### Consolidado
@@ -97,7 +130,6 @@ Planejamento conceitual concluído. Produção ainda não iniciada.
 - adicionada distinção de fonte preliminar;
 - bloqueada publicação de doses ainda não auditadas por produto.
 
-
 ## 1.6.0 - 2026-09-27
 
 ### Marco 5
@@ -134,3 +166,20 @@ Planejamento conceitual concluído. Produção ainda não iniciada.
 - adicionados checklists e matriz de dispositivos;
 - adicionada auditoria estática;
 - mantido NO-GO e bloqueio de dados reais por evidência insuficiente.
+
+
+## 1.9.0-rc.0 - 2026-09-28
+
+### Fundação do instrumento ESF
+
+- adicionada definição tipada e versionada da página 28 da avaliação adulta de DCNT;
+- adicionados contratos para aplicações individuais, projeções e propostas familiares/ecomapa;
+- adicionados cálculos puros e testes de completude, condicionais, privacidade e isolamento por pessoa;
+- preservados como manuais os itens sem regra clínica autorizada.
+### Interface de avaliações
+
+- adicionada a área Avaliações dentro da família;
+- incluída seleção explícita de pessoa, histórico individual, rascunho, revisão, conclusão, arquivamento e retificação;
+- concluída a interface com pressão por visita, critério explícito e classificação de cintura, progresso por bloco, revisão estrutural detalhada, estado de salvamento e preservação de respostas não aplicáveis;
+- formulário renderizado a partir da definição versionada, com indicação de blocos sem fonte;
+- preservado o isolamento de respostas entre integrantes.

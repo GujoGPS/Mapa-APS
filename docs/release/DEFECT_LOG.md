@@ -30,9 +30,9 @@
 ### MAPA-003 — Farmacologia posológica não auditada por produto
 
 - Severidade: P0
-- Estado: bloqueio deliberado
-- Mitigação atual: doses não publicadas
-- Próxima ação: nomear revisor farmacológico e decidir entre catálogo auditado ou exclusão permanente de doses
+- Estado: gate de auditoria pendente; a interface atual já exibe fichas posológicas do catálogo.
+- Mitigação atual: validação estrutural e exclusão de fichas arquivadas; isso não substitui auditoria farmacológica independente por produto.
+- Próxima ação: documentar auditoria por produto ou restringir doses na interface, conforme ADR 0011.
 - Gate: pharmacology
 
 ### MAPA-004 — Autorização institucional ausente

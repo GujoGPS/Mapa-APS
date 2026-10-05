@@ -2,15 +2,18 @@
 
 import { type FormEvent, type ReactNode, useEffect, useState } from "react";
 import { hasPin, pinSecurityNotice, setPin, validatePinPolicy, verifyPin } from "@/src/security/pin";
+import { Botao } from "./ui";
 
 const AUTO_LOCK_MS = 5 * 60 * 1000;
+const MINIMO = 6;
+const MAXIMO = 12;
 
 type GateState = "loading" | "setup" | "locked" | "unlocked";
 
 export function SecurityGate({ children }: { children: ReactNode }) {
   const [state, setState] = useState<GateState>("loading");
   const [pin, setPinValue] = useState("");
-  const [message, setMessage] = useState("Verificando proteção local...");
+  const [erro, setErro] = useState("");
 
   useEffect(() => { void hasPin().then((configured) => setState(configured ? "locked" : "setup")); }, []);
 
@@ -30,40 +33,76 @@ export function SecurityGate({ children }: { children: ReactNode }) {
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setErro("");
     if (state === "setup") {
       const errors = validatePinPolicy(pin);
-      if (errors.length) { setMessage(errors.join(" ")); return; }
+      if (errors.length) { setErro(errors.join(" ")); return; }
       await setPin(pin);
-      setMessage("PIN local configurado.");
-      setPinValue("");
       setState("unlocked");
       return;
     }
     const valid = await verifyPin(pin);
-    if (!valid) { setMessage("PIN incorreto. O conteúdo permanece bloqueado."); return; }
+    if (!valid) { setErro("PIN incorreto. O conteúdo continua bloqueado."); setPinValue(""); return; }
     setPinValue("");
-    setMessage("Mapa desbloqueado neste dispositivo.");
     setState("unlocked");
   }
 
-  if (state === "loading") return <main className="gate"><p role="status">{message}</p></main>;
+  if (state === "loading") {
+    return <main className="gate"><div className="gate-card gate-esperando" role="status">Verificando a proteção local…</div></main>;
+  }
   if (state === "unlocked") return <>{children}</>;
+
+  const criando = state === "setup";
+  const completo = pin.length >= MINIMO && pin.length <= MAXIMO;
 
   return (
     <main className="gate">
-      <section className="gate-card" aria-labelledby="gate-title">
-        <div className="brand-mark" aria-hidden="true"><span /><span /><span /></div>
+      <section className={`gate-card ${criando ? "gate-criando" : "gate-bloqueado"}`} aria-labelledby="gate-title">
+        <header className="gate-topo">
+          {/*
+            A imagem completa traz "Pessoas · Território · Cuidado" embutido, que fica
+            ilegível abaixo de uns 400px. Aqui entra só a ilustração, grande, e o nome vem
+            como texto de verdade — nítido em qualquer tamanho de tela.
+          */}
+          <img className="gate-logo" src="/brand/icon-512.png" alt="" width={512} height={512} />
+          <p className="gate-nome">Mapa</p>
+        </header>
+
         <p className="eyebrow">Proteção local</p>
-        <h1 id="gate-title">{state === "setup" ? "Crie um PIN para este dispositivo" : "Desbloquear Mapa"}</h1>
-        <p>{state === "setup" ? "O Marco 1 exige um PIN antes de abrir a área local." : "Digite o PIN configurado neste navegador."}</p>
-        <form onSubmit={submit}>
-          <label htmlFor="local-pin">PIN de 6 a 12 dígitos</label>
-          <input id="local-pin" inputMode="numeric" pattern="[0-9]*" autoComplete={state === "setup" ? "new-password" : "current-password"} value={pin} onChange={(event) => setPinValue(event.target.value)} />
-          <button type="submit">{state === "setup" ? "Configurar e entrar" : "Entrar"}</button>
+        <h1 id="gate-title">{criando ? "Crie um PIN para este dispositivo" : "Mapa protegido"}</h1>
+        <p className="gate-descricao">
+          {criando
+            ? "O PIN protege o acesso ao Mapa neste aparelho e trava sozinho após alguns minutos sem uso."
+            : "A proteção local está ativa neste aparelho. Digite seu PIN para continuar."}
+        </p>
+
+        <form onSubmit={submit} className="gate-form">
+          <label htmlFor="local-pin">PIN de {MINIMO} a {MAXIMO} dígitos</label>
+          <div className={`gate-campo ${erro ? "gate-campo-erro" : ""}`}>
+            <input
+              id="local-pin"
+              type="password"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              maxLength={MAXIMO}
+              autoComplete={criando ? "new-password" : "current-password"}
+              value={pin}
+              aria-invalid={erro ? true : undefined}
+              aria-describedby={erro ? "gate-erro" : undefined}
+              onChange={(event) => { setPinValue(event.target.value.replace(/\D/g, "")); setErro(""); }}
+            />
+            <span className="gate-contador" aria-hidden="true">{pin.length}/{MAXIMO}</span>
+          </div>
+
+          {erro && <p className="gate-erro" id="gate-erro" role="alert"><span aria-hidden="true">×</span>{erro}</p>}
+
+          <Botao variante="primario" type="submit" disabled={!completo}>
+            {criando ? "Configurar e entrar" : "Entrar"}
+          </Botao>
+          {!completo && pin.length > 0 && <p className="gate-dica">Faltam {MINIMO - pin.length} dígito(s).</p>}
         </form>
-        <p className="system-message" role="status" aria-live="polite">{message}</p>
-        <p className="fine-print">{pinSecurityNotice}</p>
-        <p className="fine-print"><strong>Marco 1:</strong> não registre dados reais.</p>
+
+        {criando && <p className="gate-aviso">{pinSecurityNotice}</p>}
       </section>
     </main>
   );

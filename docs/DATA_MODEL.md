@@ -1,5 +1,28 @@
 # Modelo de Dados Conceitual
 
+## Fatos clínicos derivados
+
+`CareFact` é derivado da aplicação individual e nunca substitui a resposta original.
+
+Campos essenciais:
+
+- `factId` estável (`{applicationId}:fact:{key}`) e `factVersion`;
+- `applicationId`, `instrumentId`, `instrumentVersion`, `familyId`, `personId`;
+- `derivationType` e `ruleId`/`ruleVersion` quando o valor é calculado;
+- `certaintyState` (reported, measured, calculated, manual, uncertain, missing, limited);
+- visibilidade independente: `clinicalVisibility`, `personVisibility`, `familyVisibility`;
+- `reviewStatus`, com `superseded` e `invalidatedAt` quando uma retificação assume;
+- `dataOrigin`, para que fatos sintéticos saiam junto do isolamento da demonstração.
+
+Fatos `source-limitation` registram o que a ficha impressa não resolve; eles existem para impedir
+interpretação silenciosa.
+
+## Propostas de mudança de domínio
+
+Serviços marcados na ficha geram `EcomapLinkProposal` (`pending-review`). Somente decisão humana
+confirmada ou modificada gera `EcomapLink` com `originApplicationId`; rejeição fica registrada sem
+criar vínculo.
+
 ## Entidades nucleares
 
 ### Person
@@ -150,6 +173,14 @@ Cada registro pode ter:
 - tempo de revisão.
 
 A interface pergunta apenas o necessário; metadados técnicos são automáticos.
+
+## Instrumentos clínicos versionados
+
+`src/clinical/assessments/` contém definições tipadas de instrumentos, separadas de aplicações futuras. Uma `InstrumentApplication` pertence a uma pessoa por `personId`; `familyId` é somente o contexto familiar. A definição possui versão imutável, perguntas e opções com IDs estáveis, proveniência, visibilidade, sensibilidade e regras de aplicabilidade.
+
+Aplicações futuras podem gerar resultados derivados, classificações manuais e propostas de alteração familiar/ecomapa, mas propostas exigem revisão humana e não atualizam o domínio automaticamente. A mesma aplicação canônica poderá alimentar projeção clínica/acadêmica e projeção da pessoa sem duplicar respostas.
+
+Aplicações persistidas usam `STORES.records` com `entityType: instrument-application` e checksum do envelope. `personId` é sempre o sujeito clínico; `familyId` é contexto e é validado por `FamilyMembership`. Respostas são discriminadas por tipo, aplicações concluídas são imutáveis e uma retificação cria novo registro ligado por `rectifiesApplicationId`. Resumos familiares expõem somente status e datas operacionais.
 
 ## Proveniência
 

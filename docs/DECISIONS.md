@@ -1,3 +1,21 @@
+## D-020: Fatos derivados, não prontuário
+
+**Decisão:** respostas da ficha geram fatos versionados com proveniência e visibilidade própria; nada
+é gravado como resposta derivada e nada vira classificação clínica sem regra na fonte.  
+**Estado:** aceito (ADR 0019).
+
+## D-021: Serviços da ficha são propostas
+
+**Decisão:** serviço marcado na avaliação vira proposta pendente; ecomapa só muda por decisão humana
+com texto compartilhável, sempre preservando a aplicação de origem.  
+**Estado:** aceito (ADR 0021).
+
+## D-022: Demonstração é sessão isolada
+
+**Decisão:** entrar na demonstração guarda um snapshot do estado normal e marca tudo que é criado como
+sintético; sair restaura o snapshot. O backup normal exclui sintéticos por padrão.  
+**Estado:** aceito (ADR 0018).
+
 # Registro de Decisões
 
 ## D-001: Nome conceitual

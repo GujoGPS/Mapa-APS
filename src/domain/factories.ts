@@ -1,7 +1,7 @@
 import type { ConfirmationStatus, Provenance, Sensitivity, SharingState } from "@/src/contracts/core";
 import type { Encounter, EncounterKind, PendingItem, PendingKind } from "@/src/contracts/care";
 import type { Family, FamilyMembership, Person, Semester, SemesterFamilyLink } from "@/src/contracts/family";
-import { auditFields, newId, nowIso } from "./entity";
+import { auditFields, newId, nowIso, updatedAudit } from "./entity";
 
 const defaultTrust = {
   provenance: "self-reported" as Provenance,
@@ -14,8 +14,28 @@ export function createFamily(input: { code: string; nickname?: string; focus?: s
   return { ...auditFields(newId("family")), code: input.code.trim(), ...(input.nickname?.trim() ? { nickname: input.nickname.trim() } : {}), ...(input.focus?.trim() ? { focus: input.focus.trim() } : {}), state: "active", openedAt: nowIso() };
 }
 
+export function updateFamily(family: Family, input: { code: string; nickname?: string; focus?: string }): Family {
+  const updated: Family = { ...family, code: input.code.trim(), ...updatedAudit(family) };
+  const nickname = input.nickname?.trim();
+  const focus = input.focus?.trim();
+  if (nickname) updated.nickname = nickname;
+  else delete updated.nickname;
+  if (focus) updated.focus = focus;
+  else delete updated.focus;
+  return updated;
+}
+
 export function createPerson(input: { code: string; displayName?: string; lifeStage?: Person["lifeStage"] }): Person {
   return { ...auditFields(newId("person")), code: input.code.trim(), ...(input.displayName?.trim() ? { displayName: input.displayName.trim() } : {}), ...(input.lifeStage ? { lifeStage: input.lifeStage } : {}), vitalStatus: "alive" };
+}
+
+export function updatePerson(person: Person, input: { code: string; displayName?: string; lifeStage?: Person["lifeStage"] }): Person {
+  const updated: Person = { ...person, code: input.code.trim(), ...updatedAudit(person) };
+  const displayName = input.displayName?.trim();
+  if (displayName) updated.displayName = displayName;
+  else delete updated.displayName;
+  if (input.lifeStage) updated.lifeStage = input.lifeStage;
+  return updated;
 }
 
 export function createMembership(input: { personId: string; familyId: string; roleLabel: string; careRole?: FamilyMembership["careRole"] }): FamilyMembership {

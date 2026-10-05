@@ -12,6 +12,15 @@ O app informará:
 
 Não prometerá permanência absoluta.
 
+## Escopo do backup e demonstração
+
+- o backup normal exclui registros marcados como `synthetic-demo` e a sessão de demonstração;
+- incluir dados sintéticos exige marcação explícita na interface;
+- fatos derivados (`care-fact`) entram no backup normal quando a aplicação é normal, porque são
+  parte do registro longitudinal da pessoa;
+- fatos sem `dataOrigin` em backup antigo migram para `normal`; a migração não infere origem sintética;
+- ao sair da demonstração, o snapshot do estado normal substitui o espaço ativo.
+
 ## Tipos de saída
 
 ### Backup integral protegido
@@ -69,6 +78,8 @@ Não prometerá permanência absoluta.
 - registrar versão anterior e posterior;
 - testar com bases realistas;
 - preservar política de visibilidade e snapshots.
+
+Aplicações ESF participam do backup por meio do store `records`. A restauração executa migração lógica idempotente de payloads legados antes da validação final, recalcula checksums e rejeita aplicações que apontem para pessoa, família ou vínculo inexistente. Durante demonstração, backups normais usam o snapshot normal e não incluem aplicações `synthetic-demo`.
 
 ## Domínio
 

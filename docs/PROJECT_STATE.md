@@ -57,6 +57,7 @@ O Mapa apoiará um estudante de Medicina durante atividades longitudinais na APS
 - Round 3: experiência, compartilhamento e privacidade operacional.
 - Round 4: auditoria adversarial.
 - Round 5: simulação integral de semestre com duas famílias sintéticas.
+- Round 6: ficha ESF do adulto como instrumento tipado, fatos derivados com proveniência, demonstração isolada e revisão humana de mudanças propostas.
 
 ## Próximo marco
 
@@ -196,14 +197,25 @@ Marco 7: auditoria pré-uso real, build, testes em dispositivos e gates instituc
 ### Marco 7
 
 - **Estado da auditoria:** concluída em 27 de setembro de 2026.
-- **Decisão de liberação:** NO-GO.
-- **Dados reais:** proibidos.
+- **Decisão operacional:** GO LOCAL.
+- **Dados reais:** continuam condicionados às regras da instituição, do serviço, da preceptoria e do prontuário oficial.
+- **Distribuição pública:** não autorizada por esta decisão.
+- **Substituição de prontuário:** não autorizada; o Mapa permanece ferramenta acadêmica local.
 - headers defensivos e CSP adicionados;
 - painel de gates adicionado;
 - auditoria estática adicionada;
 - checklists de segurança, acessibilidade, dispositivos e instituição adicionados;
 - bloqueadores clínicos, farmacológicos, técnicos e institucionais formalizados.
 
-### Próxima fase
+### Fluxo ESF e projeções derivadas
 
-Fechar gates fora deste ambiente, executar o pipeline completo e emitir nova decisão de release.
+- a ficha da ESF é aplicada por pessoa, dentro da área da família;
+- blocos 3, 4 e 5 continuam indisponíveis e o bloco de diagramas existe apenas pelo título; nenhuma lacuna foi preenchida por inferência;
+- fatos derivados carregam regra, versão, certeza e visibilidade por audiência;
+- serviços marcados na ficha são propostas; o ecomapa só muda por decisão humana;
+- o genograma não recebe mudanças automáticas: a fonte não descreve campos de parentesco;
+- a demonstração é uma sessão isolada e reversível e nunca alimenta o backup normal.
+
+### Delimitação operacional
+
+GO LOCAL representa prontidão técnica para uso acadêmico local e demonstração supervisionada. Não é autorização institucional para dados reais, distribuição pública irrestrita ou assistência autônoma.

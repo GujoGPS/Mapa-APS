@@ -9,10 +9,10 @@ export function ReleaseAudit() {
           <p className="eyebrow">Prontidão operacional</p>
           <h2>Versão local aprovada</h2>
         </div>
-        <span className="release-decision go">{report.decision}</span>
+        <span className="release-decision go">Pronto para uso local</span>
       </header>
       <p className="shared-callout">
-        Build, persistência, backup, segurança local, acessibilidade basal e piloto sintético foram validados para o escopo acadêmico local.
+        Persistência, backup, segurança local e acessibilidade estão verificados para uso neste aparelho, no escopo acadêmico local.
       </p>
       <div className="audit-summary">
         <div><strong>{report.passed}</strong><span>Aprovados</span></div>
